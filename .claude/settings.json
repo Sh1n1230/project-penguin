@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git blame:*)",
+      "Bash(git ls-files:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git branch --show-current)",
+      "Bash(git branch --list:*)",
+      "Bash(git remote -v)",
+      "Bash(git check-attr:*)",
+      "Bash(git lfs status)",
+      "Bash(git lfs ls-files:*)",
+      "Bash(git lfs env)",
+      "Bash(ls:*)",
+      "Bash(wc:*)",
+      "Bash(find:*)",
+      "Bash(python --version)",
+      "Bash(python -m pytest:*)",
+      "Bash(pytest:*)",
+      "Bash(ruff check:*)",
+      "Bash(ruff format:*)",
+      "Bash(mypy:*)",
+      "Bash(uv run:*)",
+      "Bash(uv sync:*)",
+      "Bash(uv lock:*)",
+      "Bash(dotnet format:*)"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/*.db)",
+      "Read(**/*.sqlite)",
+      "Read(**/*.sqlite3)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(./Library/**)",
+      "Read(./Temp/**)",
+      "Edit(./Library/**)",
+      "Edit(./Temp/**)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git filter-branch:*)",
+      "Bash(git lfs uninstall:*)"
+    ],
+    "ask": [
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git merge:*)",
+      "Bash(git rebase:*)",
+      "Bash(git cherry-pick:*)",
+      "Bash(git revert:*)",
+      "Bash(git reset:*)",
+      "Bash(git clean:*)",
+      "Bash(git checkout:*)",
+      "Bash(git switch:*)",
+      "Bash(git restore:*)",
+      "Bash(git stash:*)",
+      "Bash(git tag:*)",
+      "Bash(git rm:*)",
+      "Bash(git lfs untrack:*)",
+      "Bash(gh pr:*)",
+      "Bash(gh release:*)",
+      "Bash(uv add:*)",
+      "Bash(uv remove:*)",
+      "Edit(./.gitattributes)",
+      "Edit(./.gitignore)",
+      "Edit(./Packages/manifest.json)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv",
+            "args": [
+              "run",
+              "--no-project",
+              "python",
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/guard_git.py"
+            ],
+            "timeout": 15,
+            "statusMessage": "git 操作を検査中"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv",
+            "args": [
+              "run",
+              "--no-project",
+              "python",
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/guard_write.py"
+            ],
+            "timeout": 15,
+            "statusMessage": "書き込み先と秘密情報を検査中"
+          }
+        ]
+      }
+    ]
+  }
+}
