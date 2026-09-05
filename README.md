@@ -72,11 +72,14 @@
 
 ### 必要環境
 
-| | バージョン |
-|---|---|
-| Unity | 6000.6.0f1 |
-| Git LFS | 3.x 以上 |
-| Python | 3.11 以上 (backend) |
+| | バージョン | 備考 |
+|---|---|---|
+| Unity | 6000.6.0f1 | 別バージョンで開くとアセットが一斉アップグレードされます |
+| Git LFS | 3.x 以上 | クローン前に `git lfs install` |
+| uv | 0.5 以上 | backend の依存管理と、Claude Code のフック実行に使います |
+| Python | 3.11 | uv が `backend/.python-version` を見て自動で用意するため、個別のインストールは不要です |
+
+Windows と macOS のどちらでも同じ手順で動きます。backend は uv が管理する `.venv` の中で完結し、Unity Editor は各自のネイティブ環境で動かします (Unity は GUI アプリのためコンテナ化していません)。
 
 ### 1. クローン
 
