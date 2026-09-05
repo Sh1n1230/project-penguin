@@ -104,12 +104,15 @@ dist/
 
 # ---------------------------------------------------------------
 # Claude Code
-#   スキル等はチームで共有し、個人設定のみ除外する。
+#   CLAUDE.md / rules / hooks / settings.json はチームで共有し、
+#   個人設定と実行時の生成物のみ除外する。
 # ---------------------------------------------------------------
 .claude/settings.local.json
 .claude/*.local.*
+.claude/hooks/__pycache__/
 .agents/settings.local.json
 .agents/*.local.*
+CLAUDE.local.md
 
 # ---------------------------------------------------------------
 # OS
