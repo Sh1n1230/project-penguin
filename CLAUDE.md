@@ -35,8 +35,27 @@
 | `.meta` の整合性検査 | `python scripts/check_unity_meta.py` |
 | 秘密情報の検査 | `python scripts/check_secrets.py` |
 | Unity のテスト | Unity Editor の Test Runner (EditMode / PlayMode) |
+| アプリのビルド | Editor の `Build/` メニュー、または `/build` |
 
 CI (`.github/workflows/ci.yml`) はこのうち Unity テスト以外を PR ごとに回す。
+
+## スキルの使い分け
+
+**下の表に当てはまる作業は、ユーザーの明示的な指示を待たずに該当スキルを読んでから着手する。** 表にないものは通常どおり進める。
+
+| 作業 | 使うもの |
+|---|---|
+| ビルド・署名・実機確認・配布 | `/build` |
+| コミット / PR の前の検査 | `/verify` |
+| 変更のレビュー | `/code-review` |
+| UI を作る・直す | `ui` (Canvas なら `ui-ugui`、UI Toolkit なら `ui-uitk`) |
+| シーン・GameObject・アセットを Editor 経由で操作 | `unity-mcp-skill` |
+| Editor の起動・テスト実行を CLI から | `unity-cli` |
+| パッケージの追加・更新 | `unity-package-management` (追加は提案どまり) |
+| 多言語対応・日本語フォント | `localization` / `optimize-text-mesh-pro` |
+| 音声・WebGL の最適化 | `optimize-audio` / `optimize-web` |
+
+`.claude/rules/` は path スコープ付きで**該当ファイルを読んだ時点で自動適用される**ので、明示的に読みに行く必要はない。
 
 ## 絶対規則
 
