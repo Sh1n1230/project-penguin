@@ -14,12 +14,37 @@ Unity クライアントから受け取ったレシート画像を Gemini で解
 
 ## セットアップ
 
+パッケージマネージャは [uv](https://docs.astral.sh/uv/)。
+
 ```bash
-cp .env.example .env
-# .env に GEMINI_API_KEY を記入
+cd backend
+uv sync                  # 依存のインストール (.venv を作る)
+cp .env.example .env     # .env に GEMINI_API_KEY を記入
 ```
 
 `.env` は `.gitignore` で除外されています。public リポジトリのため、実キーのコミットは事故として回復不能(履歴に残る)です。
+
+## 開発コマンド
+
+| 目的 | コマンド |
+|---|---|
+| 整形 | `uv run ruff format .` |
+| lint | `uv run ruff check .` |
+| 型検査 | `uv run mypy .` (strict) |
+| テスト | `uv run pytest` |
+
+CI でも同じ 4 つが回ります (`.github/workflows/ci.yml`)。
+
+ruff の `S` (bandit) と `T20` (`print` 禁止) は、レシート画像や購買明細を標準出力・ログに漏らさない制約を機械的に守らせるために有効化しています。無効化する前に下記のプライバシー要件を確認してください。
+
+## 構成
+
+```
+backend/
+├─ pyproject.toml           # 依存とツール設定 (ruff / mypy / pytest)
+├─ src/penguin_backend/     # 実装
+└─ tests/                   # pytest
+```
 
 ## 実装時に守ること (TODO)
 

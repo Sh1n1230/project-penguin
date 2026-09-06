@@ -1,0 +1,90 @@
+# ---------------------------------------------------------------
+# Project Penguin - Unity EditMode / PlayMode テスト
+#
+# Unity のテスト実行には Editor のライセンス認証が必要なため、
+# 手動起動 (workflow_dispatch) と main への push に限定している。
+# 認証情報が未登録のうちは自動でスキップされ、CI を赤くしない。
+#
+# 有効化の手順:
+#   1. https://game.ci/docs/github/activation の手順で .ulf を取得する
+#   2. リポジトリの Settings > Secrets に以下を登録する
+#        UNITY_LICENSE  … .ulf ファイルの中身をそのまま貼る
+#        UNITY_EMAIL    … Unity ID のメールアドレス
+#        UNITY_PASSWORD … Unity ID のパスワード
+#
+# 初回は Library/ のキャッシュが無いため 20〜30 分かかる。
+# ---------------------------------------------------------------
+name: Unity Tests
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: unity-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  probe:
+    name: ライセンス設定の確認
+    runs-on: ubuntu-latest
+    outputs:
+      licensed: ${{ steps.check.outputs.licensed }}
+    steps:
+      - id: check
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        run: |
+          if [ -n "$UNITY_LICENSE" ]; then
+            echo "licensed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "licensed=false" >> "$GITHUB_OUTPUT"
+            echo "UNITY_LICENSE が未登録のためテストをスキップします。"
+          fi
+
+  test:
+    name: ${{ matrix.testMode }}
+    needs: probe
+    if: needs.probe.outputs.licensed == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        testMode: [editmode, playmode]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      # Library/ はビルドのたびに作り直すと数十分かかるためキャッシュする。
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ matrix.testMode }}-${{ hashFiles('Packages/packages-lock.json') }}
+          restore-keys: |
+            Library-${{ matrix.testMode }}-
+            Library-
+
+      - uses: game-ci/unity-test-runner@v4
+        id: tests
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          unityVersion: 6000.6.0f1
+          testMode: ${{ matrix.testMode }}
+          artifactsPath: ${{ matrix.testMode }}-artifacts
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: ${{ matrix.testMode }} テスト結果
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ${{ matrix.testMode }}-results
+          path: ${{ steps.tests.outputs.artifactsPath }}

@@ -72,11 +72,14 @@
 
 ### 必要環境
 
-| | バージョン |
-|---|---|
-| Unity | 6000.6.0f1 |
-| Git LFS | 3.x 以上 |
-| Python | 3.11 以上 (backend) |
+| | バージョン | 備考 |
+|---|---|---|
+| Unity | 6000.6.0f1 | 別バージョンで開くとアセットが一斉アップグレードされます |
+| Git LFS | 3.x 以上 | クローン前に `git lfs install` |
+| uv | 0.5 以上 | backend の依存管理と、Claude Code のフック実行に使います |
+| Python | 3.11 | uv が `backend/.python-version` を見て自動で用意するため、個別のインストールは不要です |
+
+Windows と macOS のどちらでも同じ手順で動きます。backend は uv が管理する `.venv` の中で完結し、Unity Editor は各自のネイティブ環境で動かします (Unity は GUI アプリのためコンテナ化していません)。
 
 ### 1. クローン
 
@@ -112,8 +115,45 @@ Unity Hub からリポジトリのルートディレクトリを開きます。�
 
 `backend/` を参照してください。API キーの設定方法は `backend/.env.example` に記載しています。
 
+## ビルド
+
+レシート撮影が中核のため、配布対象は Android と iOS です。ビルドスクリプトは `Assets/Editor/Build/` にあり、Editor メニューと CLI が同じ経路を通ります。成果物は `Builds/` (git 管理外) に出ます。
+
+| メニュー (`Build/`) | 出力 |
+|---|---|
+| Android APK (Development) | `Builds/Android/<product>-<version>-dev.apk` |
+| Android APK | `Builds/Android/<product>-<version>.apk` |
+| Android AAB (配布用) | `Builds/Android/<product>-<version>.aab` |
+| iOS Xcode プロジェクト | `Builds/iOS/` |
+
+Unity Hub の 6000.6.0f1 に **Android Build Support (OpenJDK / SDK & NDK 込み)** と **iOS Build Support** を追加しておいてください。iOS は Xcode プロジェクトを出力するところまでで、実機ビルドは macOS 上の Xcode で行います。
+
+CLI から回す場合は Editor でプロジェクトを閉じてから実行します。`-quit` は付けません (終了コードはビルドスクリプト側が返します)。
+
+```bash
+"C:/Program Files/Unity/Hub/Editor/6000.6.0f1/Editor/Unity.exe" \
+  -batchmode -nographics -projectPath . -logFile - \
+  -executeMethod ProjectPenguin.Editor.Build.BuildEntry.AndroidApk -- --dev
+```
+
+### 署名
+
+**キーストアもパスワードもリポジトリには置きません。** 環境変数からのみ読み込み、ビルド後は `PlayerSettings` を元の値へ戻すため `ProjectSettings.asset` に残りません。
+
+| 環境変数 | 内容 |
+|---|---|
+| `PENGUIN_ANDROID_KEYSTORE` | `.keystore` / `.jks` へのパス |
+| `PENGUIN_ANDROID_KEYSTORE_PASS` | キーストアのパスワード |
+| `PENGUIN_ANDROID_KEYALIAS` | エイリアス名 |
+| `PENGUIN_ANDROID_KEYALIAS_PASS` | エイリアスのパスワード |
+| `PENGUIN_IOS_TEAM_ID` | Apple Developer Team ID (任意) |
+
+未設定の場合、APK は debug 鍵でビルドされ (配布不可)、AAB は明示的に失敗します。
+
+なお `companyName` と `applicationIdentifier` は URP テンプレートの既定値のままです。配布前に Unity Editor の Project Settings で自前の値に変更してください。
+
 ## 現状
 
-**Unity 6 URP プロジェクトの初期化のみが完了しています。** Game Logic (GameState / PenguinSystem / IceSystem / DailyMission / Pokedex / Reward)、SQLite によるローカルデータ、FastAPI バックエンドはいずれも未実装です。
+**Unity 6 URP プロジェクトの初期化と、ビルド・CI まわりの土台のみが完了しています。** Game Logic (GameState / PenguinSystem / IceSystem / DailyMission / Pokedex / Reward)、SQLite によるローカルデータ、FastAPI バックエンドはいずれも未実装です。
 
 上記アーキテクチャ図は実装済みの構成ではなく、これから作るものの設計を表しています。

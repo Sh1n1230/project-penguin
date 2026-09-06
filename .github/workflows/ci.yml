@@ -1,0 +1,117 @@
+# ---------------------------------------------------------------
+# Project Penguin - CI
+#   Unity のビルド / テストはライセンス認証が要るため unity-tests.yml に分離し、
+#   ここには認証なしで常に回せる軽量な検査だけを置く。
+# ---------------------------------------------------------------
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # レシートと API キーを扱うため、秘密情報の混入検査を最優先で回す。
+  secrets:
+    name: 秘密情報の検査
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # .claude/hooks/guard_write.py とパターンを共有する自前の検査。
+      - name: 追跡対象ファイルの検査
+        run: python scripts/check_secrets.py
+
+      # 履歴全体を対象にした汎用スキャン。個人アカウントのリポジトリは無償。
+      # 誤検知の除外は .gitleaks.toml で管理する。
+      - name: gitleaks (履歴全体)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: ${{ github.workspace }}/.gitleaks.toml
+
+  unity:
+    name: Unity プロジェクトの整合性
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # アセットと .meta の片方だけがコミットされると別環境で参照が壊れる。
+      - name: .meta の整合性
+        run: python scripts/check_unity_meta.py
+
+      # 別バージョンの Editor で開くとアセットが一斉アップグレードされる。
+      - name: Editor バージョンの一致
+        run: python scripts/check_unity_version.py
+
+  backend:
+    name: backend (lint / format / type / test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+
+      # backend が未実装のうちは以降のステップを丸ごと飛ばす。
+      - id: probe
+        run: |
+          if [ -f backend/pyproject.toml ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "backend/pyproject.toml が無いためスキップします。"
+          fi
+
+      - if: steps.probe.outputs.ready == 'true'
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+
+      - if: steps.probe.outputs.ready == 'true'
+        name: 依存のインストール
+        working-directory: backend
+        run: uv sync --all-extras --dev
+
+      - if: steps.probe.outputs.ready == 'true'
+        name: format (ruff format --check)
+        working-directory: backend
+        run: uv run ruff format --check .
+
+      - if: steps.probe.outputs.ready == 'true'
+        name: lint (ruff check)
+        working-directory: backend
+        run: uv run ruff check .
+
+      - if: steps.probe.outputs.ready == 'true'
+        name: type-check (mypy)
+        working-directory: backend
+        run: uv run mypy .
+
+      # テストが 1 件も無い状態 (pytest の exit 5) はまだ失敗扱いにしない。
+      - if: steps.probe.outputs.ready == 'true'
+        name: unit test (pytest)
+        working-directory: backend
+        run: |
+          uv run pytest -q || { code=$?; [ "$code" -eq 5 ] && echo "テストがまだありません。" || exit "$code"; }
