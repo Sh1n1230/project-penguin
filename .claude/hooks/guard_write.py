@@ -17,7 +17,16 @@ UNITY_YAML = {
     ".physicmaterial", ".physicsmaterial2d",
 }
 # Unity / IDE が再生成するもの。編集しても次のリコンパイルで消える。
-GENERATED_DIRS = ("library", "temp", "logs", "obj", "build", "builds", "usersettings")
+#
+# .gitignore と同じく「リポジトリ直下にあるときだけ生成物」として扱う。
+# どの階層でも名前だけで判定すると Assets/Editor/Build/ のようなソース
+# ディレクトリを誤って生成物と見なしてしまう。
+GENERATED_ROOT_DIRS = (
+    "library", "temp", "logs", "build", "builds",
+    "usersettings", "memorycaptures", "recordings",
+)
+# 名前がその用途にしか使われないため、どの階層でも生成物と見てよいもの。
+GENERATED_ANY_DIRS = ("obj", "__pycache__", ".venv", "node_modules")
 GENERATED_EXT = {".csproj", ".sln", ".slnx", ".unityproj", ".pidb", ".user"}
 
 # 実キーらしき文字列。.env.example のような空値やプレースホルダには当てない。
@@ -64,10 +73,16 @@ def main() -> None:
 
     norm = path.replace("\\", "/")
     segments = norm.split("/")
-    parts = [p.lower() for p in segments]
     display = segments[-1]
-    name = parts[-1]
+    name = display.lower()
     ext = os.path.splitext(name)[1]
+
+    # 生成物の判定はリポジトリ直下からの相対パスで行う。
+    cwd = (payload.get("cwd") or "").replace("\\", "/").rstrip("/")
+    rel = norm
+    if cwd and norm.lower().startswith(cwd.lower() + "/"):
+        rel = norm[len(cwd) + 1:]
+    rel_dirs = [p.lower() for p in rel.split("/")[:-1] if p not in ("", ".")]
 
     if ext in UNITY_YAML:
         deny(
@@ -76,7 +91,12 @@ def main() -> None:
             "Unity Editor 上での操作手順を提示してください。"
         )
 
-    if ext in GENERATED_EXT or any(p in GENERATED_DIRS for p in parts[:-1]):
+    is_generated = (
+        ext in GENERATED_EXT
+        or (rel_dirs and rel_dirs[0] in GENERATED_ROOT_DIRS)
+        or any(p in GENERATED_ANY_DIRS for p in rel_dirs)
+    )
+    if is_generated:
         deny(
             f"`{path}` は Unity / IDE が再生成する生成物です。編集しても次のリコンパイルで失われます。"
             "変更したい設定の本体 (asmdef, Packages/manifest.json, ProjectSettings) を特定してください。"
