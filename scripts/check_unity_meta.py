@@ -3,7 +3,7 @@
 アセットと .meta のどちらか片方だけがコミットされていると、別環境で GUID が
 振り直されて参照が壊れる。git の追跡対象を正としてその対応を検証する。
 
-    python scripts/check_unity_meta.py
+    uv run --no-project python scripts/check_unity_meta.py
 """
 
 from __future__ import annotations

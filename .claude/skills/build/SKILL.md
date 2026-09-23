@@ -10,7 +10,7 @@ description: Project Penguin を Android (APK / AAB) または iOS (Xcode プロ
 ## まず確認すること
 
 1. **Unity Editor でそのプロジェクトを開いていないか。** Unity は同一プロジェクトを二重に開けない。CLI ビルドの前に Editor を閉じる。
-2. **`Assets/Editor/` の `.meta` が生成済みか。** 新規スクリプトを足した直後は `.meta` が無い。Editor を一度開けば作られる。`python scripts/check_unity_meta.py` で確認できる。
+2. **`Assets/Editor/` の `.meta` が生成済みか。** 新規スクリプトを足した直後は `.meta` が無い。Editor を一度開けば作られる。`uv run --no-project python scripts/check_unity_meta.py` で確認できる。
 3. **対象プラットフォームのモジュールが入っているか。** Unity Hub > インストール > 6000.6.0f1 > モジュールを加える に Android Build Support (OpenJDK / Android SDK & NDK 込み) と iOS Build Support。
 
 ## Editor から

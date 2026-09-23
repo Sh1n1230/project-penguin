@@ -4,7 +4,7 @@ Unity Hub が別バージョンでプロジェクトを開くと ProjectVersion.
 書き換わり、アセットが一斉にアップグレードされて巨大な差分が出る。
 バージョンを書いている全ての箇所が食い違っていないかを機械的に確認する。
 
-    python scripts/check_unity_version.py
+    uv run --no-project python scripts/check_unity_version.py
 """
 
 from __future__ import annotations
