@@ -111,5 +111,8 @@
         ]
       }
     ]
+  },
+  "enabledPlugins": {
+    "unity@claude-plugins-official": true
   }
 }
