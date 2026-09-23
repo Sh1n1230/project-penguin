@@ -112,6 +112,7 @@
       }
     ]
   },
+  "enabledMcpjsonServers": ["UnityMCP"],
   "enabledPlugins": {
     "unity@claude-plugins-official": true
   }

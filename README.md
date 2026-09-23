@@ -117,7 +117,16 @@ git config merge.unityyaml.recursive binary
 
 Unity Hub からリポジトリのルートディレクトリを開きます。初回は `Library/` の生成に時間がかかります。
 
-### 4. バックエンド
+### 4. Unity MCP (Claude Code から Editor を操作する場合)
+
+接続先はリポジトリの `.mcp.json` で共有しています (`http://127.0.0.1:8080/mcp`)。OS に依存しないため、各自の登録は不要です。
+
+1. Unity で **Window → MCP for Unity** を開き、Transport を HTTP にしてサーバを起動する
+2. Claude Code をリポジトリで起動し直し、`/mcp` で `UnityMCP` が connected になっていることを確認する
+
+MCP for Unity ウィンドウの Configure ボタンは、個人設定 (`~/.claude.json` の local スコープ) に登録するのと同時に **`.mcp.json` から `UnityMCP` を消します**。押した場合は `.mcp.json` の変更をコミットせず `git restore .mcp.json` で戻してください。個人設定に同名の `UnityMCP` がある場合はそちらが優先されるだけで、衝突はしません。
+
+### 5. バックエンド
 
 `backend/` を参照してください。API キーの設定方法は `backend/.env.example` に記載しています。
 

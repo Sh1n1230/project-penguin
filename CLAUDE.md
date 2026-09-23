@@ -23,6 +23,7 @@
 | `scripts/` | CI とローカル共用の検査スクリプト |
 | `.claude/rules/` | 領域別ルール (該当ファイルを読むと自動適用される) |
 | `.claude/hooks/` | 破壊的操作を機械的に止める PreToolUse フック |
+| `.mcp.json` | Unity MCP の接続先 (OS 非依存の localhost HTTP) |
 
 ## コマンド
 
