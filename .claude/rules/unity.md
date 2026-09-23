@@ -43,6 +43,18 @@ paths:
 - `Update()` 内で `GetComponent` / `Find` / `Camera.main` を呼ばない。キャッシュする。
 - `async void` を避け、`UniTask` 未導入のうちはコルーチンか `async Task` + 呼び出し側での例外処理にする。
 
+## モバイル前提
+
+配布対象は Android / iOS の縦画面アプリ。
+
+- **画面は Portrait 固定。** UI は Canvas Scaler を Scale With Screen Size (Reference Resolution 1080×1920) にし、端末の実解像度に依存させない。画面端に置く UI は `Screen.safeArea` に合わせた SafeArea の子にする (ノッチ・カメラホール・ジェスチャーバー対策)。
+- **中断と復帰を前提にする。** モバイルではアプリが予告なく suspend / kill されるので `OnApplicationQuit` に保存を頼らず、`OnApplicationPause(true)` で保存する。アプリを閉じている間の進行 (氷の減少など) は、保存しておいた UTC 時刻と現在時刻の差分から復帰時にまとめて計算する。コルーチンやタイマーが裏で動き続けた前提にしない。
+- **`Domain` は現在時刻を引数で受け取る。** `DateTime.Now` / `DateTime.UtcNow` を `Domain` の中で直接呼ばない。経過時間の計算を EditMode テストで固定時刻のまま検証できるようにするため。
+- **マスターデータとプレイヤーデータを分ける。** 開発者が定義する固定データ (ペンギンの種類・ミッション定義など) は ScriptableObject にし、実行時に書き換えない。プレイヤーの状態は SQLite (`Data`) に置く。
+- **PlayerPrefs は設定値だけ。** 音量・既読フラグ・初回起動済みなどに限る。PlayerPrefs は暗号化されないため、購買情報やレシート由来のデータは絶対に入れない (`.claude/rules/privacy.md`)。
+- **`Resources/` を使わない。** 中身が参照の有無に関係なくビルドに含まれるため。直接参照か ScriptableObject 経由にし、コンテンツが増えた段階で Addressables を検討する。
+- URP の画質設定 (HDR / MSAA / Render Scale) やフレームレートは、実機でプロファイリングしてから決める。根拠なしに変えない。
+
 ## シーンとプレハブ
 
 `.unity` / `.prefab` のマージは構造的に壊れやすい。`.gitattributes` で UnityYAMLMerge を指定しているが**同じシーンを複数ブランチで同時に編集しない**方針を優先する。シーンを触る作業は 1 ブランチに閉じる。

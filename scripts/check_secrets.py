@@ -3,7 +3,7 @@
 検出パターンは .claude/hooks/guard_write.py と共有する。エージェントが書き込む
 直前に止めるのが hook、人手や別ツール経由で入ったものを CI で拾うのがこちら。
 
-    python scripts/check_secrets.py
+    uv run --no-project python scripts/check_secrets.py
 """
 
 from __future__ import annotations

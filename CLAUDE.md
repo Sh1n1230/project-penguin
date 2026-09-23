@@ -23,6 +23,7 @@
 | `scripts/` | CI とローカル共用の検査スクリプト |
 | `.claude/rules/` | 領域別ルール (該当ファイルを読むと自動適用される) |
 | `.claude/hooks/` | 破壊的操作を機械的に止める PreToolUse フック |
+| `.mcp.json` | Unity MCP の接続先 (OS 非依存の localhost HTTP) |
 
 ## コマンド
 
@@ -32,8 +33,9 @@
 | backend の lint | `cd backend && uv run ruff check .` |
 | backend の型検査 | `cd backend && uv run mypy .` |
 | backend のテスト | `cd backend && uv run pytest` |
-| `.meta` の整合性検査 | `python scripts/check_unity_meta.py` |
-| 秘密情報の検査 | `python scripts/check_secrets.py` |
+| `.meta` の整合性検査 | `uv run --no-project python scripts/check_unity_meta.py` |
+| Editor バージョンの一致検査 | `uv run --no-project python scripts/check_unity_version.py` |
+| 秘密情報の検査 | `uv run --no-project python scripts/check_secrets.py` |
 | Unity のテスト | Unity Editor の Test Runner (EditMode / PlayMode) |
 | アプリのビルド | Editor の `Build/` メニュー、または `/build` |
 

@@ -14,7 +14,7 @@ description: コミット・PR の前に、CI が回すのと同じ検査をロ�
 ### 1. 秘密情報
 
 ```bash
-python scripts/check_secrets.py
+uv run --no-project python scripts/check_secrets.py
 ```
 
 レシート画像・購買履歴・API キーを扱うプロジェクトなので最優先。落ちたら**直す前に、それが既にコミット済みかを確認する**。コミット済みなら履歴からの除去とキーの失効が要る (`.claude/rules/privacy.md`)。
@@ -22,8 +22,8 @@ python scripts/check_secrets.py
 ### 2. Unity プロジェクトの整合性
 
 ```bash
-python scripts/check_unity_meta.py
-python scripts/check_unity_version.py
+uv run --no-project python scripts/check_unity_meta.py
+uv run --no-project python scripts/check_unity_version.py
 ```
 
 - `.meta` 欠けは、**新しくスクリプトやアセットを足した直後に必ず出る**。Unity Editor を一度開けば生成されるので、ユーザーに開いてもらう。エージェント側で `.meta` を書いて埋めてはいけない。
