@@ -1,0 +1,39 @@
+/* ホーム画面のレイアウトだけを書く。見た目は DesignSystem のコンポーネントに任せる */
+
+.home {
+    flex-grow: 1;
+}
+
+.home__safe {
+    flex-grow: 1;
+}
+
+.home__header {
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: var(--space-3) var(--space-4) 0 var(--space-4);
+}
+
+.home__stats {
+    flex-direction: row;
+    padding: var(--space-2) var(--space-4) 0 var(--space-4);
+}
+
+.home__stat {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin-right: var(--space-3);
+}
+
+.home__stat--last {
+    margin-right: 0;
+}
+
+/* 3D ワールドが見える領域。タッチはワールド側へ透過させる */
+.home__world {
+    flex-grow: 1;
+}
+
+.home__speech {
+    margin: 0 var(--space-8) var(--space-4) var(--space-4);
+}

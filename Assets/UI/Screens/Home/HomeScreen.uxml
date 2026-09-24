@@ -1,0 +1,79 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="HomeScreen.uss" />
+    <ui:VisualElement name="root" class="home" picking-mode="Ignore">
+        <ui:VisualElement name="safeArea" class="home__safe" picking-mode="Ignore">
+            <ui:VisualElement name="header" class="home__header" picking-mode="Ignore">
+                <ui:Button name="settingsButton" class="pp-icon-button">
+                    <ui:VisualElement class="pp-icon pp-icon--gear pp-icon--sub" picking-mode="Ignore" />
+                </ui:Button>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="stats" class="home__stats" picking-mode="Ignore">
+                <ui:VisualElement name="iceStat" class="pp-card pp-elevated pp-stat-card home__stat">
+                    <ui:VisualElement class="pp-icon-badge">
+                        <ui:VisualElement class="pp-icon pp-icon--snowflake pp-icon--primary" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="pp-stat-card__body">
+                        <ui:Label text="氷の量" class="pp-stat-card__label" />
+                        <ui:VisualElement class="pp-stat-card__meter">
+                            <ui:ProgressBar name="iceProgress" value="72" class="pp-progress" />
+                            <ui:Label name="iceValue" text="72%" class="pp-stat-card__value pp-text-primary" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement name="co2Stat" class="pp-card pp-elevated pp-stat-card home__stat home__stat--last">
+                    <ui:VisualElement class="pp-icon-badge pp-icon-badge--eco">
+                        <ui:VisualElement class="pp-icon pp-icon--leaf pp-icon--eco" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="pp-stat-card__body">
+                        <ui:Label text="CO₂削減" class="pp-stat-card__label" />
+                        <ui:VisualElement class="pp-stat-card__meter">
+                            <ui:ProgressBar name="co2Progress" value="58" class="pp-progress pp-progress--eco" />
+                            <ui:Label name="co2Value" text="58%" class="pp-stat-card__value pp-text-eco" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="worldViewport" class="home__world" picking-mode="Ignore" />
+
+            <ui:VisualElement name="speech" class="pp-speech home__speech" picking-mode="Ignore">
+                <ui:VisualElement class="pp-speech__bubble pp-elevated">
+                    <ui:Label name="speechText" text="今日もいい天気だよ&#10;また来てね！" class="pp-speech__text" />
+                </ui:VisualElement>
+                <ui:VisualElement class="pp-avatar">
+                    <ui:VisualElement class="pp-avatar__image pp-icon--penguin pp-icon pp-icon--original" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="tabBar" class="pp-tab-bar">
+                <ui:VisualElement class="pp-tab-bar__tabs">
+                    <ui:Button name="tabHome" class="pp-tab pp-tab--active">
+                        <ui:VisualElement class="pp-tab__icon pp-icon--home" picking-mode="Ignore" />
+                        <ui:Label text="すみか" class="pp-tab__label" picking-mode="Ignore" />
+                    </ui:Button>
+                    <ui:Button name="tabRecord" class="pp-tab">
+                        <ui:VisualElement class="pp-tab__icon pp-icon--receipt" picking-mode="Ignore" />
+                        <ui:Label text="記録" class="pp-tab__label" picking-mode="Ignore" />
+                    </ui:Button>
+                    <ui:Button name="tabScan" class="pp-tab">
+                        <ui:VisualElement class="pp-tab__fab" picking-mode="Ignore">
+                            <ui:VisualElement class="pp-tab__icon pp-icon--camera" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:Label text="スキャン" class="pp-tab__label" picking-mode="Ignore" />
+                    </ui:Button>
+                    <ui:Button name="tabMission" class="pp-tab">
+                        <ui:VisualElement class="pp-tab__icon pp-icon--flag" picking-mode="Ignore" />
+                        <ui:Label text="ミッション" class="pp-tab__label" picking-mode="Ignore" />
+                    </ui:Button>
+                    <ui:Button name="tabMenu" class="pp-tab">
+                        <ui:VisualElement class="pp-tab__icon pp-icon--menu" picking-mode="Ignore" />
+                        <ui:Label text="メニュー" class="pp-tab__label" picking-mode="Ignore" />
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:VisualElement name="bottomInset" class="pp-tab-bar__inset" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
