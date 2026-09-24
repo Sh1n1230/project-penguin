@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:Style src="HomeScreen.uss" />
     <ui:VisualElement name="root" class="home" picking-mode="Ignore">
-        <ui:VisualElement name="safeArea" class="home__safe" picking-mode="Ignore">
+        <ui:VisualElement name="safeArea" class="home__safe pp-safe-area" picking-mode="Ignore">
             <ui:VisualElement name="header" class="home__header" picking-mode="Ignore">
                 <ui:Button name="settingsButton" class="pp-icon-button">
                     <ui:VisualElement class="pp-icon pp-icon--gear pp-icon--sub" picking-mode="Ignore" />
@@ -72,7 +72,7 @@
                         <ui:Label text="メニュー" class="pp-tab__label" picking-mode="Ignore" />
                     </ui:Button>
                 </ui:VisualElement>
-                <ui:VisualElement name="bottomInset" class="pp-tab-bar__inset" picking-mode="Ignore" />
+                <ui:VisualElement name="bottomInset" class="pp-safe-area__bottom" picking-mode="Ignore" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

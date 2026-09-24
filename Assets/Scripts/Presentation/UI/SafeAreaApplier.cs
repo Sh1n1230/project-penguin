@@ -5,19 +5,18 @@ namespace ProjectPenguin.Presentation.UI
 {
     /// <summary>
     /// Screen.safeArea をパネル座標に変換し、ノッチ・ジェスチャーバーを避ける余白を UI Toolkit の要素に反映する。
-    /// 上・左・右は <c>_safeAreaName</c> の padding に、下は <c>_bottomInsetName</c> の高さに入れる
+    /// 上・左・右は <see cref="SafeAreaClass"/> の padding に、下は <see cref="BottomInsetClass"/> の高さに入れる
     /// (タブバーの背景を画面下端まで伸ばしたまま、ボタンだけをジェスチャーバーの上に置くため)。
+    /// 画面ごとに要素を持てるよう、名前ではなくクラスで探して該当する全要素に適用する。
     /// </summary>
     [RequireComponent(typeof(UIDocument))]
     public sealed class SafeAreaApplier : MonoBehaviour
     {
-        [SerializeField] private string _safeAreaName = "safeArea";
-        [SerializeField] private string _bottomInsetName = "bottomInset";
+        public const string SafeAreaClass = "pp-safe-area";
+        public const string BottomInsetClass = "pp-safe-area__bottom";
 
         private UIDocument _document;
         private VisualElement _root;
-        private VisualElement _safeArea;
-        private VisualElement _bottomInset;
         private Rect _appliedSafeArea;
         private Vector2Int _appliedScreenSize;
 
@@ -25,8 +24,6 @@ namespace ProjectPenguin.Presentation.UI
         {
             _document = GetComponent<UIDocument>();
             _root = _document.rootVisualElement;
-            _safeArea = _root.Q(_safeAreaName);
-            _bottomInset = _root.Q(_bottomInsetName);
 
             _appliedScreenSize = Vector2Int.zero;
             _root.RegisterCallback<GeometryChangedEvent>(OnRootGeometryChanged);
@@ -63,17 +60,14 @@ namespace ProjectPenguin.Presentation.UI
             var rightBottom = RuntimePanelUtils.ScreenToPanel(panel, new Vector2(Screen.width - safeArea.xMax, safeArea.yMin));
 
             // 端末ごとに変わる実測値なので USS では表せず、インラインスタイルで入れる。
-            if (_safeArea != null)
+            _root.Query(className: SafeAreaClass).ForEach(element =>
             {
-                _safeArea.style.paddingTop = leftTop.y;
-                _safeArea.style.paddingLeft = leftTop.x;
-                _safeArea.style.paddingRight = rightBottom.x;
-            }
+                element.style.paddingTop = leftTop.y;
+                element.style.paddingLeft = leftTop.x;
+                element.style.paddingRight = rightBottom.x;
+            });
 
-            if (_bottomInset != null)
-            {
-                _bottomInset.style.height = rightBottom.y;
-            }
+            _root.Query(className: BottomInsetClass).ForEach(element => element.style.height = rightBottom.y);
         }
     }
 }
