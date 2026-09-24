@@ -14,6 +14,9 @@ Project Penguin の UI Toolkit 用デザインシステム。見た目の出典�
 | `Assets/UI/Fonts/` | 日本語フォント (仮) と動的 FontAsset |
 | `Assets/UI/PanelSettings.asset` | 全画面共通の PanelSettings |
 | `Assets/UI/Screens/<Screen>/` | 画面ごとの UXML と、その画面のレイアウト専用 USS |
+| `Assets/UI/App/App.uxml` | 全画面を並べるルート。UIDocument のソースはこれ |
+| `Assets/Scripts/Presentation/UI/ScreenNavigator.cs` | 表示する画面を 1 つに切り替える |
+| `Assets/Scripts/Presentation/UI/ReceiptCameraPreview.cs` | スキャン画面にカメラ映像を映す |
 | `Assets/Scripts/Presentation/UI/SafeAreaApplier.cs` | `Screen.safeArea` を UI に反映する |
 
 テーマは PanelSettings 経由で全画面に自動で効く。画面の UXML から `Tokens.uss` / `Components.uss` を `<ui:Style>` で読み直す必要はない。UI Builder で編集するときは、Canvas 右上のテーマ選択で **PenguinTheme** を選ぶ。
@@ -43,6 +46,9 @@ Project Penguin の UI Toolkit 用デザインシステム。見た目の出典�
 | `--color-surface` / `-glass` | 白 95% / 白 80% | カード / ワールドの上に重ねる半透明のカード |
 | `--color-divider` | `#E3EEF7` | 区切り線 |
 | `--color-elevation` | 紺 12% | `.pp-elevated` の擬似的な影 |
+| `--color-camera-bg` | `#0E1A26` | カメラ画面の背景 |
+| `--color-on-dark-button` / `-hover` | 白 18% / 白 30% | 暗い背景の上に置くボタン |
+| `--color-scrim` | 背景色 55% | 暗い背景の上に文字を置くときの下敷き |
 
 ### 余白・角丸・サイズ
 
@@ -98,7 +104,11 @@ UI Toolkit は、角丸が短辺の半分を超えると角が楕円に潰れる
 | `.pp-speech` + `.pp-avatar` | ペンギンの吹き出し | DOM 上は吹き出し → アバターの順に置く (`row-reverse` で、アバターを左側・前面に描くため) |
 | `.pp-segmented` / `__item--active` | デイリー / ウィークリーの切り替え | |
 | `.pp-list-item` (`--last`) | 解析結果の品目行 | UI Toolkit には `:last-child` が無いので、最後の行に `--last` を付ける |
-| `.pp-tab-bar` / `.pp-tab` (`--active`) / `.pp-tab__fab` | 下部ナビ | 下端の余白は `bottomInset` 要素に SafeAreaApplier が入れる |
+| `.pp-tab-bar` / `.pp-tab` (`--active`) / `.pp-tab__fab` | 下部ナビ | 最後の子に `.pp-safe-area__bottom` を置くと、ジェスチャーバー分の余白が入る |
+| `.pp-icon-button--dark` | カメラ画面の閉じるボタンなど | 暗い背景用の `.pp-icon-button` |
+| `.pp-scan-frame` + `__corner--{top-left,top-right,bottom-left,bottom-right}` | 撮影枠 | 四隅の L 字だけを描き、中は透かす |
+| `.pp-shutter` / `__core` | シャッターボタン | |
+| `.pp-screen` (`--hidden`) / `.pp-hidden` | 画面の切り替え / 要素の非表示 | 下の「画面の切り替え」を参照 |
 
 ### 例: 指標カード
 
@@ -127,7 +137,16 @@ UI Toolkit は、角丸が短辺の半分を超えると角が楕円に潰れる
 
 - PanelSettings の Clear Color はオフにしてある。UI の後ろには 3D カメラの描画がそのまま見える。
 - ワールドを見せる領域と、その親の要素には `picking-mode="Ignore"` を付ける。付けないと、タッチが UI に吸われてワールドに届かない (例: `HomeScreen.uxml` の `worldViewport`)。
-- 画面の端に置く UI は `safeArea` 要素の子にし、GameObject に `SafeAreaApplier` を付ける。
+- 画面の端に置く UI は `.pp-safe-area` を付けた要素の子にする。`SafeAreaApplier` が、このクラスを持つ全要素に上・左・右の余白を入れ、`.pp-safe-area__bottom` を持つ全要素の高さを下端の余白に合わせる。
+
+## 画面の切り替え
+
+シーンは分けず、`App.uxml` に全画面を `<ui:Instance>` で並べておき、表示中の 1 つ以外に `.pp-screen--hidden` (`display: none`) を付ける。隠した画面は破棄されないので、戻ったときに状態が残る。
+
+- 切り替えは `ScreenNavigator.Show(AppScreen)` を呼ぶ。ホームの `tabScan` でスキャン画面へ、スキャン画面の `closeButton` と Android の戻るキー (Input System では Escape キーとして届く) でホームへ戻る。
+- スキャン画面の表示中は 3D ワールドのカメラを止め、カメラ映像は `ReceiptCameraPreview` がスキャン画面を開いている間だけ動かす。アプリが裏に回ったときも止める。
+- 画面を足すときは、`Screens/<Screen>/` に UXML を作って `App.uxml` に `<ui:Template>` と `<ui:Instance class="pp-screen pp-screen--hidden">` を追加し、`AppScreen` と `ScreenNavigator` に分岐を足す。
+- カメラ映像は表示するだけで、フレームの保存もログ出力もしない。撮影処理を足すときは `.claude/rules/privacy.md` に従い、メモリ上だけで扱う。
 
 ## USS で使えない CSS
 
@@ -135,4 +154,6 @@ UI Toolkit は、角丸が短辺の半分を超えると角が楕円に潰れる
 
 ## 試作画面
 
-`Assets/Scenes/UITest.unity` で、ホーム画面 (`Assets/UI/Screens/Home/HomeScreen.uxml`) を仮置きの 3D ワールド (`World`) の上に表示している。3D の要素は Capsule / Quad / Cylinder / Cube の仮モデルで、マテリアルは `Assets/Prototype/UITest/Materials/` にある。表示している値 (72% など) は固定のモックで、ゲームの状態とはまだつながっていない。
+`Assets/Scenes/UITest.unity` の `AppUI` が `App.uxml` を表示し、ホーム画面は仮置きの 3D ワールド (`World`) の上に重なる。3D の要素は Capsule / Quad / Cylinder / Cube の仮モデルで、マテリアルは `Assets/Prototype/UITest/Materials/` にある。表示している値 (72% など) は固定のモックで、ゲームの状態とはまだつながっていない。スキャン画面のシャッターは見た目だけで、撮影処理はまだつないでいない。
+
+Play すると、動的 FontAsset (`Assets/UI/Fonts/*-SDF.asset`) に表示した文字が追加され、ファイルに差分が出ることがある。文字のキャッシュにすぎないので、コミットせずに `git checkout` で戻してよい (ビルド時には自動で消える設定にしてある)。
