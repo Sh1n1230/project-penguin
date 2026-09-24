@@ -2221,8 +2221,10 @@ GameObject:
   - component: {fileID: 1278900966}
   - component: {fileID: 1278900965}
   - component: {fileID: 1278900964}
+  - component: {fileID: 1278900968}
+  - component: {fileID: 1278900967}
   m_Layer: 0
-  m_Name: HomeUI
+  m_Name: AppUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2240,8 +2242,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7b245d44bc5f4ff884015a92f24aeb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ProjectPenguin.Presentation::ProjectPenguin.Presentation.UI.SafeAreaApplier
-  _safeAreaName: safeArea
-  _bottomInsetName: bottomInset
 --- !u!114 &1278900965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2256,7 +2256,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
   m_PanelSettings: {fileID: 11400000, guid: 4876a9d78c109439eb36d874f65cf46a, type: 2}
   m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: e2cf69915e41445429e9b4100618bd78, type: 3}
+  sourceAsset: {fileID: 9197481963319205126, guid: e23196e3d9b504d8eb3c9f7e016723a2, type: 3}
   m_SortingOrder: 0
   m_Position: 0
   m_WorldSpaceSizeMode: 1
@@ -2280,6 +2280,32 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1278900967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1278900963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73036dc7f9eeb488cb97cae3817d5e05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ProjectPenguin.Presentation::ProjectPenguin.Presentation.UI.ScreenNavigator
+  _worldCamera: {fileID: 993471420}
+  _cameraPreview: {fileID: 1278900968}
+--- !u!114 &1278900968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1278900963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a02e423e05c1f4f3f82b3099564de846, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ProjectPenguin.Presentation::ProjectPenguin.Presentation.UI.ReceiptCameraPreview
 --- !u!1 &1349238677
 GameObject:
   m_ObjectHideFlags: 0
