@@ -1,0 +1,138 @@
+# Design System
+
+Project Penguin の UI Toolkit 用デザインシステム。見た目の出典は `docs/reference/UI_ref.png` (主)、足りない部分を `docs/reference/UI_ref_proto.png` で補っている。
+
+## ファイル構成
+
+| パス | 役割 |
+|---|---|
+| `Assets/UI/DesignSystem/Tokens.uss` | デザイントークン (`:root` 変数) とテキスト用ユーティリティ |
+| `Assets/UI/DesignSystem/Components.uss` | `.pp-*` コンポーネント。Unity 既定テーマの代わりになる最小限のベース指定もここに置く |
+| `Assets/UI/DesignSystem/PenguinTheme.tss` | 上の 2 つを `@import` するテーマ。PanelSettings に設定している |
+| `Assets/UI/DesignSystem/Icons/*.svg` | アイコン (VectorImage としてインポートされる) |
+| `Assets/UI/DesignSystem/Catalog/DesignSystemCatalog.uxml` | 全コンポーネントの見本。UI Builder で開いて確認する |
+| `Assets/UI/Fonts/` | 日本語フォント (仮) と動的 FontAsset |
+| `Assets/UI/PanelSettings.asset` | 全画面共通の PanelSettings |
+| `Assets/UI/Screens/<Screen>/` | 画面ごとの UXML と、その画面のレイアウト専用 USS |
+| `Assets/Scripts/Presentation/UI/SafeAreaApplier.cs` | `Screen.safeArea` を UI に反映する |
+
+テーマは PanelSettings 経由で全画面に自動で効く。画面の UXML から `Tokens.uss` / `Components.uss` を `<ui:Style>` で読み直す必要はない。UI Builder で編集するときは、Canvas 右上のテーマ選択で **PenguinTheme** を選ぶ。
+
+## 基本方針
+
+- **基準解像度は 1080×1920 (縦画面)**。PanelSettings は Scale With Screen Size、Match = 0 (幅基準)。縦長端末では縦方向に余りが出るが、横方向のレイアウトは端末によらず同じになる。設計上の 1pt はおよそ 2.75px。
+- **値は必ずトークン経由で指定する。** 色・余白・角丸・文字サイズを USS に直書きしない。トークンに無い値が必要になったら、先に `Tokens.uss` に足す。
+- **画面の USS にはレイアウトだけを書く。** 見た目 (色・角丸・文字) はコンポーネントのクラスに任せる。
+- **Unity 既定テーマ (`UnityDefaultRuntimeTheme.tss`) は読まない。** そのため `Button` や `ScrollView` の既定スタイルは付かない。必要な最小限の指定は `Components.uss` の Base 節にある (UIDocument のルートを画面いっぱいに広げる指定、ScrollView の伸縮)。`TextField` など、まだ使っていない組み込み要素を使うときは、同じ Base 節にスタイルを足す。
+
+## トークン
+
+### 色
+
+| トークン | 値 | 用途 |
+|---|---|---|
+| `--color-primary` | `#1F8BEA` | 主要ボタン、アクティブなタブ、氷のメーター |
+| `--color-primary-dark` | `#1565C0` | primary の押下・ホバー |
+| `--color-ice-50` / `-100` / `-200` | `#EEF7FF` / `#D8EDFC` / `#B5DBF7` | 淡い背景、メーターの未達部分、枠線 |
+| `--color-eco` / `--color-eco-soft` | `#2EB872` / `#DDF5E8` | CO₂ 削減、良い変化 (+3% など) |
+| `--color-accent` / `-dark` | `#FFC928` / `#E0A800` | 「すみかに反映」など、1 画面に 1 つだけ置く強調ボタン |
+| `--color-point` | `#F5A623` | ポイント・報酬 |
+| `--color-danger` / `-soft` | `#E5534B` / `#FCE3E1` | 負荷が高い、氷が減る |
+| `--color-text` | `#17385F` | 本文 |
+| `--color-text-sub` | `#6B8199` | 補足、非アクティブのタブ |
+| `--color-surface` / `-glass` | 白 95% / 白 80% | カード / ワールドの上に重ねる半透明のカード |
+| `--color-divider` | `#E3EEF7` | 区切り線 |
+| `--color-elevation` | 紺 12% | `.pp-elevated` の擬似的な影 |
+
+### 余白・角丸・サイズ
+
+| 種類 | トークン |
+|---|---|
+| 余白 | `--space-1` 8 / `-2` 16 / `-3` 24 / `-4` 32 / `-5` 40 / `-6` 48 / `-7` 64 / `-8` 96 (px) |
+| 角丸 | `--radius-sm` 16 / `--radius-md` 28 (カード) / `--radius-lg` 44 (吹き出し・タブバー) / `--radius-full` 999 (**正方形の要素専用**) |
+| ピル型部品 | `--control-height-sm` 48 + `--radius-pill-sm` 24、`-md` 72 + 36、`-lg` 112 + 56 |
+| アイコン | `--icon-sm` 40 / `--icon-md` 56 / `--icon-lg` 80 / `--icon-xl` 112 |
+
+UI Toolkit は、角丸が短辺の半分を超えると角が楕円に潰れる (CSS のように円に丸めない)。ピル型の部品は高さを固定し、半分の値の角丸を組にして使う。
+
+### 文字
+
+| トークン | px | 用途 |
+|---|---|---|
+| `--font-size-caption` | 28 | 補足、タブのラベル、バッジ |
+| `--font-size-body` | 34 | 本文 (`:root` の既定) |
+| `--font-size-label` | 38 | ボタン |
+| `--font-size-title` | 46 | セクション見出し |
+| `--font-size-headline` | 60 | 画面タイトル |
+| `--font-size-display` | 96 | CO₂ 量など、画面の主役になる数値 |
+
+太さは `--font-regular` / `--font-bold` / `--font-heavy` の 3 種類。ユーティリティクラスは `.pp-text-{caption,body,label,title,headline,display}`、`.pp-text-{bold,heavy}`、`.pp-text-{sub,primary,eco,point,danger,inverse}`、`.pp-text-center`。
+
+## フォントの差し替え
+
+いま入っている **M PLUS Rounded 1c (OFL) は仮置き**。UI Toolkit は OS のフォントを代わりに使ってくれないため、日本語を表示するにはフォントをプロジェクトに同梱する必要がある。
+
+差し替えの手順:
+
+1. 新しい `.ttf` / `.otf` を `Assets/UI/Fonts/` に置く (`.gitattributes` で LFS の対象になっている)
+2. Project ウィンドウでフォントを選び **Assets > Create > UI Toolkit > Text > Font Asset > SDF** を実行する (TextMeshPro 用のメニューではない)。Atlas Population Mode は **Dynamic** にする
+3. `Tokens.uss` の `--font-regular` / `--font-bold` / `--font-heavy` の 3 行を新しい FontAsset に向ける
+4. 古いフォントと FontAsset、`OFL.txt` を消す (新しいフォントのライセンス文書を代わりに置く)
+
+コンポーネント側はトークン経由でしか参照していないので、ほかのファイルは変更しなくてよい。
+
+## コンポーネント
+
+名前は `.pp-<block>__<element>--<modifier>` の形にする。UXML の `name` 属性は camelCase にする。
+
+| クラス | 使う場所 | 備考 |
+|---|---|---|
+| `.pp-card` (`--glass`) | 情報のまとまり | `.pp-elevated` と組み合わせると下辺に影が付く |
+| `.pp-icon` + `--{sm,lg,xl}` + `--{primary,eco,point,sub,inverse,original}` + `--<name>` | アイコン | 白い SVG に tint で色を付ける。多色の SVG には `--original` を使う |
+| `.pp-icon-badge` (`--eco`) | アイコンを淡い円で囲む | |
+| `.pp-icon-button` | 歯車など、円形のアイコンボタン | `ui:Button` の子に `.pp-icon` を入れる |
+| `.pp-btn` + `--{accent,ghost,block}` | 通常のボタン | accent は 1 画面に 1 つまで |
+| `.pp-badge` (`--{eco,accent,danger}`) / `.pp-chip` | カテゴリ、「Good!」、食材のタグ | |
+| `.pp-progress` (`--{eco,point}`) | `ui:ProgressBar` | 値は UXML の `value` 属性か C# の `value` で渡す。タイトル表示は隠している |
+| `.pp-stat-card` | 氷の量 / CO₂ 削減などの指標 | 構造は下の例を参照 |
+| `.pp-speech` + `.pp-avatar` | ペンギンの吹き出し | DOM 上は吹き出し → アバターの順に置く (`row-reverse` で、アバターを左側・前面に描くため) |
+| `.pp-segmented` / `__item--active` | デイリー / ウィークリーの切り替え | |
+| `.pp-list-item` (`--last`) | 解析結果の品目行 | UI Toolkit には `:last-child` が無いので、最後の行に `--last` を付ける |
+| `.pp-tab-bar` / `.pp-tab` (`--active`) / `.pp-tab__fab` | 下部ナビ | 下端の余白は `bottomInset` 要素に SafeAreaApplier が入れる |
+
+### 例: 指標カード
+
+```xml
+<ui:VisualElement class="pp-card pp-elevated pp-stat-card">
+    <ui:VisualElement class="pp-icon-badge">
+        <ui:VisualElement class="pp-icon pp-icon--snowflake pp-icon--primary" />
+    </ui:VisualElement>
+    <ui:VisualElement class="pp-stat-card__body">
+        <ui:Label text="氷の量" class="pp-stat-card__label" />
+        <ui:VisualElement class="pp-stat-card__meter">
+            <ui:ProgressBar name="iceProgress" value="72" class="pp-progress" />
+            <ui:Label name="iceValue" text="72%" class="pp-stat-card__value pp-text-primary" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:VisualElement>
+```
+
+## アイコンを追加する
+
+1. `viewBox="0 0 24 24"` で、塗りと線を `#FFFFFF` にした SVG を `Icons/` に置く (色は USS の tint で付ける)
+2. `Components.uss` に `.pp-icon--<name> { background-image: url("project://database/Assets/UI/DesignSystem/Icons/<name>.svg"); }` を追加する
+3. カタログの Icon 節に並べる
+
+## 3D ワールドの上に UI を重ねる
+
+- PanelSettings の Clear Color はオフにしてある。UI の後ろには 3D カメラの描画がそのまま見える。
+- ワールドを見せる領域と、その親の要素には `picking-mode="Ignore"` を付ける。付けないと、タッチが UI に吸われてワールドに届かない (例: `HomeScreen.uxml` の `worldViewport`)。
+- 画面の端に置く UI は `safeArea` 要素の子にし、GameObject に `SafeAreaApplier` を付ける。
+
+## USS で使えない CSS
+
+`gap`、`box-shadow`、`z-index`、`linear-gradient()`、`:nth-child` / `:first-child` / `:last-child`、属性セレクタ、`border` の一括指定は使えない。代わりに子要素の margin、`.pp-elevated`、DOM の順序、明示的な修飾クラスを使う。`transition-property` は指定せず、`transition-duration` だけを基底クラスに書く。UXML に `style="..."` を書かない。
+
+## 試作画面
+
+`Assets/Scenes/UITest.unity` で、ホーム画面 (`Assets/UI/Screens/Home/HomeScreen.uxml`) を仮置きの 3D ワールド (`World`) の上に表示している。3D の要素は Capsule / Quad / Cylinder / Cube の仮モデルで、マテリアルは `Assets/Prototype/UITest/Materials/` にある。表示している値 (72% など) は固定のモックで、ゲームの状態とはまだつながっていない。
