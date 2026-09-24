@@ -36,6 +36,12 @@
     --color-divider: #E3EEF7;
     --color-elevation: rgba(23, 56, 95, 0.12);
 
+    /* ---- Color: camera (暗い背景の画面) ---- */
+    --color-camera-bg: #0E1A26;
+    --color-on-dark-button: rgba(255, 255, 255, 0.18);
+    --color-on-dark-button-hover: rgba(255, 255, 255, 0.3);
+    --color-scrim: rgba(14, 26, 38, 0.55);
+
     /* ---- Spacing ---- */
     --space-1: 8px;
     --space-2: 16px;

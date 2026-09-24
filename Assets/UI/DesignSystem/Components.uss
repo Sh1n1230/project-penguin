@@ -25,6 +25,20 @@
     flex-shrink: 0;
 }
 
+/* App.uxml に並べた画面。表示中の 1 つ以外に --hidden を付ける */
+.pp-screen {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.pp-screen--hidden,
+.pp-hidden {
+    display: none;
+}
+
 /* ============ Surface ============ */
 
 .pp-card {
@@ -80,6 +94,7 @@
 .pp-icon--flag { background-image: url("project://database/Assets/UI/DesignSystem/Icons/flag.svg"); }
 .pp-icon--menu { background-image: url("project://database/Assets/UI/DesignSystem/Icons/menu.svg"); }
 .pp-icon--chevron-right { background-image: url("project://database/Assets/UI/DesignSystem/Icons/chevron-right.svg"); }
+.pp-icon--close { background-image: url("project://database/Assets/UI/DesignSystem/Icons/close.svg"); }
 .pp-icon--penguin { background-image: url("project://database/Assets/UI/DesignSystem/Icons/penguin.svg"); }
 
 /* アイコンを淡色の円で囲む */
@@ -151,6 +166,10 @@
 
 .pp-icon-button:hover { background-color: var(--color-surface); }
 .pp-icon-button:active { scale: 0.92 0.92; }
+
+/* カメラ画面など暗い背景の上に置く版 */
+.pp-icon-button--dark { background-color: var(--color-on-dark-button); }
+.pp-icon-button--dark:hover { background-color: var(--color-on-dark-button-hover); }
 
 /* ============ Badge / Chip ============ */
 
@@ -420,4 +439,75 @@
     width: var(--icon-lg);
     height: var(--icon-lg);
     -unity-background-image-tint-color: var(--color-text-on-primary);
+}
+
+/* ============ Camera (レシートスキャン) ============ */
+
+/* 撮影枠。四隅の L 字だけを描き、中は透かす */
+.pp-scan-frame {
+    align-items: center;
+    justify-content: center;
+}
+
+.pp-scan-frame__corner {
+    position: absolute;
+    width: 96px;
+    height: 96px;
+    border-color: #FFFFFF;
+}
+
+.pp-scan-frame__corner--top-left {
+    top: 0;
+    left: 0;
+    border-top-width: 8px;
+    border-left-width: 8px;
+    border-top-left-radius: var(--radius-sm);
+}
+
+.pp-scan-frame__corner--top-right {
+    top: 0;
+    right: 0;
+    border-top-width: 8px;
+    border-right-width: 8px;
+    border-top-right-radius: var(--radius-sm);
+}
+
+.pp-scan-frame__corner--bottom-left {
+    bottom: 0;
+    left: 0;
+    border-bottom-width: 8px;
+    border-left-width: 8px;
+    border-bottom-left-radius: var(--radius-sm);
+}
+
+.pp-scan-frame__corner--bottom-right {
+    right: 0;
+    bottom: 0;
+    border-right-width: 8px;
+    border-bottom-width: 8px;
+    border-bottom-right-radius: var(--radius-sm);
+}
+
+/* シャッター: 白い輪の中に primary の円 */
+.pp-shutter {
+    width: 184px;
+    height: 184px;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    border-width: 10px;
+    border-color: #FFFFFF;
+    border-radius: var(--radius-full);
+    background-color: var(--color-on-dark-button);
+    transition-duration: var(--duration-fast);
+}
+
+.pp-shutter:active { scale: 0.92 0.92; }
+
+.pp-shutter__core {
+    width: 132px;
+    height: 132px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-primary);
 }
