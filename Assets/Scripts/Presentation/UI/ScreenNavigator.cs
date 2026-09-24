@@ -22,6 +22,8 @@ namespace ProjectPenguin.Presentation.UI
         [Tooltip("スキャン画面の表示中に止める 3D ワールドのカメラ。不透明な画面の裏で描画し続けないため")]
         [SerializeField] private Camera _worldCamera;
 
+        [SerializeField] private ReceiptCameraPreview _cameraPreview;
+
         private VisualElement _homeScreen;
         private VisualElement _scanScreen;
         private Button _scanTab;
@@ -75,6 +77,19 @@ namespace ProjectPenguin.Presentation.UI
             if (_worldCamera != null)
             {
                 _worldCamera.enabled = screen == AppScreen.Home;
+            }
+
+            // カメラはスキャン画面を開いている間だけ起動する (電池とプライバシーのため)。
+            if (_cameraPreview != null)
+            {
+                if (screen == AppScreen.Scan)
+                {
+                    _cameraPreview.StartPreview();
+                }
+                else
+                {
+                    _cameraPreview.StopPreview();
+                }
             }
         }
 
