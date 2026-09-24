@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Template name="HomeScreen" src="../Screens/Home/HomeScreen.uxml" />
+    <ui:Template name="ScanScreen" src="../Screens/Scan/ScanScreen.uxml" />
+    <ui:VisualElement name="app" class="pp-screen" picking-mode="Ignore">
+        <ui:Instance template="HomeScreen" name="homeScreen" class="pp-screen" picking-mode="Ignore" />
+        <ui:Instance template="ScanScreen" name="scanScreen" class="pp-screen pp-screen--hidden" />
+    </ui:VisualElement>
+</ui:UXML>
