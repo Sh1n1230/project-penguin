@@ -11,7 +11,7 @@ Project Penguin の UI Toolkit 用デザインシステム。見た目の出典�
 | `Assets/UI/DesignSystem/PenguinTheme.tss` | 上の 2 つを `@import` するテーマ。PanelSettings に設定している |
 | `Assets/UI/DesignSystem/Icons/*.svg` | アイコン (VectorImage としてインポートされる) |
 | `Assets/UI/DesignSystem/Catalog/DesignSystemCatalog.uxml` | 全コンポーネントの見本。UI Builder で開いて確認する |
-| `Assets/UI/Fonts/` | 日本語フォント (仮) と動的 FontAsset |
+| `Assets/UI/Fonts/` | 日本語フォント (仮) の `.ttf` とライセンス文書 |
 | `Assets/UI/PanelSettings.asset` | 全画面共通の PanelSettings |
 | `Assets/UI/Screens/<Screen>/` | 画面ごとの UXML と、その画面のレイアウト専用 USS |
 | `Assets/UI/App/App.uxml` | 全画面を並べるルート。UIDocument のソースはこれ |
@@ -81,11 +81,12 @@ UI Toolkit は、角丸が短辺の半分を超えると角が楕円に潰れる
 差し替えの手順:
 
 1. 新しい `.ttf` / `.otf` を `Assets/UI/Fonts/` に置く (`.gitattributes` で LFS の対象になっている)
-2. Project ウィンドウでフォントを選び **Assets > Create > UI Toolkit > Text > Font Asset > SDF** を実行する (TextMeshPro 用のメニューではない)。Atlas Population Mode は **Dynamic** にする
-3. `Tokens.uss` の `--font-regular` / `--font-bold` / `--font-heavy` の 3 行を新しい FontAsset に向ける
-4. 古いフォントと FontAsset、`OFL.txt` を消す (新しいフォントのライセンス文書を代わりに置く)
+2. `Tokens.uss` の `--font-regular` / `--font-bold` / `--font-heavy` の 3 行を、新しい `.ttf` に向ける
+3. 古い `.ttf` と `OFL.txt` を消す (新しいフォントのライセンス文書を代わりに置く)
 
 コンポーネント側はトークン経由でしか参照していないので、ほかのファイルは変更しなくてよい。
+
+**FontAsset (`.asset`) は作らない。** トークンには `.ttf` を直接指定する。UI Toolkit は `.ttf` を渡されると、表示に使う FontAsset を実行時にメモリ上で作るので、プロジェクトのファイルは変わらない。一方、Dynamic の FontAsset をアセットとして置くと、Play や画面表示で使った文字のグリフがそのアセット自身に書き込まれ、開発者全員の `git status` に毎回差分が出る。アトラスの大きさなどを細かく調整したくなった場合も、アセットとして保存しない方法 (実行時に `FontAsset.CreateFontAsset` で作る等) を先に検討する。
 
 ## コンポーネント
 
@@ -155,5 +156,3 @@ UI Toolkit は、角丸が短辺の半分を超えると角が楕円に潰れる
 ## 試作画面
 
 `Assets/Scenes/UITest.unity` の `AppUI` が `App.uxml` を表示し、ホーム画面は仮置きの 3D ワールド (`World`) の上に重なる。3D の要素は Capsule / Quad / Cylinder / Cube の仮モデルで、マテリアルは `Assets/Prototype/UITest/Materials/` にある。表示している値 (72% など) は固定のモックで、ゲームの状態とはまだつながっていない。スキャン画面のシャッターは見た目だけで、撮影処理はまだつないでいない。
-
-Play すると、動的 FontAsset (`Assets/UI/Fonts/*-SDF.asset`) に表示した文字が追加され、ファイルに差分が出ることがある。文字のキャッシュにすぎないので、コミットせずに `git checkout` で戻してよい (ビルド時には自動で消える設定にしてある)。

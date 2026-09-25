@@ -5,10 +5,13 @@
  */
 
 :root {
-    /* ---- Font: 差し替えはこの 3 行だけ ---- */
-    --font-regular: url("project://database/Assets/UI/Fonts/MPLUSRounded1c-Regular-SDF.asset");
-    --font-bold: url("project://database/Assets/UI/Fonts/MPLUSRounded1c-Bold-SDF.asset");
-    --font-heavy: url("project://database/Assets/UI/Fonts/MPLUSRounded1c-ExtraBold-SDF.asset");
+    /* ---- Font: 差し替えはこの 3 行だけ ----
+     * .ttf を直接指定する。FontAsset (.asset) を作って参照すると、使った文字が
+     * アセットに書き込まれて全員の作業ツリーに差分が出る (docs/design-system.md)。
+     */
+    --font-regular: url("project://database/Assets/UI/Fonts/MPLUSRounded1c-Regular.ttf");
+    --font-bold: url("project://database/Assets/UI/Fonts/MPLUSRounded1c-Bold.ttf");
+    --font-heavy: url("project://database/Assets/UI/Fonts/MPLUSRounded1c-ExtraBold.ttf");
 
     /* ---- Color: brand ---- */
     --color-primary: #1F8BEA;
