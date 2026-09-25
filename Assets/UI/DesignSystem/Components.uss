@@ -675,7 +675,7 @@
 .pp-bar-chart__bar--today { background-color: var(--color-eco); }
 
 .pp-bar-chart__value {
-    margin-bottom: 4px;
+    margin-bottom: var(--space-1);
     color: var(--color-text-sub);
     font-size: var(--font-size-caption);
 }
