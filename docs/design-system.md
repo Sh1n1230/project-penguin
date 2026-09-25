@@ -167,6 +167,6 @@ UI Toolkit は、角丸が短辺の半分を超えると角が楕円に潰れる
 
 `Assets/Scenes/UITest.unity` の `AppUI` が `App.uxml` を表示し、ホーム画面は仮置きの 3D ワールド (`World`) の上に重なる。3D の要素は Capsule / Quad / Cylinder / Cube の仮モデルで、マテリアルは `Assets/Prototype/UITest/Materials/` にある。表示している値 (72% など) は固定のモックで、ゲームの状態とはまだつながっていない。スキャン画面のシャッターは撮影せずに解析中画面へ進むだけで、解析中の進行 (`AnalyzingScreenPresenter`) と記録画面のグラフ (`RecordScreenPresenter`) も仮の値で動いている。
 
-`Assets/Prototype/DynamicScaling/DynamicScalingTest.unity` は `UITest` の複製で、3D モデルの差し替えと、縦横比に合わせたカメラ調整 (`WorldCameraFramer`) を試すための作業シーン。
+`Assets/Scenes/HomeWorld.unity` は `UITest` から派生したシーンで、氷山と小屋の 3D モデル (`Assets/3Dmodel/`) の上に `App.uxml` を重ねている。カメラは縦横比に合わせて画角を調整する (`WorldCameraFramer`)。解析中の進行と記録画面のグラフを動かす Presenter もこのシーンの `AppUI` に付けてある。
 
 Play すると、動的 FontAsset (`Assets/UI/Fonts/*-SDF.asset`) に表示した文字が追加され、ファイルに差分が出ることがある。文字のキャッシュにすぎないので、コミットせずに `git checkout` で戻してよい (ビルド時には自動で消える設定にしてある)。
