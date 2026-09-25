@@ -1,0 +1,163 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="DesignSystemCatalog.uss" />
+    <ui:ScrollView name="catalog" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" class="catalog">
+        <ui:Label text="Project Penguin Design System" class="pp-text-headline pp-text-heavy" />
+        <ui:Label text="docs/design-system.md と対応する全コンポーネントの見本" class="pp-text-sub catalog__lead" />
+
+        <ui:Label text="Color" class="catalog__section pp-text-title pp-text-bold" />
+        <ui:VisualElement class="catalog__row catalog__row--wrap">
+            <ui:VisualElement class="catalog__swatch catalog__swatch--primary"><ui:Label text="primary" class="catalog__swatch-label pp-text-inverse" /></ui:VisualElement>
+            <ui:VisualElement class="catalog__swatch catalog__swatch--primary-dark"><ui:Label text="primary-dark" class="catalog__swatch-label pp-text-inverse" /></ui:VisualElement>
+            <ui:VisualElement class="catalog__swatch catalog__swatch--ice-100"><ui:Label text="ice-100" class="catalog__swatch-label" /></ui:VisualElement>
+            <ui:VisualElement class="catalog__swatch catalog__swatch--ice-50"><ui:Label text="ice-50" class="catalog__swatch-label" /></ui:VisualElement>
+            <ui:VisualElement class="catalog__swatch catalog__swatch--eco"><ui:Label text="eco" class="catalog__swatch-label pp-text-inverse" /></ui:VisualElement>
+            <ui:VisualElement class="catalog__swatch catalog__swatch--accent"><ui:Label text="accent" class="catalog__swatch-label" /></ui:VisualElement>
+            <ui:VisualElement class="catalog__swatch catalog__swatch--point"><ui:Label text="point" class="catalog__swatch-label pp-text-inverse" /></ui:VisualElement>
+            <ui:VisualElement class="catalog__swatch catalog__swatch--danger"><ui:Label text="danger" class="catalog__swatch-label pp-text-inverse" /></ui:VisualElement>
+            <ui:VisualElement class="catalog__swatch catalog__swatch--text"><ui:Label text="text" class="catalog__swatch-label pp-text-inverse" /></ui:VisualElement>
+            <ui:VisualElement class="catalog__swatch catalog__swatch--text-sub"><ui:Label text="text-sub" class="catalog__swatch-label pp-text-inverse" /></ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:Label text="Typography" class="catalog__section pp-text-title pp-text-bold" />
+        <ui:VisualElement class="pp-card">
+            <ui:Label text="0.84 kg-CO₂e" class="pp-text-display pp-text-heavy pp-text-eco" />
+            <ui:Label text="Headline 解析結果" class="pp-text-headline pp-text-bold" />
+            <ui:Label text="Title 今回の変化" class="pp-text-title pp-text-bold" />
+            <ui:Label text="Label すみかに反映" class="pp-text-label pp-text-bold" />
+            <ui:Label text="Body レシートを枠に合わせてください" class="pp-text-body" />
+            <ui:Label text="Caption 2025/09/18 12:34" class="pp-text-caption pp-text-sub" />
+        </ui:VisualElement>
+
+        <ui:Label text="Icon" class="catalog__section pp-text-title pp-text-bold" />
+        <ui:VisualElement class="pp-card catalog__row catalog__row--wrap">
+            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--snowflake pp-icon--primary catalog__item" />
+            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--leaf pp-icon--eco catalog__item" />
+            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--gear pp-icon--sub catalog__item" />
+            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--home pp-icon--primary catalog__item" />
+            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--receipt catalog__item" />
+            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--camera catalog__item" />
+            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--flag pp-icon--point catalog__item" />
+            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--menu pp-icon--sub catalog__item" />
+            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--chevron-right pp-icon--sub catalog__item" />
+            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--penguin pp-icon--original catalog__item" />
+        </ui:VisualElement>
+
+        <ui:Label text="Button" class="catalog__section pp-text-title pp-text-bold" />
+        <ui:VisualElement class="pp-card">
+            <ui:Button text="この内容で記録する" class="pp-btn pp-btn--block catalog__stack" />
+            <ui:Button text="すみかに反映" class="pp-btn pp-btn--accent pp-btn--block catalog__stack" />
+            <ui:Button text="ワールドを見る" class="pp-btn pp-btn--ghost pp-btn--block catalog__stack" />
+            <ui:Button text="無効" enabled="false" class="pp-btn pp-btn--block catalog__stack" />
+            <ui:Button class="pp-icon-button">
+                <ui:VisualElement class="pp-icon pp-icon--gear pp-icon--sub" picking-mode="Ignore" />
+            </ui:Button>
+        </ui:VisualElement>
+
+        <ui:Label text="Badge / Chip" class="catalog__section pp-text-title pp-text-bold" />
+        <ui:VisualElement class="pp-card catalog__row">
+            <ui:Label text="食料品" class="pp-badge catalog__item" />
+            <ui:Label text="+3%" class="pp-badge pp-badge--eco catalog__item" />
+            <ui:Label text="Good!" class="pp-badge pp-badge--accent catalog__item" />
+            <ui:Label text="負荷高" class="pp-badge pp-badge--danger catalog__item" />
+            <ui:Label text="鶏肉" class="pp-chip catalog__item" />
+        </ui:VisualElement>
+
+        <ui:Label text="Stat card / Progress" class="catalog__section pp-text-title pp-text-bold" />
+        <ui:VisualElement class="catalog__row">
+            <ui:VisualElement class="pp-card pp-elevated pp-stat-card catalog__half">
+                <ui:VisualElement class="pp-icon-badge">
+                    <ui:VisualElement class="pp-icon pp-icon--snowflake pp-icon--primary" />
+                </ui:VisualElement>
+                <ui:VisualElement class="pp-stat-card__body">
+                    <ui:Label text="氷の量" class="pp-stat-card__label" />
+                    <ui:VisualElement class="pp-stat-card__meter">
+                        <ui:ProgressBar value="72" class="pp-progress" />
+                        <ui:Label text="72%" class="pp-stat-card__value pp-text-primary" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="pp-card pp-elevated pp-stat-card catalog__half catalog__half--last">
+                <ui:VisualElement class="pp-icon-badge pp-icon-badge--eco">
+                    <ui:VisualElement class="pp-icon pp-icon--leaf pp-icon--eco" />
+                </ui:VisualElement>
+                <ui:VisualElement class="pp-stat-card__body">
+                    <ui:Label text="CO₂削減" class="pp-stat-card__label" />
+                    <ui:VisualElement class="pp-stat-card__meter">
+                        <ui:ProgressBar value="58" class="pp-progress pp-progress--eco" />
+                        <ui:Label text="58%" class="pp-stat-card__value pp-text-eco" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement class="pp-card catalog__stack-top">
+            <ui:VisualElement class="pp-stat-card__meter">
+                <ui:ProgressBar value="40" class="pp-progress pp-progress--point" />
+                <ui:Label text="2/5" class="pp-stat-card__value pp-text-point" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:Label text="Segmented" class="catalog__section pp-text-title pp-text-bold" />
+        <ui:VisualElement class="pp-segmented">
+            <ui:Button text="デイリー" class="pp-segmented__item pp-segmented__item--active" />
+            <ui:Button text="ウィークリー" class="pp-segmented__item" />
+        </ui:VisualElement>
+
+        <ui:Label text="List item" class="catalog__section pp-text-title pp-text-bold" />
+        <ui:VisualElement class="pp-card">
+            <ui:VisualElement class="pp-list-item">
+                <ui:VisualElement class="pp-icon pp-icon--receipt pp-icon--primary" />
+                <ui:VisualElement class="pp-list-item__body">
+                    <ui:Label text="牛乳" class="pp-list-item__title" />
+                    <ui:Label text="乳製品" class="pp-list-item__sub" />
+                </ui:VisualElement>
+                <ui:Label text="0.27kg-CO₂e" class="pp-list-item__trailing pp-text-primary" />
+            </ui:VisualElement>
+            <ui:VisualElement class="pp-list-item pp-list-item--last">
+                <ui:VisualElement class="pp-icon pp-icon--leaf pp-icon--eco" />
+                <ui:VisualElement class="pp-list-item__body">
+                    <ui:Label text="バナナ" class="pp-list-item__title" />
+                    <ui:Label text="果物" class="pp-list-item__sub" />
+                </ui:VisualElement>
+                <ui:Label text="0.12kg-CO₂e" class="pp-list-item__trailing pp-text-primary" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:Label text="Speech" class="catalog__section pp-text-title pp-text-bold" />
+        <ui:VisualElement class="pp-speech">
+            <ui:VisualElement class="pp-speech__bubble pp-elevated">
+                <ui:Label text="今日もいい天気だよ&#10;また来てね！" class="pp-speech__text" />
+            </ui:VisualElement>
+            <ui:VisualElement class="pp-avatar">
+                <ui:VisualElement class="pp-avatar__image pp-icon pp-icon--penguin pp-icon--original" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:Label text="Tab bar" class="catalog__section pp-text-title pp-text-bold" />
+        <ui:VisualElement class="pp-tab-bar catalog__tab-bar">
+            <ui:VisualElement class="pp-tab-bar__tabs">
+                <ui:Button class="pp-tab pp-tab--active">
+                    <ui:VisualElement class="pp-tab__icon pp-icon--home" picking-mode="Ignore" />
+                    <ui:Label text="すみか" class="pp-tab__label" picking-mode="Ignore" />
+                </ui:Button>
+                <ui:Button class="pp-tab">
+                    <ui:VisualElement class="pp-tab__icon pp-icon--receipt" picking-mode="Ignore" />
+                    <ui:Label text="記録" class="pp-tab__label" picking-mode="Ignore" />
+                </ui:Button>
+                <ui:Button class="pp-tab">
+                    <ui:VisualElement class="pp-tab__fab" picking-mode="Ignore">
+                        <ui:VisualElement class="pp-tab__icon pp-icon--camera" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:Label text="スキャン" class="pp-tab__label" picking-mode="Ignore" />
+                </ui:Button>
+                <ui:Button class="pp-tab">
+                    <ui:VisualElement class="pp-tab__icon pp-icon--flag" picking-mode="Ignore" />
+                    <ui:Label text="ミッション" class="pp-tab__label" picking-mode="Ignore" />
+                </ui:Button>
+                <ui:Button class="pp-tab">
+                    <ui:VisualElement class="pp-tab__icon pp-icon--menu" picking-mode="Ignore" />
+                    <ui:Label text="メニュー" class="pp-tab__label" picking-mode="Ignore" />
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:ScrollView>
+</ui:UXML>
