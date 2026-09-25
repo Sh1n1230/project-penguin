@@ -23,6 +23,8 @@
 | `Assets/Scripts/` | ゲームコード (asmdef 単位で分割) |
 | `Assets/Tests/` | EditMode / PlayMode テスト |
 | `Assets/Scenes/`, `Assets/Settings/` | シーン・URP 設定 |
+| `Assets/3Dmodel/` | ゲームで使う 3D モデル (FBX とテクスチャ。LFS 管理) |
+| `ArtSource/` | UV レイアウトなど、ゲームには読み込まない制作素材。Unity に取り込ませないため `Assets/` の外に置く |
 | `backend/` | FastAPI (`src/penguin_backend/`, `tests/`) |
 | `scripts/` | CI とローカル共用の検査スクリプト |
 | `.claude/rules/` | 領域別ルール (該当ファイルを読むと自動適用される) |
