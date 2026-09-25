@@ -1,0 +1,58 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="MenuScreen.uss" />
+    <ui:VisualElement name="root" class="pp-page">
+        <ui:VisualElement class="menu__safe pp-safe-area">
+            <ui:VisualElement class="menu__header">
+                <ui:VisualElement class="pp-avatar">
+                    <ui:VisualElement class="pp-avatar__image pp-icon pp-icon--penguin pp-icon--original" />
+                </ui:VisualElement>
+                <ui:VisualElement class="menu__title">
+                    <ui:Label text="Project Penguin" class="pp-text-caption pp-text-sub pp-text-bold" />
+                    <ui:Label text="メインメニュー" class="pp-text-headline pp-text-heavy" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:ScrollView class="menu__scroll">
+                <ui:VisualElement class="menu__content">
+                    <ui:VisualElement class="pp-menu-grid__row">
+                        <ui:Button name="menuPokedex" class="pp-menu-card">
+                            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--book pp-icon--primary" picking-mode="Ignore" />
+                            <ui:Label text="ペンギン図鑑" class="pp-menu-card__label" picking-mode="Ignore" />
+                        </ui:Button>
+                        <ui:Button name="menuRecord" class="pp-menu-card pp-menu-card--end">
+                            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--receipt pp-icon--primary" picking-mode="Ignore" />
+                            <ui:Label text="記録" class="pp-menu-card__label" picking-mode="Ignore" />
+                        </ui:Button>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="pp-menu-grid__row">
+                        <ui:Button name="menuMission" class="pp-menu-card">
+                            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--flag pp-icon--eco" picking-mode="Ignore" />
+                            <ui:Label text="ミッション" class="pp-menu-card__label" picking-mode="Ignore" />
+                        </ui:Button>
+                        <ui:Button name="menuNews" class="pp-menu-card pp-menu-card--end">
+                            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--bell pp-icon--point" picking-mode="Ignore" />
+                            <ui:Label text="お知らせ" class="pp-menu-card__label" picking-mode="Ignore" />
+                        </ui:Button>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="pp-menu-grid__row">
+                        <ui:Button name="menuSettings" class="pp-menu-card">
+                            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--gear pp-icon--sub" picking-mode="Ignore" />
+                            <ui:Label text="設定" class="pp-menu-card__label" picking-mode="Ignore" />
+                        </ui:Button>
+                        <ui:Button name="menuHelp" class="pp-menu-card pp-menu-card--end">
+                            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--help pp-icon--sub" picking-mode="Ignore" />
+                            <ui:Label text="ヘルプ" class="pp-menu-card__label" picking-mode="Ignore" />
+                        </ui:Button>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:ScrollView>
+        </ui:VisualElement>
+
+        <ui:Button name="closeBand" class="pp-close-band">
+            <ui:VisualElement class="pp-close-band__content" picking-mode="Ignore">
+                <ui:VisualElement class="pp-icon pp-icon--xl pp-icon--close pp-icon--inverse" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement class="pp-safe-area__bottom" picking-mode="Ignore" />
+        </ui:Button>
+    </ui:VisualElement>
+</ui:UXML>
