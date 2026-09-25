@@ -39,6 +39,18 @@
     display: none;
 }
 
+/* 3D ワールドを透かさない画面の背景 */
+.pp-page {
+    flex-grow: 1;
+    background-color: var(--color-ice-50);
+}
+
+/* 共有タブバー (中央のスキャンボタンのはみ出しを含む) の裏に中身が潜らないよう、タブ画面の最下部に置く。下端の余白は隣の .pp-safe-area__bottom が足す */
+.pp-tab-bar-spacer {
+    height: 200px;
+    flex-shrink: 0;
+}
+
 /* ============ Surface ============ */
 
 .pp-card {
@@ -49,6 +61,19 @@
 
 .pp-card--glass {
     background-color: var(--color-surface-glass);
+}
+
+/* 合計 CO₂e など、良い結果を強調するカード */
+.pp-card--eco {
+    border-width: 4px;
+    border-color: var(--color-eco);
+    background-color: var(--color-eco-soft);
+}
+
+.pp-section-title {
+    margin: var(--space-4) var(--space-1) var(--space-2) var(--space-1);
+    font-size: var(--font-size-label);
+    -unity-font-definition: var(--font-bold);
 }
 
 /* box-shadow の代替。下辺だけ濃い枠で浮いて見せる */
@@ -96,6 +121,11 @@
 .pp-icon--chevron-right { background-image: url("project://database/Assets/UI/DesignSystem/Icons/chevron-right.svg"); }
 .pp-icon--close { background-image: url("project://database/Assets/UI/DesignSystem/Icons/close.svg"); }
 .pp-icon--penguin { background-image: url("project://database/Assets/UI/DesignSystem/Icons/penguin.svg"); }
+.pp-icon--chevron-left { background-image: url("project://database/Assets/UI/DesignSystem/Icons/chevron-left.svg"); }
+.pp-icon--check { background-image: url("project://database/Assets/UI/DesignSystem/Icons/check.svg"); }
+.pp-icon--book { background-image: url("project://database/Assets/UI/DesignSystem/Icons/book.svg"); }
+.pp-icon--bell { background-image: url("project://database/Assets/UI/DesignSystem/Icons/bell.svg"); }
+.pp-icon--help { background-image: url("project://database/Assets/UI/DesignSystem/Icons/help.svg"); }
 
 /* アイコンを淡色の円で囲む */
 .pp-icon-badge {
@@ -510,4 +540,206 @@
     height: 132px;
     border-radius: var(--radius-full);
     background-color: var(--color-primary);
+}
+
+/* ============ Header (戻る + タイトル) ============ */
+
+/* 左右に同じ幅の要素を置いてタイトルを中央に保つ。戻るボタンが無い画面は __spacer を 2 つ置く */
+.pp-header {
+    flex-direction: row;
+    align-items: center;
+    padding: var(--space-3) var(--space-4) var(--space-2) var(--space-4);
+}
+
+.pp-header__title {
+    flex-grow: 1;
+    font-size: var(--font-size-title);
+    -unity-font-definition: var(--font-heavy);
+    -unity-text-align: middle-center;
+}
+
+.pp-header__spacer {
+    width: 96px;
+    height: 96px;
+    flex-shrink: 0;
+}
+
+/* ============ Step list (解析中の段階表示) ============ */
+
+.pp-step {
+    flex-direction: row;
+    align-items: center;
+    padding: var(--space-2) 0;
+}
+
+.pp-step__index {
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    background-color: var(--color-ice-100);
+}
+
+.pp-step__number {
+    color: var(--color-text-sub);
+    font-size: var(--font-size-body);
+    -unity-font-definition: var(--font-bold);
+}
+
+.pp-step__label {
+    flex-grow: 1;
+    margin-left: var(--space-2);
+    color: var(--color-text-sub);
+    font-size: var(--font-size-body);
+}
+
+.pp-step__check {
+    display: none;
+}
+
+.pp-step--active .pp-step__index { background-color: var(--color-primary); }
+.pp-step--active .pp-step__number { color: var(--color-text-on-primary); }
+.pp-step--active .pp-step__label {
+    color: var(--color-primary);
+    -unity-font-definition: var(--font-bold);
+}
+
+.pp-step--done .pp-step__index { background-color: var(--color-eco-soft); }
+.pp-step--done .pp-step__number { color: var(--color-eco); }
+.pp-step--done .pp-step__label { color: var(--color-text); }
+.pp-step--done .pp-step__check { display: flex; }
+
+/* ============ Mission card ============ */
+
+.pp-mission-card {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: var(--space-3);
+}
+
+.pp-mission-card__body {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0 var(--space-2);
+}
+
+.pp-mission-card__title {
+    font-size: var(--font-size-body);
+    -unity-font-definition: var(--font-bold);
+}
+
+.pp-mission-card__meter {
+    flex-direction: row;
+    align-items: center;
+    margin-top: var(--space-1);
+}
+
+.pp-mission-card__count {
+    margin-left: var(--space-2);
+    min-width: 72px;
+    color: var(--color-text-sub);
+    font-size: var(--font-size-caption);
+    -unity-text-align: middle-right;
+}
+
+/* ============ Bar chart (CO₂ の推移) ============ */
+
+/* 棒の高さはデータ次第なので、__bar の height (%) はスクリプトが入れる */
+.pp-bar-chart {
+    flex-direction: row;
+    height: 360px;
+}
+
+.pp-bar-chart__col {
+    flex-grow: 1;
+    flex-basis: 0;
+    align-items: center;
+}
+
+.pp-bar-chart__track {
+    flex-grow: 1;
+    align-self: stretch;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.pp-bar-chart__bar {
+    width: 48px;
+    border-top-left-radius: var(--radius-sm);
+    border-top-right-radius: var(--radius-sm);
+    background-color: var(--color-primary);
+}
+
+.pp-bar-chart__bar--today { background-color: var(--color-eco); }
+
+.pp-bar-chart__value {
+    margin-bottom: 4px;
+    color: var(--color-text-sub);
+    font-size: var(--font-size-caption);
+}
+
+.pp-bar-chart__label {
+    margin-top: var(--space-1);
+    color: var(--color-text-sub);
+    font-size: var(--font-size-caption);
+    -unity-font-definition: var(--font-bold);
+}
+
+/* ============ Menu card (メニューのグリッド) ============ */
+
+.pp-menu-grid__row {
+    flex-direction: row;
+    margin-bottom: var(--space-3);
+}
+
+.pp-menu-card {
+    flex-grow: 1;
+    flex-basis: 0;
+    height: 200px;
+    margin: 0 var(--space-3) 0 0;
+    padding: 0 var(--space-3);
+    flex-direction: row;
+    align-items: center;
+    border-width: 4px;
+    border-color: var(--color-ice-100);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    transition-duration: var(--duration-fast);
+}
+
+.pp-menu-card:hover { border-color: var(--color-ice-200); }
+.pp-menu-card:active { scale: 0.97 0.97; }
+
+.pp-menu-card--end { margin-right: 0; }
+
+.pp-menu-card__label {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin-left: var(--space-2);
+    white-space: normal;
+    font-size: var(--font-size-label);
+    -unity-font-definition: var(--font-bold);
+    -unity-text-align: middle-center;
+}
+
+/* ============ Close band (全画面シートを閉じる下部の帯) ============ */
+
+.pp-close-band {
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
+    background-color: var(--color-primary);
+    transition-duration: var(--duration-fast);
+}
+
+.pp-close-band:hover { background-color: var(--color-primary-dark); }
+
+.pp-close-band__content {
+    height: 180px;
+    align-items: center;
+    justify-content: center;
 }

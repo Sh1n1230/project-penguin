@@ -40,6 +40,11 @@
             <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--menu pp-icon--sub catalog__item" />
             <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--chevron-right pp-icon--sub catalog__item" />
             <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--penguin pp-icon--original catalog__item" />
+            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--chevron-left pp-icon--sub catalog__item" />
+            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--check pp-icon--eco catalog__item" />
+            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--book pp-icon--primary catalog__item" />
+            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--bell pp-icon--point catalog__item" />
+            <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--help pp-icon--sub catalog__item" />
         </ui:VisualElement>
 
         <ui:Label text="Button" class="catalog__section pp-text-title pp-text-bold" />
@@ -159,5 +164,87 @@
                 </ui:Button>
             </ui:VisualElement>
         </ui:VisualElement>
+
+        <ui:Label text="Header" class="catalog__section pp-text-title pp-text-bold" />
+        <ui:VisualElement class="pp-header">
+            <ui:Button class="pp-icon-button">
+                <ui:VisualElement class="pp-icon pp-icon--chevron-left" picking-mode="Ignore" />
+            </ui:Button>
+            <ui:Label text="解析結果" class="pp-header__title" />
+            <ui:VisualElement class="pp-header__spacer" />
+        </ui:VisualElement>
+        <ui:Label text="購入したもの" class="pp-section-title" />
+        <ui:VisualElement class="pp-card pp-card--eco">
+            <ui:Label text="今回の推定 CO₂ 排出量 0.84 kg-CO₂e" class="pp-text-bold pp-text-eco" />
+        </ui:VisualElement>
+
+        <ui:Label text="Step list" class="catalog__section pp-text-title pp-text-bold" />
+        <ui:VisualElement class="pp-card">
+            <ui:VisualElement class="pp-step pp-step--done">
+                <ui:VisualElement class="pp-step__index"><ui:Label text="1" class="pp-step__number" /></ui:VisualElement>
+                <ui:Label text="完了 (--done)" class="pp-step__label" />
+                <ui:VisualElement class="pp-step__check pp-icon pp-icon--check pp-icon--eco" />
+            </ui:VisualElement>
+            <ui:VisualElement class="pp-step pp-step--active">
+                <ui:VisualElement class="pp-step__index"><ui:Label text="2" class="pp-step__number" /></ui:VisualElement>
+                <ui:Label text="進行中 (--active)" class="pp-step__label" />
+                <ui:VisualElement class="pp-step__check pp-icon pp-icon--check pp-icon--eco" />
+            </ui:VisualElement>
+            <ui:VisualElement class="pp-step">
+                <ui:VisualElement class="pp-step__index"><ui:Label text="3" class="pp-step__number" /></ui:VisualElement>
+                <ui:Label text="未着手" class="pp-step__label" />
+                <ui:VisualElement class="pp-step__check pp-icon pp-icon--check pp-icon--eco" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:Label text="Mission card" class="catalog__section pp-text-title pp-text-bold" />
+        <ui:VisualElement class="pp-card pp-elevated pp-mission-card">
+            <ui:VisualElement class="pp-icon-badge pp-icon-badge--eco">
+                <ui:VisualElement class="pp-icon pp-icon--leaf pp-icon--eco" />
+            </ui:VisualElement>
+            <ui:VisualElement class="pp-mission-card__body">
+                <ui:Label text="エコな商品を選ぶ" class="pp-mission-card__title" />
+                <ui:VisualElement class="pp-mission-card__meter">
+                    <ui:ProgressBar value="2" high-value="5" class="pp-progress pp-progress--eco" />
+                    <ui:Label text="2/5" class="pp-mission-card__count" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Label text="+20pt" class="pp-badge pp-badge--accent" />
+        </ui:VisualElement>
+
+        <ui:Label text="Bar chart (高さは実行時にスクリプトが入れる)" class="catalog__section pp-text-title pp-text-bold" />
+        <ui:VisualElement class="pp-card">
+            <ui:VisualElement class="pp-bar-chart">
+                <ui:VisualElement class="pp-bar-chart__col">
+                    <ui:Label text="1.2" class="pp-bar-chart__value" />
+                    <ui:VisualElement class="pp-bar-chart__track"><ui:VisualElement class="pp-bar-chart__bar" /></ui:VisualElement>
+                    <ui:Label text="月" class="pp-bar-chart__label" />
+                </ui:VisualElement>
+                <ui:VisualElement class="pp-bar-chart__col">
+                    <ui:Label text="0.8" class="pp-bar-chart__value" />
+                    <ui:VisualElement class="pp-bar-chart__track"><ui:VisualElement class="pp-bar-chart__bar pp-bar-chart__bar--today" /></ui:VisualElement>
+                    <ui:Label text="火" class="pp-bar-chart__label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:Label text="Menu card" class="catalog__section pp-text-title pp-text-bold" />
+        <ui:VisualElement class="pp-menu-grid__row">
+            <ui:Button class="pp-menu-card">
+                <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--book pp-icon--primary" picking-mode="Ignore" />
+                <ui:Label text="ペンギン図鑑" class="pp-menu-card__label" picking-mode="Ignore" />
+            </ui:Button>
+            <ui:Button class="pp-menu-card pp-menu-card--end">
+                <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--bell pp-icon--point" picking-mode="Ignore" />
+                <ui:Label text="お知らせ" class="pp-menu-card__label" picking-mode="Ignore" />
+            </ui:Button>
+        </ui:VisualElement>
+
+        <ui:Label text="Close band" class="catalog__section pp-text-title pp-text-bold" />
+        <ui:Button class="pp-close-band">
+            <ui:VisualElement class="pp-close-band__content" picking-mode="Ignore">
+                <ui:VisualElement class="pp-icon pp-icon--xl pp-icon--close pp-icon--inverse" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:Button>
     </ui:ScrollView>
 </ui:UXML>
