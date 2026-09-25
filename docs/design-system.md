@@ -109,6 +109,16 @@ UI Toolkit は、角丸が短辺の半分を超えると角が楕円に潰れる
 | `.pp-scan-frame` + `__corner--{top-left,top-right,bottom-left,bottom-right}` | 撮影枠 | 四隅の L 字だけを描き、中は透かす |
 | `.pp-shutter` / `__core` | シャッターボタン | |
 | `.pp-screen` (`--hidden`) / `.pp-hidden` | 画面の切り替え / 要素の非表示 | 下の「画面の切り替え」を参照 |
+| `.pp-page` | 3D ワールドを透かさない画面のルート | 淡い背景色を敷く |
+| `.pp-tab-bar-spacer` | タブ画面の最下部 | 共有タブバーの裏に中身が潜らないための余白。直後に `.pp-safe-area__bottom` を置く |
+| `.pp-card--eco` | 合計 CO₂e など、良い結果の強調 | 緑の枠と淡い緑の背景 |
+| `.pp-section-title` | カードの上の小見出し | 「購入したもの」など |
+| `.pp-header` / `__title` / `__spacer` | 画面上部の見出し | 左右に同じ幅の要素を置いてタイトルを中央に保つ。戻るボタンが無い画面は `__spacer` を 2 つ置く |
+| `.pp-step` (`--active`, `--done`) / `__index` / `__number` / `__label` / `__check` | 解析中の段階表示 | 状態は `AnalyzingScreenPresenter` が付け替える |
+| `.pp-mission-card` / `__body` / `__title` / `__meter` / `__count` | ミッションの行 | `.pp-card` と組み合わせる。報酬は `.pp-badge--accent` |
+| `.pp-bar-chart` / `__col` / `__track` / `__bar` (`--today`) / `__value` / `__label` | CO₂ の推移グラフ | 棒の高さはデータ次第なので、`__bar` の height (%) だけはスクリプトが入れる |
+| `.pp-menu-grid__row` / `.pp-menu-card` (`--end`) / `__label` | メニューのカードグリッド | 行の最後のカードに `--end` を付ける |
+| `.pp-close-band` / `__content` | 全画面シートを閉じる下部の帯 | `ui:Button`。最後の子に `.pp-safe-area__bottom` を置く |
 
 ### 例: 指標カード
 
@@ -143,9 +153,10 @@ UI Toolkit は、角丸が短辺の半分を超えると角が楕円に潰れる
 
 シーンは分けず、`App.uxml` に全画面を `<ui:Instance>` で並べておき、表示中の 1 つ以外に `.pp-screen--hidden` (`display: none`) を付ける。隠した画面は破棄されないので、戻ったときに状態が残る。
 
-- 切り替えは `ScreenNavigator.Show(AppScreen)` を呼ぶ。ホームの `tabScan` でスキャン画面へ、スキャン画面の `closeButton` と Android の戻るキー (Input System では Escape キーとして届く) でホームへ戻る。
-- スキャン画面の表示中は 3D ワールドのカメラを止め、カメラ映像は `ReceiptCameraPreview` がスキャン画面を開いている間だけ動かす。アプリが裏に回ったときも止める。
-- 画面を足すときは、`Screens/<Screen>/` に UXML を作って `App.uxml` に `<ui:Template>` と `<ui:Instance class="pp-screen pp-screen--hidden">` を追加し、`AppScreen` と `ScreenNavigator` に分岐を足す。
+- 切り替えは `ScreenNavigator.Show(AppScreen)` を呼ぶ。どのボタンでどの画面へ行くかは `ScreenNavigator.Routes` の表にまとめてある。Android の戻るキー (Input System では Escape キーとして届く) は `Back()` で、フローの途中とタブ画面はホームへ、メニューは開く前のタブへ戻る。画面構成と遷移の全体像は `docs/ui-structure.md`。
+- タブバーは `App/TabBar.uxml` の 1 つを全画面で共有し、`App.uxml` の最前面に重ねている。タブ画面 (ホーム・記録・ミッション) でだけ表示し、アクティブなタブも `ScreenNavigator` が切り替える。タブ画面の最下部には `.pp-tab-bar-spacer` を置く。
+- 3D ワールドのカメラはホームの表示中だけ動かす。カメラ映像は `ReceiptCameraPreview` がスキャン画面を開いている間だけ動かす。アプリが裏に回ったときも止める。
+- 画面を足すときは、`Screens/<Screen>/` に UXML を作って `App.uxml` に `<ui:Template>` と `<ui:Instance class="pp-screen pp-screen--hidden">` を追加し、`AppScreen`・`ScreenNavigator.ElementNameOf`・`Routes` に足す。名前の食い違いは EditMode テスト `AppLayoutTests` が検出する。
 - カメラ映像は表示するだけで、フレームの保存もログ出力もしない。撮影処理を足すときは `.claude/rules/privacy.md` に従い、メモリ上だけで扱う。
 
 ## USS で使えない CSS
@@ -154,6 +165,8 @@ UI Toolkit は、角丸が短辺の半分を超えると角が楕円に潰れる
 
 ## 試作画面
 
-`Assets/Scenes/UITest.unity` の `AppUI` が `App.uxml` を表示し、ホーム画面は仮置きの 3D ワールド (`World`) の上に重なる。3D の要素は Capsule / Quad / Cylinder / Cube の仮モデルで、マテリアルは `Assets/Prototype/UITest/Materials/` にある。表示している値 (72% など) は固定のモックで、ゲームの状態とはまだつながっていない。スキャン画面のシャッターは見た目だけで、撮影処理はまだつないでいない。
+`Assets/Scenes/UITest.unity` の `AppUI` が `App.uxml` を表示し、ホーム画面は仮置きの 3D ワールド (`World`) の上に重なる。3D の要素は Capsule / Quad / Cylinder / Cube の仮モデルで、マテリアルは `Assets/Prototype/UITest/Materials/` にある。表示している値 (72% など) は固定のモックで、ゲームの状態とはまだつながっていない。スキャン画面のシャッターは撮影せずに解析中画面へ進むだけで、解析中の進行 (`AnalyzingScreenPresenter`) と記録画面のグラフ (`RecordScreenPresenter`) も仮の値で動いている。
+
+`Assets/Prototype/DynamicScaling/DynamicScalingTest.unity` は `UITest` の複製で、3D モデルの差し替えと、縦横比に合わせたカメラ調整 (`WorldCameraFramer`) を試すための作業シーン。
 
 Play すると、動的 FontAsset (`Assets/UI/Fonts/*-SDF.asset`) に表示した文字が追加され、ファイルに差分が出ることがある。文字のキャッシュにすぎないので、コミットせずに `git checkout` で戻してよい (ビルド時には自動で消える設定にしてある)。
