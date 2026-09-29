@@ -1,0 +1,23 @@
+/* メニュー画面のレイアウトだけを書く。見た目は DesignSystem のコンポーネントに任せる */
+
+.menu__safe {
+    flex-grow: 1;
+}
+
+.menu__header {
+    flex-direction: row;
+    align-items: center;
+    padding: var(--space-5) var(--space-4) var(--space-4) var(--space-4);
+}
+
+.menu__title {
+    margin-left: var(--space-3);
+}
+
+.menu__scroll {
+    flex-grow: 1;
+}
+
+.menu__content {
+    padding: 0 var(--space-4) var(--space-4) var(--space-4);
+}

@@ -1,0 +1,7 @@
+/* 全画面で共有するタブバーを画面の下端に重ねる */
+.app__tab-bar {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}

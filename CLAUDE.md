@@ -2,6 +2,10 @@
 
 現実の消費行動を CO₂e に換算し、その結果でゲーム内の氷とペンギンの生息状況が変化する Unity アプリ。コンセプトと設計判断は `@README.md` を参照。
 
+## 応答の言語
+
+**ユーザーへの返答・説明・質問はすべて日本語で書く。** 途中で英語に切り替えない。コード・識別子・コマンド・ログの引用は原文のままでよい。
+
 ## 技術スタック
 
 | 領域 | 使用技術 |
@@ -19,6 +23,8 @@
 | `Assets/Scripts/` | ゲームコード (asmdef 単位で分割) |
 | `Assets/Tests/` | EditMode / PlayMode テスト |
 | `Assets/Scenes/`, `Assets/Settings/` | シーン・URP 設定 |
+| `Assets/3Dmodel/` | ゲームで使う 3D モデル (FBX とテクスチャ。LFS 管理) |
+| `ArtSource/` | UV レイアウトなど、ゲームには読み込まない制作素材。Unity に取り込ませないため `Assets/` の外に置く |
 | `backend/` | FastAPI (`src/penguin_backend/`, `tests/`) |
 | `scripts/` | CI とローカル共用の検査スクリプト |
 | `.claude/rules/` | 領域別ルール (該当ファイルを読むと自動適用される) |

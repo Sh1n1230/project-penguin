@@ -1,0 +1,66 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="MissionScreen.uss" />
+    <ui:VisualElement name="root" class="pp-page">
+        <ui:VisualElement class="mission__safe pp-safe-area">
+            <ui:VisualElement class="pp-header">
+                <ui:VisualElement class="pp-header__spacer" />
+                <ui:Label text="ミッション" class="pp-header__title" />
+                <ui:VisualElement class="pp-header__spacer" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="periodTabs" class="pp-segmented mission__tabs">
+                <ui:Button name="dailyTab" text="デイリー" class="pp-segmented__item pp-segmented__item--active" />
+                <ui:Button name="weeklyTab" text="ウィークリー" class="pp-segmented__item" />
+            </ui:VisualElement>
+
+            <ui:ScrollView class="mission__scroll">
+                <ui:VisualElement name="missionList" class="mission__content">
+                    <ui:VisualElement class="pp-card pp-elevated pp-mission-card">
+                        <ui:VisualElement class="pp-icon-badge pp-icon-badge--eco">
+                            <ui:VisualElement class="pp-icon pp-icon--leaf pp-icon--eco" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="pp-mission-card__body">
+                            <ui:Label text="マイボトルを使う" class="pp-mission-card__title" />
+                            <ui:VisualElement class="pp-mission-card__meter">
+                                <ui:ProgressBar value="0" high-value="1" class="pp-progress pp-progress--eco" />
+                                <ui:Label text="0/1" class="pp-mission-card__count" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:Label text="+10pt" class="pp-badge pp-badge--accent" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="pp-card pp-elevated pp-mission-card">
+                        <ui:VisualElement class="pp-icon-badge">
+                            <ui:VisualElement class="pp-icon pp-icon--snowflake pp-icon--primary" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="pp-mission-card__body">
+                            <ui:Label text="不要な照明を消す" class="pp-mission-card__title" />
+                            <ui:VisualElement class="pp-mission-card__meter">
+                                <ui:ProgressBar value="0" high-value="3" class="pp-progress" />
+                                <ui:Label text="0/3" class="pp-mission-card__count" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:Label text="+10pt" class="pp-badge pp-badge--accent" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="pp-card pp-elevated pp-mission-card">
+                        <ui:VisualElement class="pp-icon-badge pp-icon-badge--eco">
+                            <ui:VisualElement class="pp-icon pp-icon--receipt pp-icon--eco" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="pp-mission-card__body">
+                            <ui:Label text="エコな商品を選ぶ" class="pp-mission-card__title" />
+                            <ui:VisualElement class="pp-mission-card__meter">
+                                <ui:ProgressBar value="2" high-value="5" class="pp-progress pp-progress--eco" />
+                                <ui:Label text="2/5" class="pp-mission-card__count" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:Label text="+20pt" class="pp-badge pp-badge--accent" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:ScrollView>
+
+            <ui:VisualElement class="pp-tab-bar-spacer" picking-mode="Ignore" />
+            <ui:VisualElement class="pp-safe-area__bottom" picking-mode="Ignore" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

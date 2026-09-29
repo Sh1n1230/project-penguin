@@ -1,0 +1,17 @@
+/* ミッション画面のレイアウトだけを書く。見た目は DesignSystem のコンポーネントに任せる */
+
+.mission__safe {
+    flex-grow: 1;
+}
+
+.mission__tabs {
+    margin: 0 var(--space-4) var(--space-3) var(--space-4);
+}
+
+.mission__scroll {
+    flex-grow: 1;
+}
+
+.mission__content {
+    padding: 0 var(--space-4) var(--space-4) var(--space-4);
+}
