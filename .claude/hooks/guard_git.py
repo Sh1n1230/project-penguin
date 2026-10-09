@@ -14,6 +14,14 @@ import sys
 # シェルの区切りでコマンドを分割する。$(...) や `...` の中身も 1 セグメントとして拾う。
 _SPLIT = re.compile(r"\|\||&&|[;|&\n]|\$\(|`|\)")
 _ASSIGN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
+# git add で止めるファイル名。scripts/check_secrets.py の FORBIDDEN_PATHS と範囲をそろえる。
+_FORBIDDEN_ADD = re.compile(
+    r"^\.env$"
+    r"|^\.env\.(?!example$).+$"
+    r"|\.(db|sqlite|sqlite3)(-(journal|wal|shm))?$"
+    r"|\.(pem|key|p12|pfx|keystore|jks|mobileprovision)$"
+    r"|^secrets\.json$"
+)
 # git 本体のグローバルオプション。サブコマンドを探すときに読み飛ばす。
 _GLOBAL_OPT_WITH_ARG = {"-c", "-C", "--git-dir", "--work-tree", "--namespace", "--exec-path"}
 
@@ -120,7 +128,7 @@ def main() -> None:
                 if a.startswith("-"):
                     continue
                 base = os.path.basename(a)
-                if base == ".env" or re.search(r"\.(db|sqlite3?|pem|key)$", base):
+                if _FORBIDDEN_ADD.search(base):
                     deny(
                         f"`{a}` は秘密情報またはローカル DB (購買履歴) です。"
                         "public リポジトリのためコミットは回復不能な事故になります。"
