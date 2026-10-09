@@ -1,0 +1,27 @@
+# ---------------------------------------------------------------
+# Project Penguin - Dependabot
+#   ワークフローのアクションはコミット SHA で固定しているため、
+#   更新は Dependabot の PR で受け取る (SHA の横のバージョンコメントも更新される)。
+#   Unity のパッケージ (Packages/manifest.json) は Dependabot の対象外。
+# ---------------------------------------------------------------
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns: ['*']
+    commit-message:
+      prefix: ci
+
+  - package-ecosystem: uv
+    directory: /backend
+    schedule:
+      interval: weekly
+    groups:
+      backend-dev:
+        dependency-type: development
+    commit-message:
+      prefix: 'chore(backend):'
