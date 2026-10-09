@@ -13,7 +13,7 @@ Claude Code (および互換エージェント) 向けの設定。**個人設定
 | `skills/build/SKILL.md` | ビルド手順・署名・失敗時の切り分け | `/build`、またはビルド関連の依頼時に自動 |
 | `skills/verify/SKILL.md` | CI と同じ検査のローカル実行 | `/verify`、またはコミット / PR 前に自動 |
 | `settings.json` | permissions と hooks | 毎セッション |
-| `hooks/*.py` | 破壊的操作の機械的ブロック | 該当ツール呼び出しの直前 |
+| `hooks/*.py` | 破壊的操作の機械的ブロックと、応答の言語の検査 | 該当ツール呼び出しの直前 (PreToolUse) / 応答の終了時 (Stop) |
 
 `CLAUDE.md` は長いほど守られなくなるため短く保ち、領域別の詳細は `rules/` の path スコープ付きルールに逃がしている。該当ファイルを読んだ時点で会話の直近位置に注入されるので、セッション後半でも効く。
 
@@ -37,19 +37,28 @@ Claude Code (および互換エージェント) 向けの設定。**個人設定
 
 ## hooks
 
-Python 標準ライブラリのみで書いてある (Windows で bash / jq に依存しないため)。`python` が PATH にあれば動く。
+Python 標準ライブラリのみで書いてある (Windows で bash / jq に依存しないため)。`settings.json` からは `uv run --no-project python <フック>` で起動するので、**`uv` があれば動く** (Python 本体は uv が用意し、プロジェクトの依存は入れない)。
 
 | フック | イベント | ブロックするもの |
 |---|---|---|
 | `guard_git.py` | PreToolUse / Bash | force push、`main` への直接 push、`filter-branch`、`commit --no-verify`、`.env` や `*.db` の `git add` |
 | `guard_write.py` | PreToolUse / Write・Edit | Unity YAML (`.unity` `.prefab` `.asset` `.meta` …) の直接編集、生成物への書き込み、`.env` への書き込み、API キー実値の混入 |
+| `japanese-guard.py` | Stop | ターンの最終回答が英語主体のときに終了させず、日本語での書き直しを求める (1 ターンにつき 1 回まで) |
 
-いずれも「確認すれば通してよい」操作は扱わない (それは `permissions.ask` の役割)。ここで止めるのは**確認しても許可しないもの**だけ。
+PreToolUse のフックは、いずれも「確認すれば通してよい」操作は扱わない (それは `permissions.ask` の役割)。ここで止めるのは**確認しても許可しないもの**だけ。
 
 ### 動作確認
 
+`settings.json` と同じ起動方法で試す。
+
 ```bash
-echo '{"cwd":".","tool_input":{"command":"git push --force"}}' | python .claude/hooks/guard_git.py
+echo '{"cwd":".","tool_input":{"command":"git push --force"}}' | uv run --no-project python .claude/hooks/guard_git.py
 ```
 
-`permissionDecision: "deny"` を含む JSON が返れば動いている。何も出力されなければ通過 (= 通常の権限フローに従う)。フックが読み込まれているかは `/context`、ルールの読み込み状況は `/memory` で確認できる。
+`permissionDecision: "deny"` を含む JSON が返れば動いている。何も出力されなければ通過 (= 通常の権限フローに従う)。
+
+`japanese-guard.py` は、セッションの記録 (`~/.claude/projects/` 以下の `.jsonl`) を渡すと、最終回答のうち英語主体と判定された部分を表示する。
+
+```bash
+uv run --no-project python .claude/hooks/japanese-guard.py --check <transcript.jsonl>
+```フックが読み込まれているかは `/context`、ルールの読み込み状況は `/memory` で確認できる。
