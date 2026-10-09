@@ -23,10 +23,13 @@
 | `Assets/Scripts/` | ゲームコード (asmdef 単位で分割) |
 | `Assets/Tests/` | EditMode / PlayMode テスト |
 | `Assets/Scenes/`, `Assets/Settings/` | シーン・URP 設定 |
+| `Assets/UI/` | UI Toolkit の画面 (UXML / USS)、デザインシステム、フォント |
 | `Assets/3Dmodel/` | ゲームで使う 3D モデル (FBX とテクスチャ。LFS 管理) |
+| `Assets/Prototype/` | 試作用のアセット (`UITest.unity` の仮モデル用マテリアル。`HomeWorld.unity` も氷・海・小屋のマテリアルを使っている) |
 | `ArtSource/` | UV レイアウトなど、ゲームには読み込まない制作素材。Unity に取り込ませないため `Assets/` の外に置く |
 | `backend/` | FastAPI (`src/penguin_backend/`, `tests/`) |
 | `scripts/` | CI とローカル共用の検査スクリプト |
+| `docs/` | 設計メモ (`ui-structure.md` 画面構成、`design-system.md` 見た目の決まりごと) と参考画像 |
 | `.claude/rules/` | 領域別ルール (該当ファイルを読むと自動適用される) |
 | `.claude/hooks/` | 破壊的操作を機械的に止める PreToolUse フック |
 | `.mcp.json` | Unity MCP の接続先 (OS 非依存の localhost HTTP) |
@@ -115,4 +118,7 @@ scope は `unity` / `backend` / `docs` / `ci`。プロジェクト全体にま�
 
 ## 現状
 
-Unity 6 URP プロジェクトの初期化のみ完了。GameState / PenguinSystem / IceSystem / DailyMission / Pokedex / Reward、SQLite、FastAPI はいずれも未実装。実装を探して見つからない場合は「まだ存在しない」が正しい答えであり、既存実装を推測で仮定しないこと。
+- **実装済み**: ビルド・CI の土台、UI Toolkit の 7 画面と画面遷移 (`ScreenNavigator`)・SafeArea・カメラプレビュー (`Assets/Scripts/Presentation/UI/`)、ホームの 3D ワールド (`HomeWorld.unity`、`Assets/Scripts/Presentation/World/`)、その EditMode テスト。UI の値は仮データで、ゲームの状態とはつながっていない。
+- **未実装**: GameState / PenguinSystem / IceSystem / DailyMission / Pokedex / Reward、SQLite、FastAPI とその Unity 側のクライアント。
+
+UI や画面遷移を触る前に、既存の Presenter と `docs/ui-structure.md` を読むこと。未実装の領域で実装を探して見つからない場合は「まだ存在しない」が正しい答えであり、既存実装を推測で仮定しないこと。
