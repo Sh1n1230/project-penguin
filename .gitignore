@@ -125,3 +125,7 @@ CLAUDE.local.md
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Local harness
+/harness-v3/
+/.local-tools/
