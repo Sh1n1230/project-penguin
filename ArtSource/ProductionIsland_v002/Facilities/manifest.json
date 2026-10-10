@@ -1,0 +1,322 @@
+[
+  {
+    "name": "Building_Fishery_2x2",
+    "request": "B-01",
+    "triangles": 1724,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      1.6021000146865845
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "Fishery",
+    "stage": -1,
+    "small": false
+  },
+  {
+    "name": "Building_Preparation_2x2",
+    "request": "B-04",
+    "triangles": 1708,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      1.5750000476837158
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "Preparation",
+    "stage": -1,
+    "small": false
+  },
+  {
+    "name": "Building_Chikuwa_2x2",
+    "request": "B-05",
+    "triangles": 1776,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      1.559999942779541
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "Chikuwa",
+    "stage": -1,
+    "small": false
+  },
+  {
+    "name": "Building_Saltworks_2x2",
+    "request": "B-07",
+    "triangles": 1116,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      1.4653395414352417
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "Saltworks",
+    "stage": -1,
+    "small": false
+  },
+  {
+    "name": "Building_Drying_2x2",
+    "request": "B-08",
+    "triangles": 2336,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      1.5506000518798828
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "Drying",
+    "stage": -1,
+    "small": false
+  },
+  {
+    "name": "Building_KelpFarm_2x2",
+    "request": "B-09",
+    "triangles": 1512,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      1.5700000524520874
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "KelpFarm",
+    "stage": -1,
+    "small": false
+  },
+  {
+    "name": "Building_Oden_2x2",
+    "request": "B-10",
+    "triangles": 2272,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      1.524399995803833
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "Oden",
+    "stage": -1,
+    "small": false
+  },
+  {
+    "name": "Building_Warehouse_1x1",
+    "request": "B-02",
+    "triangles": 1264,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.8799999952316284,
+      0.8799999952316284,
+      0.9899999499320984
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "Warehouse",
+    "stage": -1,
+    "small": true
+  },
+  {
+    "name": "Building_Sorter_1x1",
+    "request": "B-15",
+    "triangles": 1444,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.8799999952316284,
+      0.8799999952316284,
+      0.9245142340660095
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "Sorter",
+    "stage": -1,
+    "small": true
+  },
+  {
+    "name": "Building_Research_2x2",
+    "request": "B-12",
+    "triangles": 1680,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      1.590000033378601
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "Research",
+    "stage": -1,
+    "small": false
+  },
+  {
+    "name": "Building_Dormitory_1x1",
+    "request": "B-14",
+    "triangles": 492,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.8799999952316284,
+      0.8799999952316284,
+      0.9900000095367432
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "Dormitory",
+    "stage": -1,
+    "small": true
+  },
+  {
+    "name": "Building_ElectricAmplifier_2x2",
+    "request": "A-01",
+    "triangles": 1368,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      1.5499999523162842
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "ElectricAmplifier",
+    "stage": -1,
+    "small": false
+  },
+  {
+    "name": "Building_WaterAmplifier_2x2",
+    "request": "A-02",
+    "triangles": 1076,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      1.5700000524520874
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "WaterAmplifier",
+    "stage": -1,
+    "small": false
+  },
+  {
+    "name": "Building_GasAmplifier_2x2",
+    "request": "A-03",
+    "triangles": 1024,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      1.5199999809265137
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "GasAmplifier",
+    "stage": -1,
+    "small": false
+  },
+  {
+    "name": "Harbor_Stage0",
+    "request": "B-03 / H-00",
+    "triangles": 304,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      0.550000011920929
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "Harbor",
+    "stage": 0,
+    "small": false
+  },
+  {
+    "name": "Harbor_Stage1",
+    "request": "B-03 / H-01",
+    "triangles": 264,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      0.3799999952316284
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "Harbor",
+    "stage": 1,
+    "small": false
+  },
+  {
+    "name": "Harbor_Stage2",
+    "request": "B-03 / H-02",
+    "triangles": 380,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      1.215000033378601
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "Harbor",
+    "stage": 2,
+    "small": false
+  },
+  {
+    "name": "Harbor_Stage3",
+    "request": "B-03 / H-03",
+    "triangles": 692,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      1.465000033378601
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "Harbor",
+    "stage": 3,
+    "small": false
+  },
+  {
+    "name": "Harbor_Stage4",
+    "request": "B-03 / H-04",
+    "triangles": 748,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      1.465000033378601
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "Harbor",
+    "stage": 4,
+    "small": false
+  },
+  {
+    "name": "Harbor_Stage5",
+    "request": "B-03 / H-05",
+    "triangles": 1836,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      1.465000033378601
+    ],
+    "moving_parts": [],
+    "category": "building",
+    "kind": "Harbor",
+    "stage": 5,
+    "small": false
+  }
+]

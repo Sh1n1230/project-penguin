@@ -1,0 +1,202 @@
+{
+    "date": "2026-10-08",
+    "unity": "6000.6.0f1",
+    "playMode": true,
+    "allStages": true,
+    "readableSequence": true,
+    "worldMotionInBounds": true,
+    "stopFreezes": true,
+    "restartWorks": true,
+    "workerInvolved": true,
+    "workerFreezes": true,
+    "firstFrame": 320,
+    "lastFrame": 679,
+    "samples": [
+        {
+            "stage": "Loading",
+            "image": "ArtSource/ProductionIsland_v002/Review/0-Loading.png",
+            "frame": 323,
+            "time": 0.400300532579422,
+            "fishVisible": true,
+            "productVisible": false,
+            "steamVisible": false,
+            "fish": {
+                "x": -0.5030622482299805,
+                "y": 0.5799999237060547,
+                "z": -0.40000009536743164
+            },
+            "product": {
+                "x": 6.039832101123466e-8,
+                "y": 0.5299999713897705,
+                "z": -0.40000003576278687
+            },
+            "lid": {
+                "x": 6.039833522208937e-8,
+                "y": 1.0699999332427979,
+                "z": -0.40000009536743164
+            },
+            "worker": {
+                "x": -0.5030622482299805,
+                "y": 0.13999992609024048,
+                "z": -2.9802322387695313e-8
+            },
+            "workerActivity": "CarryWalk",
+            "handToItem": 0.00999993085861206
+        },
+        {
+            "stage": "Closing",
+            "image": "ArtSource/ProductionIsland_v002/Review/1-Closing.png",
+            "frame": 385,
+            "time": 1.6072592735290527,
+            "fishVisible": true,
+            "productVisible": false,
+            "steamVisible": false,
+            "fish": {
+                "x": 6.039832101123466e-8,
+                "y": 0.6391634941101074,
+                "z": -0.40000003576278687
+            },
+            "product": {
+                "x": 6.039832101123466e-8,
+                "y": 0.5299999713897705,
+                "z": -0.40000003576278687
+            },
+            "lid": {
+                "x": 6.039833522208937e-8,
+                "y": 0.9187188148498535,
+                "z": -0.40000009536743164
+            },
+            "worker": {
+                "x": -0.11448299884796143,
+                "y": 0.13999992609024048,
+                "z": -2.9802322387695313e-8
+            },
+            "workerActivity": "WorkLoop",
+            "handToItem": 0.062112268060445786
+        },
+        {
+            "stage": "Steaming",
+            "image": "ArtSource/ProductionIsland_v002/Review/2-Steaming.png",
+            "frame": 457,
+            "time": 3.0064752101898193,
+            "fishVisible": false,
+            "productVisible": false,
+            "steamVisible": true,
+            "fish": {
+                "x": 6.039832101123466e-8,
+                "y": 0.5199999809265137,
+                "z": -0.40000003576278687
+            },
+            "product": {
+                "x": 6.039832101123466e-8,
+                "y": 0.5299999713897705,
+                "z": -0.40000003576278687
+            },
+            "lid": {
+                "x": 6.039832811666201e-8,
+                "y": 0.6999999284744263,
+                "z": -0.40000003576278687
+            },
+            "worker": {
+                "x": -0.2799999415874481,
+                "y": 0.13999992609024048,
+                "z": -2.9802322387695313e-8
+            },
+            "workerActivity": "Idle",
+            "handToItem": 0.12492977827787399
+        },
+        {
+            "stage": "Opening",
+            "image": "ArtSource/ProductionIsland_v002/Review/3-Opening.png",
+            "frame": 547,
+            "time": 4.658890724182129,
+            "fishVisible": false,
+            "productVisible": true,
+            "steamVisible": false,
+            "fish": {
+                "x": 6.039832101123466e-8,
+                "y": 0.5199999809265137,
+                "z": -0.40000003576278687
+            },
+            "product": {
+                "x": 6.039832101123466e-8,
+                "y": 0.6615930795669556,
+                "z": -0.40000003576278687
+            },
+            "lid": {
+                "x": 6.039833522208937e-8,
+                "y": 0.9387739896774292,
+                "z": -0.40000009536743164
+            },
+            "worker": {
+                "x": -0.09930607676506042,
+                "y": 0.13999992609024048,
+                "z": -2.9802322387695313e-8
+            },
+            "workerActivity": "WorkLoop",
+            "handToItem": 0.12242259085178375
+        },
+        {
+            "stage": "Output",
+            "image": "ArtSource/ProductionIsland_v002/Review/4-Output.png",
+            "frame": 597,
+            "time": 5.658796787261963,
+            "fishVisible": false,
+            "productVisible": true,
+            "steamVisible": false,
+            "fish": {
+                "x": 6.039832101123466e-8,
+                "y": 0.5199999809265137,
+                "z": -0.40000003576278687
+            },
+            "product": {
+                "x": 0.3658514618873596,
+                "y": 0.5999999046325684,
+                "z": -0.3999999761581421
+            },
+            "lid": {
+                "x": 6.039833522208937e-8,
+                "y": 1.0699999332427979,
+                "z": -0.40000009536743164
+            },
+            "worker": {
+                "x": 0.3658514618873596,
+                "y": 0.13999992609024048,
+                "z": -2.9802322387695313e-8
+            },
+            "workerActivity": "CarryWalk",
+            "handToItem": 0.009999990463256836
+        },
+        {
+            "stage": "Finished",
+            "image": "ArtSource/ProductionIsland_v002/Review/5-Finished.png",
+            "frame": 661,
+            "time": 6.911484241485596,
+            "fishVisible": false,
+            "productVisible": true,
+            "steamVisible": false,
+            "fish": {
+                "x": 6.039832101123466e-8,
+                "y": 0.5199999809265137,
+                "z": -0.40000003576278687
+            },
+            "product": {
+                "x": 0.6500000357627869,
+                "y": 0.5499999523162842,
+                "z": -0.3999999165534973
+            },
+            "lid": {
+                "x": 6.039833522208937e-8,
+                "y": 1.0699999332427979,
+                "z": -0.40000009536743164
+            },
+            "worker": {
+                "x": 0.5615808963775635,
+                "y": 0.13999992609024048,
+                "z": -2.9802322387695313e-8
+            },
+            "workerActivity": "CarryWalk",
+            "handToItem": 0.09704607725143433
+        }
+    ]
+}
