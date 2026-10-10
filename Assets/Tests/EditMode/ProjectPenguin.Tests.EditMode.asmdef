@@ -1,7 +1,7 @@
 {
     "name": "ProjectPenguin.Tests.EditMode",
     "rootNamespace": "ProjectPenguin.Tests.EditMode",
-    "references": ["UnityEngine.TestRunner","UnityEditor.TestRunner","ProjectPenguin.Domain","ProjectPenguin.Data","ProjectPenguin.Backend","ProjectPenguin.Presentation"],
+    "references": ["UnityEngine.TestRunner","UnityEditor.TestRunner","ProjectPenguin.Domain","ProjectPenguin.Data","ProjectPenguin.Backend","ProjectPenguin.Presentation","Unity.InputSystem"],
     "includePlatforms": ["Editor"],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
