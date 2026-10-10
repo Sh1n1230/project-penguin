@@ -1,0 +1,158 @@
+{
+    "date": "2026-10-08",
+    "unity": "6000.6.0f1",
+    "playMode": true,
+    "allStages": true,
+    "readableSequence": true,
+    "worldMotionInBounds": true,
+    "stopFreezes": true,
+    "restartWorks": true,
+    "firstFrame": 233,
+    "lastFrame": 547,
+    "samples": [
+        {
+            "stage": "Loading",
+            "image": "ArtSource/ProductionIsland_v002/Review/0-Loading.png",
+            "frame": 235,
+            "time": 0.4742663502693176,
+            "fishVisible": true,
+            "productVisible": false,
+            "steamVisible": false,
+            "fish": {
+                "x": -0.4535888731479645,
+                "y": 0.6434558629989624,
+                "z": -0.4000001549720764
+            },
+            "product": {
+                "x": 6.039832101123466e-8,
+                "y": 0.5299999713897705,
+                "z": -0.40000003576278687
+            },
+            "lid": {
+                "x": 6.039833522208937e-8,
+                "y": 1.0699999332427979,
+                "z": -0.40000009536743164
+            }
+        },
+        {
+            "stage": "Closing",
+            "image": "ArtSource/ProductionIsland_v002/Review/1-Closing.png",
+            "frame": 287,
+            "time": 1.6035155057907104,
+            "fishVisible": true,
+            "productVisible": false,
+            "steamVisible": false,
+            "fish": {
+                "x": 6.039832101123466e-8,
+                "y": 0.6410014629364014,
+                "z": -0.40000009536743164
+            },
+            "product": {
+                "x": 6.039832101123466e-8,
+                "y": 0.5299999713897705,
+                "z": -0.40000003576278687
+            },
+            "lid": {
+                "x": 6.039833522208937e-8,
+                "y": 0.9216388463973999,
+                "z": -0.4000001549720764
+            }
+        },
+        {
+            "stage": "Steaming",
+            "image": "ArtSource/ProductionIsland_v002/Review/2-Steaming.png",
+            "frame": 358,
+            "time": 3.0075907707214355,
+            "fishVisible": false,
+            "productVisible": false,
+            "steamVisible": true,
+            "fish": {
+                "x": 6.039832101123466e-8,
+                "y": 0.5199999809265137,
+                "z": -0.40000003576278687
+            },
+            "product": {
+                "x": 6.039832101123466e-8,
+                "y": 0.5299999713897705,
+                "z": -0.40000003576278687
+            },
+            "lid": {
+                "x": 6.039832811666201e-8,
+                "y": 0.6999999284744263,
+                "z": -0.40000003576278687
+            }
+        },
+        {
+            "stage": "Opening",
+            "image": "ArtSource/ProductionIsland_v002/Review/3-Opening.png",
+            "frame": 442,
+            "time": 4.652949333190918,
+            "fishVisible": false,
+            "productVisible": true,
+            "steamVisible": false,
+            "fish": {
+                "x": 6.039832101123466e-8,
+                "y": 0.5199999809265137,
+                "z": -0.40000003576278687
+            },
+            "product": {
+                "x": 6.039832101123466e-8,
+                "y": 0.6594146490097046,
+                "z": -0.3999999761581421
+            },
+            "lid": {
+                "x": 6.039833522208937e-8,
+                "y": 0.9334694147109985,
+                "z": -0.4000001549720764
+            }
+        },
+        {
+            "stage": "Output",
+            "image": "ArtSource/ProductionIsland_v002/Review/4-Output.png",
+            "frame": 481,
+            "time": 5.658458709716797,
+            "fishVisible": false,
+            "productVisible": true,
+            "steamVisible": false,
+            "fish": {
+                "x": 6.039832101123466e-8,
+                "y": 0.5199999809265137,
+                "z": -0.40000003576278687
+            },
+            "product": {
+                "x": 0.36561766266822815,
+                "y": 0.7159656286239624,
+                "z": -0.40000003576278687
+            },
+            "lid": {
+                "x": 6.039833522208937e-8,
+                "y": 1.0699999332427979,
+                "z": -0.40000009536743164
+            }
+        },
+        {
+            "stage": "Finished",
+            "image": "ArtSource/ProductionIsland_v002/Review/5-Finished.png",
+            "frame": 535,
+            "time": 6.907980918884277,
+            "fishVisible": false,
+            "productVisible": true,
+            "steamVisible": false,
+            "fish": {
+                "x": 6.039832101123466e-8,
+                "y": 0.5199999809265137,
+                "z": -0.40000003576278687
+            },
+            "product": {
+                "x": 0.6500000357627869,
+                "y": 0.5499999523162842,
+                "z": -0.3999999165534973
+            },
+            "lid": {
+                "x": 6.039833522208937e-8,
+                "y": 1.0699999332427979,
+                "z": -0.40000009536743164
+            }
+        }
+    ]
+}
