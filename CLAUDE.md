@@ -27,6 +27,7 @@
 | `ArtSource/` | UV レイアウトなど、ゲームには読み込まない制作素材。Unity に取り込ませないため `Assets/` の外に置く |
 | `backend/` | FastAPI (`src/penguin_backend/`, `tests/`) |
 | `scripts/` | CI とローカル共用の検査スクリプト |
+| `docs/decisions.md` | チームの決定事項 (Discord・JPHACKS の Notion と Slack から抽出)。仕様や前提を確かめるときに読む |
 | `.claude/rules/` | 領域別ルール (該当ファイルを読むと自動適用される) |
 | `.claude/hooks/` | 破壊的操作を機械的に止める PreToolUse フック |
 | `.mcp.json` | Unity MCP の接続先 (OS 非依存の localhost HTTP) |
