@@ -20,8 +20,8 @@ ROOT = Path(__file__).resolve().parent.parent
 FORBIDDEN_PATHS = re.compile(
     r"(^|/)\.env$"                      # 実キーの置き場
     r"|(^|/)\.env\.(?!example$)[^/]+$"  # .env.local など (.env.example は許可)
-    r"|\.(db|sqlite|sqlite3)$"          # 購買履歴が入るローカル DB
-    r"|\.(pem|key|p12|pfx|keystore|jks)$"
+    r"|\.(db|sqlite|sqlite3)(-(journal|wal|shm))?$"  # 購買履歴が入るローカル DB と付随ファイル
+    r"|\.(pem|key|p12|pfx|keystore|jks|mobileprovision)$"
     r"|(^|/)secrets\.json$"
     r"|(^|/)ApiKeys\.cs$"
 )

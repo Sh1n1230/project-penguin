@@ -28,6 +28,7 @@ namespace ProjectPenguin.Presentation.UI
 
         private WebCamTexture _webcam;
         private Coroutine _startRoutine;
+        private bool _awaitingPermission;
         private bool _wantsPreview;
 
         private int _appliedAngle;
@@ -58,11 +59,13 @@ namespace ProjectPenguin.Presentation.UI
         }
 
         // アプリが裏に回っている間はカメラを掴んだままにしない。戻ってきたときはスキャン画面にいる場合だけ再開する。
+        // 権限ダイアログの表示自体もアプリを一時停止させるので、応答待ちのリクエストは止めない
+        // (止めると復帰時に同じダイアログをもう一度出してしまう)。
         private void OnApplicationPause(bool paused)
         {
             if (paused)
             {
-                ReleaseCamera();
+                ReleaseCamera(keepPermissionRequest: true);
             }
             else if (_wantsPreview)
             {
@@ -90,7 +93,9 @@ namespace ProjectPenguin.Presentation.UI
             SetStatus(null);
 
             var authorized = false;
+            _awaitingPermission = true;
             yield return RequestPermission(result => authorized = result);
+            _awaitingPermission = false;
             if (!authorized)
             {
                 SetStatus("カメラの使用が許可されていません。\n端末の設定から許可してください。");
@@ -196,12 +201,13 @@ namespace ProjectPenguin.Presentation.UI
             style.scale = new Scale(new Vector3(1f, mirrored ? -1f : 1f, 1f));
         }
 
-        private void ReleaseCamera()
+        private void ReleaseCamera(bool keepPermissionRequest = false)
         {
-            if (_startRoutine != null)
+            if (_startRoutine != null && !(keepPermissionRequest && _awaitingPermission))
             {
                 StopCoroutine(_startRoutine);
                 _startRoutine = null;
+                _awaitingPermission = false;
             }
 
             if (_preview != null)

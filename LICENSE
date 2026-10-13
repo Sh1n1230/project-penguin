@@ -1,0 +1,47 @@
+Copyright (c) 2026 Project Penguin Team. All rights reserved.
+
+This repository, including but not limited to its source code, game design,
+concepts, documentation, 3D models, textures, images, and other assets
+(the "Work"), is proprietary and confidential to the Project Penguin Team.
+
+No license or right is granted to any person, by implication, estoppel or
+otherwise, to use, copy, modify, merge, publish, distribute, sublicense,
+sell, or create derivative works of the Work, in whole or in part, without
+the prior written permission of the Project Penguin Team.
+
+The fact that this repository is publicly viewable does not grant any rights
+beyond those that GitHub's Terms of Service require for viewing and forking
+on GitHub. Forks made under those terms may not be used, modified, or
+redistributed outside of GitHub.
+
+Third-party components included in this repository (for example, fonts under
+the SIL Open Font License, Unity packages under the Unity Companion License,
+and external agent skills listed in skills-lock.json) remain subject to their
+own licenses, and nothing in this notice restricts the rights granted by those
+licenses for those components.
+
+THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM, OUT OF OR IN CONNECTION WITH
+THE WORK.
+
+---
+
+Copyright (c) 2026 Project Penguin Team. 無断転載・無断使用を禁じます。
+
+本リポジトリに含まれるソースコード、ゲームの企画・コンセプト、ドキュメント、
+3D モデル、テクスチャ、画像その他の素材 (以下「本著作物」) の権利は、
+Project Penguin Team に帰属します。
+
+Project Penguin Team の事前の書面による許可なく、本著作物の全部または一部を
+利用、複製、改変、公開、配布、再許諾、販売し、または二次的著作物を作成することを禁じます。
+
+本リポジトリが公開されていることは、GitHub 利用規約が定める GitHub 上での閲覧
+およびフォークを超える権利を付与するものではありません。
+
+同梱しているサードパーティのコンポーネント (SIL Open Font License のフォント、
+Unity Companion License の Unity パッケージ、skills-lock.json に記載の外部スキルなど) は
+それぞれのライセンスに従います。本表示はそれらのライセンスが当該コンポーネントに
+認める権利を制限するものではありません。
+
+本著作物は現状有姿で提供され、いかなる保証もありません。
