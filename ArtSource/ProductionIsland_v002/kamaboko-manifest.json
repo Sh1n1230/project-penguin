@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Building_Kamaboko_2x2",
+    "request": "B-06 design revision",
+    "triangles": 2206,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600000143051147,
+      1.8600000143051147,
+      1.6899999380111694
+    ],
+    "moving_parts": [
+      "InputFish",
+      "SteamerLid",
+      "OutputKamaboko",
+      "SteamPuff0",
+      "SteamPuff1",
+      "SteamPuff2"
+    ],
+    "category": "building"
+  }
+]

@@ -1,0 +1,8 @@
+sorterThreeDestinations=True
+destinations=(-0.25, 0.44, 0.10);(0.00, 0.44, 0.21);(0.25, 0.44, 0.10)
+electricLights0To3=True
+waterLevelRises=True
+waterFloatRises=True
+waterHeights=0.03240003,0.27 floatRise=0.09999996
+gasValveTurns=True
+valveAngle=135

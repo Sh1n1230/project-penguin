@@ -1,0 +1,1950 @@
+{
+  "date": "2026-10-11",
+  "kind": "v002 canonical file index",
+  "sha256_text_newlines": "LF",
+  "original_unity_assets_kept": true,
+  "verified_files": 388,
+  "total_bytes": 52354883,
+  "files": [
+    {
+      "path": "ArtSource/Building_Chikuwa_2x2_v002/Building_Chikuwa_2x2_v002.blend",
+      "bytes": 1032960,
+      "sha256": "76b0ff8cd8326ffdbc42e2320d0445a576f90b00f278a5a40912470e2039e88c"
+    },
+    {
+      "path": "ArtSource/Building_Dormitory_1x1_v002/Building_Dormitory_1x1_v002.blend",
+      "bytes": 942892,
+      "sha256": "7fe5e471751eb1e4e71e93ab067212a7691f8917056b48118e14b513900467c6"
+    },
+    {
+      "path": "ArtSource/Building_Drying_2x2_v002/Building_Drying_2x2_v002.blend",
+      "bytes": 1055024,
+      "sha256": "fb7af88b1dca4a11e5295c53cff8e5c27e57b2b60f846d0d7e4db0093edf0be6"
+    },
+    {
+      "path": "ArtSource/Building_ElectricAmplifier_2x2_v002/Building_ElectricAmplifier_2x2_v002.blend",
+      "bytes": 1025612,
+      "sha256": "c0713f54e8042a9cf30322b679102e65976013a95d728416bac8760267d6275f"
+    },
+    {
+      "path": "ArtSource/Building_Fishery_2x2_v002/Building_Fishery_2x2_v002.blend",
+      "bytes": 1028144,
+      "sha256": "347b87f587c25d96d16d12586baa8b2c0eda4b324fd941183642de9b6b7f89ac"
+    },
+    {
+      "path": "ArtSource/Building_GasAmplifier_2x2_v002/Building_GasAmplifier_2x2_v002.blend",
+      "bytes": 988220,
+      "sha256": "e50549dbbab6314dfcfd8329384eb226a9cd74c74aa3f1fa4bc212739d2e6b57"
+    },
+    {
+      "path": "ArtSource/Building_Kamaboko_2x2_v002/Building_Kamaboko_2x2_v002.blend",
+      "bytes": 1238556,
+      "sha256": "91e5b41003a407eb6e2ae57aa7ee85e28493684f51866addf14dade0cb8815e7"
+    },
+    {
+      "path": "ArtSource/Building_KelpFarm_2x2_v002/Building_KelpFarm_2x2_v002.blend",
+      "bytes": 1005136,
+      "sha256": "dbb13eb1d15b2689b8439e7326ef9943fbe87f4b0898be17ebfa574cb9593666"
+    },
+    {
+      "path": "ArtSource/Building_Oden_2x2_v002/Building_Oden_2x2_v002.blend",
+      "bytes": 1054980,
+      "sha256": "e657a1b83dfde09e585a4beb579c5e6cdf405161c6d1621aa9a4d3b61f97a6cd"
+    },
+    {
+      "path": "ArtSource/Building_Preparation_2x2_v002/Building_Preparation_2x2_v002.blend",
+      "bytes": 1033480,
+      "sha256": "2dbf6749aaaf766b2dc3790a221b5237c5dc8f00c15a71c3e3b37feb6d2c327f"
+    },
+    {
+      "path": "ArtSource/Building_Research_2x2_v002/Building_Research_2x2_v002.blend",
+      "bytes": 1033948,
+      "sha256": "e237531a160fced1c644b0170cac61679f9b820baa36a3206ef2161ebfb074a9"
+    },
+    {
+      "path": "ArtSource/Building_Saltworks_2x2_v002/Building_Saltworks_2x2_v002.blend",
+      "bytes": 988840,
+      "sha256": "5cf89d876186fbd698cc2d33f1a90eb9e3c29d12e43b8079674d710cec53a1f6"
+    },
+    {
+      "path": "ArtSource/Building_Sorter_1x1_v002/Building_Sorter_1x1_v002.blend",
+      "bytes": 1015840,
+      "sha256": "04272fac4b3e014718bd35b537968e25ad36e90a0b1121374dc4133fbd92db33"
+    },
+    {
+      "path": "ArtSource/Building_Warehouse_1x1_v002/Building_Warehouse_1x1_v002.blend",
+      "bytes": 1005864,
+      "sha256": "eca134832d28d1d9d4ce2a3976428e42853f886e9d01e24aca727e3afb0812b1"
+    },
+    {
+      "path": "ArtSource/Building_WaterAmplifier_2x2_v002/Building_WaterAmplifier_2x2_v002.blend",
+      "bytes": 998020,
+      "sha256": "de1de53222ad8b4c2548c74bc0245bc0d2d0beebb72ff5965a59fb2a56bf2e70"
+    },
+    {
+      "path": "ArtSource/Harbor_Stage0_v002/Harbor_Stage0_v002.blend",
+      "bytes": 912176,
+      "sha256": "74650e1e3615fcedd014d58afd9c84a68fd2dd6b1479874164b9824752032ec5"
+    },
+    {
+      "path": "ArtSource/Harbor_Stage1_v002/Harbor_Stage1_v002.blend",
+      "bytes": 909820,
+      "sha256": "79c2cb79a1c7745961644ab6318789663ad889368705a2d12535a0fd086dff7e"
+    },
+    {
+      "path": "ArtSource/Harbor_Stage2_v002/Harbor_Stage2_v002.blend",
+      "bytes": 917216,
+      "sha256": "2f0aa1df776903fcd3d67ffcb95fd2515218bef00cc35378b4d0272d1a65cc94"
+    },
+    {
+      "path": "ArtSource/Harbor_Stage3_v002/Harbor_Stage3_v002.blend",
+      "bytes": 932964,
+      "sha256": "d56dfae57c13e1d87b9c4984ed37db5ae6649b07b19ac983044fea71036fcb1b"
+    },
+    {
+      "path": "ArtSource/Harbor_Stage4_v002/Harbor_Stage4_v002.blend",
+      "bytes": 941564,
+      "sha256": "9065ecd5bfdf6143866ef8679873c0d821481f3072556b52653f8a19eecfeb3f"
+    },
+    {
+      "path": "ArtSource/Harbor_Stage5_v002/Harbor_Stage5_v002.blend",
+      "bytes": 1040712,
+      "sha256": "f05df353a080736f7329c499d1498985427585aa1f162b7b1f512e1d235ab0e1"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v001/generate_models.py",
+      "bytes": 23747,
+      "sha256": "a0e4ac7f46b48c748d250d15224109224bc98e6a8a59c0ed70866b0923ae975c"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/build-result.txt",
+      "bytes": 90,
+      "sha256": "a1e9f2ff536ed40503d538071dfa59d2bf431dbb83c74370c2098cd9a12962cb"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/manifest.json",
+      "bytes": 7032,
+      "sha256": "2d338c7baec9223353d64a84b399217b52e0b61a321e7b45f1969e678e8ace5e"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Chikuwa_2x2_v002-Output.png",
+      "bytes": 275149,
+      "sha256": "a95eca46c71bce2a02bddc40310675c0180c8e2fef14f5b8153aea1d11eb9276"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Chikuwa_2x2_v002-Working.png",
+      "bytes": 265947,
+      "sha256": "49aceecb20188ed10e1e47f53d63bd6ef68dba6a9430cc9a4edb0825bb9d670c"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Dormitory_1x1_v002-Output.png",
+      "bytes": 222280,
+      "sha256": "3c91741c68779abdfb3e131f8994e47a1673efc864ae21e98a9aa454628bacea"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Dormitory_1x1_v002-Working.png",
+      "bytes": 221610,
+      "sha256": "11efb42641bbd714f046f22c88c07b602e7d9b9e7152d981b731f5ebe88af802"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Drying_2x2_v002-Output.png",
+      "bytes": 286154,
+      "sha256": "50a99554c16e9cc5ff39bbe68b1f6639ab8530b5ea3170739ea59b8a3cff15c3"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Drying_2x2_v002-Working.png",
+      "bytes": 290060,
+      "sha256": "ef702f73c622fe4459efc5dbb5f2f59fd6bd0dbb07a0116fc9b5be45d2dfe503"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_ElectricAmplifier_2x2_v002-Output.png",
+      "bytes": 284487,
+      "sha256": "1b6b727b7fcde47073e269b00845f35c776dcae700720af23ee87be086f20e87"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_ElectricAmplifier_2x2_v002-Working.png",
+      "bytes": 268867,
+      "sha256": "1611f25a361a753b6b3bb22fe990fb5b6bfe951a6b6f663d80894a0241c30805"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Fishery_2x2_v002-Output.png",
+      "bytes": 282774,
+      "sha256": "4127d6211dfd1a9fcb42025f7cd4f0ab7d7ec784cd846fb5b4703cdfd896f8f5"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Fishery_2x2_v002-Working.png",
+      "bytes": 281306,
+      "sha256": "aef0a721343a3a873f1a14c8b5d56a2422674b8be0caebf2e893267ddd876ade"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_GasAmplifier_2x2_v002-Output.png",
+      "bytes": 282048,
+      "sha256": "5e70343124e70f739569e2ea94d8ddf6631f19318fdd46d970364238b1135f07"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_GasAmplifier_2x2_v002-Working.png",
+      "bytes": 268923,
+      "sha256": "3f24f203701c681d2c657c5cc68f60475f69420c13467f0ea5d6bd7d48eccea0"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Kamaboko_2x2_v002.png",
+      "bytes": 166939,
+      "sha256": "c95f157f06d688502efe27c2e3720150ff89ed6b4675e9db9dfe9a0fcf514e2c"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_KelpFarm_2x2_v002-Output.png",
+      "bytes": 281026,
+      "sha256": "725f380bb41c1994f933563bc8abc2a4e46f64931500ccbf5e40eba86baa6d75"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_KelpFarm_2x2_v002-Working.png",
+      "bytes": 271658,
+      "sha256": "d69d665333496291b1cefc210d6bc228c948ed15ffc195e88ff294372162e8d4"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Oden_2x2_v002-Output.png",
+      "bytes": 270873,
+      "sha256": "93a2ee5fdf4c1561726d1cb022801fb628886b825a5f8b9ea5ead68a1e6a9761"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Oden_2x2_v002-Preview.png",
+      "bytes": 285128,
+      "sha256": "8ba3966f891247f07aa34345c6b0a6d84fac9e00eaf8c85798c91999b69b9054"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Oden_2x2_v002-Working.png",
+      "bytes": 269284,
+      "sha256": "44db7db7fa6d4f7e644d25a8bfe327d856166aeaa6ae6a95410c17db1d18e799"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Preparation_2x2_v002-Output.png",
+      "bytes": 269081,
+      "sha256": "b758f0ffe17f2dfa737d41e0ebd09c7d54da6af23e916455957846da5603dbf7"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Preparation_2x2_v002-Working.png",
+      "bytes": 259659,
+      "sha256": "84ed6ca4c8d0addbe53f03eebd0a75d86fbd1ca8576976716da87cd4de2a89c7"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Research_2x2_v002-Output.png",
+      "bytes": 262654,
+      "sha256": "cc2c5fa04943d2607ff215f3898e06adf47a06436627dd5a7b15bd06f43ab312"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Research_2x2_v002-Working.png",
+      "bytes": 255208,
+      "sha256": "11c72d850a2fe6746cfb4f5d8f18f6a421de3b2c6f6e5bec315c43ee13269e00"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Saltworks_2x2_v002-Output.png",
+      "bytes": 274942,
+      "sha256": "99c1e555bcb159bae7ac6a6005c5e41ef4742ea776c0c11439b98b09fa38979a"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Saltworks_2x2_v002-Working.png",
+      "bytes": 271786,
+      "sha256": "29ad3b9018024a99ad92df245b2bb57a287de470c43994415d0dfaf61938c12b"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Sorter_1x1_v002-Output.png",
+      "bytes": 202565,
+      "sha256": "a449af95fc71d61943359ffe9e29170c24dcd2bf9490732417caa54f29c9e7fe"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Sorter_1x1_v002-Working.png",
+      "bytes": 207144,
+      "sha256": "72137a59ec2c7b99d469c473181294e2dbd41d0d88ea098c969bdbbaf4b4dc6b"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Warehouse_1x1_v002-Output.png",
+      "bytes": 204015,
+      "sha256": "0c05efdc48f29e24bb69e085e82b1614579ccff78904f087f6298f127336026d"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Warehouse_1x1_v002-Working.png",
+      "bytes": 204520,
+      "sha256": "813614d1e679fd822e9c062d1421398d85f86e4d6996c71b723bea74f0f5f403"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_WaterAmplifier_2x2_v002-Output.png",
+      "bytes": 275263,
+      "sha256": "31b4459e1fed2af881efb5e020f0508770d7167a284cde88552fb6beaae3229c"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_WaterAmplifier_2x2_v002-Working.png",
+      "bytes": 259030,
+      "sha256": "4ca2743412ef44e15919c53132e72dc5ffe6e497f99bef14bd89cea5b08447b2"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/current-picker.png",
+      "bytes": 157489,
+      "sha256": "6b6d6c778bccc6af7e946a7e28e3be5fab078460ed25d2aa83cf98de171548d9"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/electric-charged.png",
+      "bytes": 280524,
+      "sha256": "ffcc07c043c54ee5514cca7ad0fba2f48348fc61c78e0269edb45614d988ba6c"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/facility-picker.png",
+      "bytes": 158197,
+      "sha256": "106d879e139513f84ef03e58108d14a3ebb9bd50250cb0df26cf120760eaca43"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Gallery-Overview.png",
+      "bytes": 248645,
+      "sha256": "f8e66f478746af1416874e17b014890e6a7bf1ffd16753e04f9fa0167984215e"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/gas-adjusted.png",
+      "bytes": 289116,
+      "sha256": "6756c64f42691bb18fe06ef72227c3b070d10db7b3697117e6c31aede2ee28dd"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Harbor_Stage0_v002.png",
+      "bytes": 167581,
+      "sha256": "ed563d6644dd4a52585a2c05ca3505b4deebfa583469b622cdff56598894e2f8"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Harbor_Stage1_v002.png",
+      "bytes": 165223,
+      "sha256": "f6beba0ca8a062f02a71a75d365dc98fb928c718325201165bca89717751af57"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Harbor_Stage2_v002.png",
+      "bytes": 184215,
+      "sha256": "61111d873d1a86e25d7f05268f56f43ef288fe7564727c83e5846083a159ecf9"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Harbor_Stage3_v002.png",
+      "bytes": 180575,
+      "sha256": "4434f62856211d573e596025adfacbdcefe235aac47ab816e5a7ec70702ea2ea"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Harbor_Stage4_v002.png",
+      "bytes": 259369,
+      "sha256": "4152e5f9ccc4b6e09c7bf30e6773b2a90132ab88f3b1586530deb7dba2b613af"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Harbor_Stage5_v002-Output.png",
+      "bytes": 259815,
+      "sha256": "90359e7aa2495a075d83c80f64ba34b595ad9693f73f25a403c72ff0daf1b608"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Harbor_Stage5_v002-Working.png",
+      "bytes": 259396,
+      "sha256": "b89391739fe369a8268febd18c1ea746157705de1187b7a6fa0244288b13f03a"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/individual-motion-verification.txt",
+      "bytes": 258,
+      "sha256": "9871570ca61c84067c6f3a4b9d40f81e4f694353e34c1827dcc9abc91a643508"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/pointer-input-verification.txt",
+      "bytes": 2329,
+      "sha256": "75fda4a190893d369110d8c837a910ad0785958f25ad230322cfd55ccfccebf1"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/sorter-route-0.png",
+      "bytes": 201543,
+      "sha256": "23d6be7f9c2697924890560fd35921172044b877f002a2931516be2bc0a1a4c1"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/sorter-route-1.png",
+      "bytes": 202432,
+      "sha256": "3fabf3a8d2a3555fdaea28d64584dd7464aa1ec53f4eb3fbe08f4ce3a31d247c"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/sorter-route-2.png",
+      "bytes": 282315,
+      "sha256": "16fef9d7a7a4b2dcfae13d1f95041aede71e0cdb028c405fefe3bd40cc3a60b3"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/ui-verification.txt",
+      "bytes": 429,
+      "sha256": "2862a68ae4fa38626ff57b75d29e7feb30991ff7ca2c16a918434f0bea16d8ba"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/water-filled.png",
+      "bytes": 288394,
+      "sha256": "71c0e0fdeb4c1ffd40e1c03e5708ffdd48a8363cb356479b8c2d57184aa24a2c"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/zoom-corrected.png",
+      "bytes": 261716,
+      "sha256": "465532556c78a07436ca7d002aacb3bd8b7920ac38448ac367e8992f3d830a02"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/generate_facilities.py",
+      "bytes": 23706,
+      "sha256": "8b59ee9be994e4bb9dc2d164920ce8aead025adbf37d65824fd41f3287bda594"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/generate_kamaboko.py",
+      "bytes": 6539,
+      "sha256": "73c530c93c4da5024595e9a229b9f40e357e8d2037dadf9863bbc171721fa97f"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/kamaboko-manifest.json",
+      "bytes": 441,
+      "sha256": "a56fa235d5b8ba66b6b4a4e367fb26cd76dea2a4a491036525ad83daae04a225"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Kamaboko_Design.png",
+      "bytes": 879333,
+      "sha256": "ae5fc8882e410529e0b13c8cfcf565e82c0c29ab7d1817868d1552b3535b157b"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Review/0-Loading.png",
+      "bytes": 375658,
+      "sha256": "aab55e03a90079c8f439bb0fefabccd09973052c71bfa3ba10eb9efc34fa2e74"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Review/1-Closing.png",
+      "bytes": 347538,
+      "sha256": "3fe2c3e978088bc6803617ba636c7275bebbac91c7c4b107e793b31b8212a4e7"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Review/2-Steaming.png",
+      "bytes": 349978,
+      "sha256": "4ccf0345db198d4ece8f4a149ef84812c81e99ab6d10bfc0787afbbd2bbb1d3a"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Review/3-Opening.png",
+      "bytes": 352161,
+      "sha256": "36c3ceda386e070e9ec1c126fd096492efb7c5c513ccfd967471d32e8ca50977"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Review/4-Output.png",
+      "bytes": 382667,
+      "sha256": "0d79d1beaa7e43023b51f13ecce51fcd8325d0193d250d7fd731eed20dea677c"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Review/5-Finished.png",
+      "bytes": 386581,
+      "sha256": "526763a2ae770a97c25acc9adb9823c8091a2966c292212365fec63877372443"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Review/WithoutWorker/0-Loading.png",
+      "bytes": 337493,
+      "sha256": "58954f6cd255c34c8a5253db7892efeb5538665ef377580714c43897b9c3b099"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Review/WithoutWorker/1-Closing.png",
+      "bytes": 331499,
+      "sha256": "72ceb15ee4420b0de52c41bfff23c8f91f4a3a6f69f9f0aa6f538d17b24cc61f"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Review/WithoutWorker/2-Steaming.png",
+      "bytes": 329506,
+      "sha256": "b87660de209637531ad35a4afb3e5d23d9a6f3a600d5b7ab5ad03b3ad24b4596"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Review/WithoutWorker/3-Opening.png",
+      "bytes": 337974,
+      "sha256": "cda245150d34db1117f9fd7d8e1a95970bdb403c1e309a7d77c04caf6c7b4c2a"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Review/WithoutWorker/4-Output.png",
+      "bytes": 338895,
+      "sha256": "a80d0c248feefadc65da3cf13ee0cfd59f1c47987f9b1c0cfe9842d1f8b281e6"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Review/WithoutWorker/5-Finished.png",
+      "bytes": 338452,
+      "sha256": "d1ceb19ddafb8e0266c3156f80cc131e6f9334c204da10588a4f06d08d2b798d"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002/Building_Chikuwa_2x2_v002.fbx",
+      "bytes": 62732,
+      "sha256": "0f37a68c28c1f2328f8d24f5f7b6750e9c69037899ea6a48d2de7a9f5295c7ed"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002/Building_Chikuwa_2x2_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "23c7d432e1ffd234f7a2ab02ba791f06febd51de908f72cf38e0c748473623ba"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002/Building_Chikuwa_2x2_v002.prefab",
+      "bytes": 51025,
+      "sha256": "7d1bc130f53c6d460417aba397755ab8fab10748f587ba20780b9722ce137bdb"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002/Building_Chikuwa_2x2_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "cbab38cb6563a9dcc154633521d80b9d712778931cb4230c6dd3907e0df51226"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002/IMPORT_README.md",
+      "bytes": 747,
+      "sha256": "57ec3cd6835773064fcae8520cb7294d9dc610f6a4fa342e726d7661b4140391"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "d3e211bfaa9bbc33384741931b5395761afa647104ee4546fbc28371ef3c11d3"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "992bbab092490a42adbebf5a96a1435c4852a2dc88559f2acdcdacab692b3ab1"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "9d959de0ff0a2d4be3de964b1723fbd1aa3de8755697ffe41ee269faaa09e207"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002.meta",
+      "bytes": 172,
+      "sha256": "2a6841b3dafc5d15f54e0d001a9b480f88d48f9e7b96508932c77491c491d9c6"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002/Building_Dormitory_1x1_v002.fbx",
+      "bytes": 36460,
+      "sha256": "9be5cd8f7624e3b566954f5d27e222dde096961cde34527a2b83425acfc5ba4c"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002/Building_Dormitory_1x1_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "eb31e0609815addb8786cdebcdd7d0ff9b09a6b0f77bddf4193a3918e50fd011"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002/Building_Dormitory_1x1_v002.prefab",
+      "bytes": 43654,
+      "sha256": "2d6c0e86405abfef9449334c4eebdd6518fa7a0243a1c7b02f34fc3db04cbb53"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002/Building_Dormitory_1x1_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "86d0abc0a74b87424b5615c8deec91684bd36b0cb8959408dedfbfdaddf6e33e"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002/IMPORT_README.md",
+      "bytes": 752,
+      "sha256": "b54dc37269d14ac50b34785e7ad796a3401ca52aeed9fe9a6db47d70fc8f9cb8"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "a1cbeaf18fc176e9ae2645ca683342e92b2922f3dd65899e57cb1d126635a3e0"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "6976985baab66087ed9d54f86202872bad439a3e02f9f8b4830239e4e7651fe0"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "4b1f0094d9af0152204246cddc38cf6baf0a4e165c4fa319274d2860dececfe7"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002.meta",
+      "bytes": 172,
+      "sha256": "10c7162f6fe7f28f348571ae6359b8ed92b8dbcc035dbc2a8ea1468e61b02807"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Drying_2x2_v002/Building_Drying_2x2_v002.fbx",
+      "bytes": 69500,
+      "sha256": "81bf544186bf4a3301bc3904bb185c8cac2f651b43c6a98903991ae47fc8b077"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Drying_2x2_v002/Building_Drying_2x2_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "54255c0c608f3c33abeb2627ea034461615fc8e6d7f1fbeedcdf70b3cec52b0b"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Drying_2x2_v002/Building_Drying_2x2_v002.prefab",
+      "bytes": 50236,
+      "sha256": "68f65b0ab2683deae7f242f6fd32348398e1a73e6e1af6d064a2a8381f0b0d1f"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Drying_2x2_v002/Building_Drying_2x2_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "f1885f1500e78fb3fcc1aeabd0de44d2eb5e130d4764a59b5fbdf6d7ba71c336"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Drying_2x2_v002/IMPORT_README.md",
+      "bytes": 744,
+      "sha256": "d52006e2326bd7801894ce20356c6f852306c19eb9274e3adaa9290897cea3d7"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Drying_2x2_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "8455d5f8e5131b04cea3d7172823a22eb7ab2ce83f42d81110a880d3ccc21d70"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Drying_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Drying_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "8d9c43f2dae03faf08b88d4a80f21c0a104af92c95ee3ab110cdfb8e611e28a1"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Drying_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Drying_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "bb907c93bf0933e9fe71a6ebcf9513a2faa27d39425476befd7c7804dcbc2487"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Drying_2x2_v002.meta",
+      "bytes": 172,
+      "sha256": "4ec9c05a914bd9f859eaf3ea0688d5e798634776a392a0c8c3f43201c2671d76"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002/Building_ElectricAmplifier_2x2_v002.fbx",
+      "bytes": 65852,
+      "sha256": "3ccd6e2816519526e19e6218cbeb9488ed60e811957234dac9cdc5279bc8373d"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002/Building_ElectricAmplifier_2x2_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "902b588c32da134db100106086e68f2be92d114b68b04848a482bcd48216bc43"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002/Building_ElectricAmplifier_2x2_v002.prefab",
+      "bytes": 52337,
+      "sha256": "c103599049827c0e61f0c1b16385a82de113a3d64365271ab71de1bd6bfa4087"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002/Building_ElectricAmplifier_2x2_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "e78657fe67bebd94d05e2b941219b7a1a0d445b1ad586296bbf835a982ad7665"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002/IMPORT_README.md",
+      "bytes": 777,
+      "sha256": "3c44f72f266785ae6b9eaad3189efa7bfffa20cd99595029461a68ef063bfb83"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "b19970581b55b02fbbe24f357a2f9e32490c5e66b2a032e05f8366b90ad77bc3"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "0a032a08052eff613c52a219b23b1233d72dbd9bfdac8bfd779983c3b7e50cc1"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "bc1d77488ecec076e1902a8f36ee8ec2bcf535ccf0cd9dba0936040c77708aa0"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002.meta",
+      "bytes": 172,
+      "sha256": "7aed8831605d1c970bee23e3fca6acddcb0838135e65d5672df22149fda24562"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Fishery_2x2_v002/Building_Fishery_2x2_v002.fbx",
+      "bytes": 62844,
+      "sha256": "77703795c8902bc11a0c438bb92504d6c7bfd75f35f6d2d2cb6674f192b53ab3"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Fishery_2x2_v002/Building_Fishery_2x2_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "cbd85274be1412dd2530e8497858713f7b9612392e4852cf0e7727f418ccabaf"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Fishery_2x2_v002/Building_Fishery_2x2_v002.prefab",
+      "bytes": 50231,
+      "sha256": "c327a9af6b52a305109f152154354e90d4addcd26635b0dff89587415125d881"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Fishery_2x2_v002/Building_Fishery_2x2_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "8a5258f5549c87562502a3059c21e0f056dc035d7df542350c7d8af56738f42a"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Fishery_2x2_v002/IMPORT_README.md",
+      "bytes": 747,
+      "sha256": "feb72e4bca7037c67fdbee3707855c8437a9b832badfd728498cc0ca4421a617"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Fishery_2x2_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "766e3c9751b90f92bcdf3e659994407cc486ab9cd0253b2bfd0a28a9e7c7c1c9"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Fishery_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Fishery_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "d8a383fa03829564d9dae24bd3afbbc4951f2eedd2cf05f6894f37234127189c"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Fishery_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Fishery_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "af96dd6fe5b65b5bc848287dcfd1f1b5caddccc5235ca573202848bf8f47263d"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Fishery_2x2_v002.meta",
+      "bytes": 172,
+      "sha256": "fade9ae46d7123e81b7255ce3c2fa1d9fc2b2264118af55ff8e0f1cf65067e52"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002/Building_GasAmplifier_2x2_v002.fbx",
+      "bytes": 51948,
+      "sha256": "77b799906a0f96a36d102dc9e2d2ace280497bfd6309b9fc6274280a48563118"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002/Building_GasAmplifier_2x2_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "332b28eea6e264693ae09ceb8f25fa3fb614236d7581aa03aac54e7226e9f854"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002/Building_GasAmplifier_2x2_v002.prefab",
+      "bytes": 50764,
+      "sha256": "8aa6f8cdaa2ae1fc5e509ec386497b20caad4308ec017bc67532c548dbeca40c"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002/Building_GasAmplifier_2x2_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "04ec8cfa92f96d48baf9d1311e2e5704d3ed50e08a3bf65adc5723f7feb1896e"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002/IMPORT_README.md",
+      "bytes": 762,
+      "sha256": "492e84afe57aa740873d471ecfb73e0bdf83248f2e43b68fdf4de4cd40f44bdc"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "083953a6fd5a244cd5708bf39e5b1fb8891765bfd8b87696cee744a9e55a65e9"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "efe09d1307695d8850aa55fadc8e2ffe04b684a23c1c465a2a833d5452d309ee"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "32ded15e763d3b7c0a0ef153430cdcc88cc60c684b8d1797657926354e463adf"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002.meta",
+      "bytes": 172,
+      "sha256": "046ff690904d9f19af19b504a12beb8d7b4bd1364c42471dc443c3e424901bef"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/Building_Kamaboko_2x2_v002.fbx",
+      "bytes": 181004,
+      "sha256": "13fac1d162492df922c8fcba9fdb511b2f4cd8834963820f1f8e9a343cf2738e"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/Building_Kamaboko_2x2_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "57f82208f011d45d2111fb91984b74e8c38d9db91a55322b0a7c5440632501b4"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/Building_Kamaboko_2x2_v002.prefab",
+      "bytes": 62337,
+      "sha256": "61cce9f7e5a3d1ce18047b762372611ed8bf8d01cf9cd82e865df2054c4695fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/Building_Kamaboko_2x2_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "297ee15f31e7d62251fde71f650b6f13aaa7c883913f91217b381907dd296241"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/ChefPink.mat",
+      "bytes": 3900,
+      "sha256": "47c2b60d5ce49ad29a6fa70e57b191b13a94f118e5028fad7b73845c88be151b"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/ChefPink.mat.meta",
+      "bytes": 188,
+      "sha256": "e0603550d09241a565dab6aea627a183e268fc7f97d0fbcbb06c73dfca87539d"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/ChefWhite.mat",
+      "bytes": 3889,
+      "sha256": "72ac9696fbcbbfe376d2418d76052acbc6e48499a4018e3390df568814702f89"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/ChefWhite.mat.meta",
+      "bytes": 188,
+      "sha256": "8083a1a2c4d7564ac763a3f7bc178bbac640cce4e522da4057527b32f024c58a"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/ChefWood.mat",
+      "bytes": 3918,
+      "sha256": "e026d19181b40f6aa393dde1e4381e550ba025a885d4c86ab3de7360a68a648f"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/ChefWood.mat.meta",
+      "bytes": 188,
+      "sha256": "729fa5ecb0ce4fca4267bedd7f5dc3883e72fc5e4d30ebb8ae204a3a4a813404"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/IMPORT_README.md",
+      "bytes": 611,
+      "sha256": "743925f508f15052a88080d326502f94f1a2dcbe2a9c55ba33d344b32a3084db"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "f6432b1b3f472634ae3bfac4559616e8505015177508898a1f3b9e488c53c4af"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "97a2521cae2b7492576990d565ca2af8bd8f3a4b55b27a734c59878ebced83ec"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "4517269cafa476ed55a74f769e9c0c43b06ced0a4930d96048ecbf2c5aff3077"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/Running.mat",
+      "bytes": 3999,
+      "sha256": "9deaf0c0705242ed8c3f097f9366f477328ff6de15993d70ba8755cc5883167e"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/Running.mat.meta",
+      "bytes": 188,
+      "sha256": "d82866d61fef550c0ee493d18ddcbc1b864b3da1866315a3113233aea5acb4d9"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002.meta",
+      "bytes": 172,
+      "sha256": "98eaf4c447693ce592ec5a666b3298f8c8d02848122f560d8a60aad6090e631d"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002/Building_KelpFarm_2x2_v002.fbx",
+      "bytes": 55644,
+      "sha256": "3e99dc7cafafad4da7b048e1857214043402dd63b2b13b3fc2b7afd6263c737a"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002/Building_KelpFarm_2x2_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "e9f4693a84e7bce70bb3f4d9d68900405be85439fe7a43156f5a0ea29184ecfd"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002/Building_KelpFarm_2x2_v002.prefab",
+      "bytes": 50235,
+      "sha256": "f9439035e30b0394182f3a22c2b31cc1bf482dd0c07c2a9fc683afd45614da4c"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002/Building_KelpFarm_2x2_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "9596776357d43941a8cfad1daa95f02339b2a5a46d106e44c87912b2d620ae0e"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002/IMPORT_README.md",
+      "bytes": 750,
+      "sha256": "6a046f3a50c83cba0e0eaf8dd0e7fff98bf0dd39f5338e0562a93794ec791c94"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "e54a80bb9aeaac7f3d5eed457a794afed16d7b2d4d52ea63378d6efeb6b8ba70"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "8966423ecd984b956480108d81e3c359a7dbfdf140cf765b8676adc888cd1356"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "21bb57ca75bf03153d4e720af37726915ce7758213ed3d5f0c408c0a67bf5ba3"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002.meta",
+      "bytes": 172,
+      "sha256": "eb748ebdb2e6b6821ece6fcb2a66064420dea82087c1c8dd15e7c958ced72e32"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Oden_2x2_v002/Building_Oden_2x2_v002.fbx",
+      "bytes": 71036,
+      "sha256": "0afcde6565caa3bb398b1e4a85961897da556920686abecf11e6807bc0b07c64"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Oden_2x2_v002/Building_Oden_2x2_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "66259806d7a90eaad0f857e822537574120a573f150c1979a4bff530b4ef0378"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Oden_2x2_v002/Building_Oden_2x2_v002.prefab",
+      "bytes": 51007,
+      "sha256": "3a5784d95e6ca6d0ee2de6d7748feda028e0baf9ca8cd8509ad09f7bfc9a6de8"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Oden_2x2_v002/Building_Oden_2x2_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "2ae733c904c7b18236cb8f6fa071b7921d224aa21f2266ee6e1234122397338e"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Oden_2x2_v002/IMPORT_README.md",
+      "bytes": 738,
+      "sha256": "ea721d34d0494d04cb1fc39718f66797cf85f21fc589ccf0a410c1ffac446c34"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Oden_2x2_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "2c4828b73fc2674ab21277926471186522f4d7bd6fe730fdc7b35f78766024be"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Oden_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Oden_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "8ed8e20e70ba64ac5b324766f6bc0894bace08b8bf0e812716f6abc178e745a2"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Oden_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Oden_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "2fdf5456aec93d1e36b5678044b36f91088e411aa7ea849cdafb29bec2d59e4d"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Oden_2x2_v002.meta",
+      "bytes": 172,
+      "sha256": "805d10c010d4b2225d0f324d1ee9c786f72a778aa5c17771c76d956d6338e267"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Preparation_2x2_v002/Building_Preparation_2x2_v002.fbx",
+      "bytes": 64908,
+      "sha256": "fb86a48ec257ee875205ac936c3d0ccccf5cd924af2fa891873860fdeba69314"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Preparation_2x2_v002/Building_Preparation_2x2_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "5ec2a4ce8b67943c006e34e52f8091b934115d1eac5d7baeca4d7dee2c9a0812"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Preparation_2x2_v002/Building_Preparation_2x2_v002.prefab",
+      "bytes": 50762,
+      "sha256": "3de8e6525f713fd9ddd85200f5e11a11ab118b01c43f6f8a9679f067cab20b57"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Preparation_2x2_v002/Building_Preparation_2x2_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "2bf90cb6c3be06859dee14cf0abf43ca2b23e56cd0e70e3320fa014df3a3c186"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Preparation_2x2_v002/IMPORT_README.md",
+      "bytes": 759,
+      "sha256": "abf453cae993581d9fe92a2a1a6e9fe9769baed2e65458de8d9fa3541defe0d7"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Preparation_2x2_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "7140c6db051ad3b404ec26832868bd7313e121b586f3749d23f513d730f468a4"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Preparation_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Preparation_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "7bdaeb303cf87f65aa1b8c9539ba67bcf8cb51bf3a826f3ea258774a65a099e7"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Preparation_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Preparation_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "efc8bc059086cdeef1c3112ba8e7b2483fb0416cb7a9425376adf9186a0e8e61"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Preparation_2x2_v002.meta",
+      "bytes": 172,
+      "sha256": "a5ac645157c045f80d480df7fd1774a0b1fc2c69dfaa165b5983d90069ad7e6f"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Research_2x2_v002/Building_Research_2x2_v002.fbx",
+      "bytes": 65164,
+      "sha256": "867da3a04a78e902e61f78e8970b205ce7c878ca0395b42cbaf71eb104ccc1f5"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Research_2x2_v002/Building_Research_2x2_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "3f929abfd167bd8afe33c4062d75f24ade7f5f059e5667fa67276195f318cd20"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Research_2x2_v002/Building_Research_2x2_v002.prefab",
+      "bytes": 51527,
+      "sha256": "06b95ab5fc14e5f3c56759f2dcb49816cdc950572f89c20176e09b0e0c4859dc"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Research_2x2_v002/Building_Research_2x2_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "736d3787f7ce96f2b6e4e4e8f896c52d97ddb0f5951fbfd82bbe7f44a8ec2fe0"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Research_2x2_v002/IMPORT_README.md",
+      "bytes": 750,
+      "sha256": "aaf7f8086c49319d06111234ce0090e123f983b241c25d4a3f330c6d4ce44b36"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Research_2x2_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "cd50ceec49f075f6f1a81a7248f622c48e0708f02e0dcb37d36c0b8820e8b6ff"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Research_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Research_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "bd26e5586c9fbe80e36a34a45c114e0763ab87bec25c08f4a5a3195097a9fc31"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Research_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Research_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "dd1caffac916ccd84dc6ed465359a57c08eca39a74a1c5adc7395ada7aedfa37"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Research_2x2_v002.meta",
+      "bytes": 172,
+      "sha256": "221d1654e31764e09fc283b83ddffd8ca273af9c3e6e8958d8a19769868e842f"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002/Building_Saltworks_2x2_v002.fbx",
+      "bytes": 52844,
+      "sha256": "fbf363b66e507b67f0338ddfcdf5503605289e22259a46d633c9f7478d377401"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002/Building_Saltworks_2x2_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "607d3a893c1ad028ec1afe0228ca9f980a215c403959d1d3cf478b1c96aa0986"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002/Building_Saltworks_2x2_v002.prefab",
+      "bytes": 50218,
+      "sha256": "5263fc32a13d4afa9de70118164893cd444971a814b3085eb2e0738a6ed70196"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002/Building_Saltworks_2x2_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "63d41cfaf65cb334a68eb282e73fbb06998526913e6f0f67433331592ed226a9"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002/IMPORT_README.md",
+      "bytes": 753,
+      "sha256": "16b13dbe3cdc4e6dddab039904269a458d464b68d5786f50400f342ecdacd171"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "8afbd4d8681e4296ae31eec1debb72f5239b86eaaac4a8b503255be860ef35e7"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "add9765dfe64e0dc92132e350c34e274ba585f669b824373a7df42180a01d679"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "0dceb2d43ea27bc6ed13a1b0e89cf7e4ed3b71f4838ce6badc507e629317bcf8"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002.meta",
+      "bytes": 172,
+      "sha256": "cbf4539d585b718f450b90bda41e4b1db7c597fc5033f63c7e3107e59eb19f71"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Sorter_1x1_v002/Building_Sorter_1x1_v002.fbx",
+      "bytes": 59612,
+      "sha256": "7f97886a270796c932686c9a87aca5ae7a9445f8f55a4f8417d17a0433e7f180"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Sorter_1x1_v002/Building_Sorter_1x1_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "307b8404535a72fccb2d31a8ba58ee04e1ed2273793f913bf13d5c034e252ab1"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Sorter_1x1_v002/Building_Sorter_1x1_v002.prefab",
+      "bytes": 10193,
+      "sha256": "ceb5f2ee2cfd5d74586e7446fa30b46936a12b371808d75daaffdc336cc79263"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Sorter_1x1_v002/Building_Sorter_1x1_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "fe30b236a9e50cbcd597f383def12ee14415d3abd305c37fd0d2e5490c951efd"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Sorter_1x1_v002/IMPORT_README.md",
+      "bytes": 744,
+      "sha256": "8f33e1122e4114547cb7c36921060427cef7c54f578589c85d4a216f97fc6cf2"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Sorter_1x1_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "52650ae1e6b2ae26b478593e8fa751e491181c6fc7a7b5f6f30f51c000c3579d"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Sorter_1x1_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Sorter_1x1_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "e90f0c413efbf8de8bea903315303d68cd2d36b9755f641753836f3a89da4e94"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Sorter_1x1_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Sorter_1x1_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "479412f37df93c65036528b5e40041dc949fdd05c26a418b37378125f4f371af"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Sorter_1x1_v002.meta",
+      "bytes": 172,
+      "sha256": "99939deacc77d4c359fbd194b101f01cc88a6ba79bf7ddbfba8e00f2bab3a214"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002/Building_Warehouse_1x1_v002.fbx",
+      "bytes": 55516,
+      "sha256": "7fed3ecbfc8fbd4e098859536c5100a1d724f3d23edac08db53339dfec91a8ef"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002/Building_Warehouse_1x1_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "1984a92bdec4cec4d2e72abdd9245880936d4e002a62af1f88453c9b06987ac9"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002/Building_Warehouse_1x1_v002.prefab",
+      "bytes": 10716,
+      "sha256": "0981aa425dee7b9af4d5e017e816d335f1053c2ebeb2a7df8bb292ec2ab38497"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002/Building_Warehouse_1x1_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "8c91f32904c5167eae34aae176351bd366ca206021a412ce076634e8626faf4b"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002/IMPORT_README.md",
+      "bytes": 753,
+      "sha256": "08f17f47fde74660fcd5747b90e291971de863a77028e358ff3dee830b1b4826"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "fd5f8a39d043d5b51e474123d8836602c7dd26d8f2d5f9ba34c96e8510cb726b"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "c4cfda2c13685c7fa8f09133731c8bca60a658f5b9a9beb81b387ade87dd32e3"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "72a28972c8a987a38133a3c3fdf4d32b2c7da820326441c17740fcbee463f4c4"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002.meta",
+      "bytes": 172,
+      "sha256": "f0c3697861ccd7b4aed08db31261095c19d7904a5301546e2df9056748f59729"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002/Building_WaterAmplifier_2x2_v002.fbx",
+      "bytes": 55724,
+      "sha256": "a6c6b67de02d78ebb6d81c01d6537ada104098e46e424f4433f456c68e32d088"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002/Building_WaterAmplifier_2x2_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "0b3c48cb8a2a95812b5e7df9d038919cc5f02b668da01935687c635a79e91755"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002/Building_WaterAmplifier_2x2_v002.prefab",
+      "bytes": 51272,
+      "sha256": "060abac014a367a206877b2eda475e1fb414b42fc9a19a6fb38539c1da162cd9"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002/Building_WaterAmplifier_2x2_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "314414106f22420a88e7cebc49b5d3bbb5fc1c2e52e54fd4cee062d0efa49d8a"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002/IMPORT_README.md",
+      "bytes": 768,
+      "sha256": "be7cbc998ea5f20c3d9c64dee027d4ebe58aeaece5ba5065a00314e9e3463692"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "a9c784908b461158fdb816cdac46c57104a85217c26fd4acdf4c73c1d9c4fe5e"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "39e750c07b4a29c213a712ec48696ea8dbe9487fcebcde3ee5c0a9d7e8d115ef"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "4a430d18cea163aa1dc8b65753888f3ce6de8eabf921195cbf9b04f48904756e"
+    },
+    {
+      "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002.meta",
+      "bytes": 172,
+      "sha256": "2283d05b885e021d6a7b5af4523f1bc802ab421873d02eeaf0b77f53e2369e60"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage0_v002/Harbor_Stage0_v002.fbx",
+      "bytes": 23948,
+      "sha256": "089ad5bb1de7c74be06968858f244cdc570d0a2a73e9f5ec309a5d812f2cc6e6"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage0_v002/Harbor_Stage0_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "450fd91786447533b62198c9df12ef0a3e6931cd40df874b90c9e86cce2905ad"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage0_v002/Harbor_Stage0_v002.prefab",
+      "bytes": 2754,
+      "sha256": "77060d51b679ae4d15ada42ea16a256f4c098a73f35663e314045f3610edea0a"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage0_v002/Harbor_Stage0_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "0f8f4b48aea066dad6cb4dbc51ece83d7f2ce1036e362d31bb670d9d32228451"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage0_v002/IMPORT_README.md",
+      "bytes": 725,
+      "sha256": "3d165c072ffe7e322f19bdabc119bbdab39ead3c0b49f84e51a6609cafc39004"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage0_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "72fecbd68faa8c76329271bd17649e19bb6394566da0bec2e8afe25b0d2560ce"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage0_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage0_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "0b7364077ee5bbf9bafa23f8fb3947c9f3cc2fc50697ead6da3f96538e701551"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage0_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage0_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "1113dc67ef43e3fcec3c4ede41cc8e3ea00318fedad285131dd4d0f05bd1d74d"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage0_v002.meta",
+      "bytes": 172,
+      "sha256": "b363cc0242e338ee4404d03b30506d091dd9e9855af0bdfc971e20f50c5d142f"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage1_v002/Harbor_Stage1_v002.fbx",
+      "bytes": 23484,
+      "sha256": "72ee98f59693bef754373f5c0ad9a976d52de34c19cadb44362c2f62624689ee"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage1_v002/Harbor_Stage1_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "ebdf40f4f9234f44f9329c051c5b98089574639dad21f18764c1bf1fc596cc5d"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage1_v002/Harbor_Stage1_v002.prefab",
+      "bytes": 2754,
+      "sha256": "5a64275f550a6a07418de140a1cf40d803ee694b32f7b9b09a4ba16f9637decf"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage1_v002/Harbor_Stage1_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "3d14bf8d6d75dfeddbf727182c99705eb7db76bfd79be163c515276fdb7ffdea"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage1_v002/IMPORT_README.md",
+      "bytes": 725,
+      "sha256": "793e2aead4ab86d96cb9fcfa20f6ccc33e35b9bf20a81da50b1b24488773a8f5"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage1_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "457ec7fc36dba43ecf7f645aa1af55e5ad7cbe7e6371fc46a14a821aeb3a18c4"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage1_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage1_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "e06c32ab51519f881dc55021f995cf4ebda3170906515b74739cebd9a1e5a663"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage1_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage1_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "d871d5190fe510a4680024a9c8fe4b861995347641721e12af95eb62c8b4741f"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage1_v002.meta",
+      "bytes": 172,
+      "sha256": "49bff0a6638be5694234766a06d5d7f2dc9959bea0b7f42f05fbc17d1f2a4d62"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage2_v002/Harbor_Stage2_v002.fbx",
+      "bytes": 25164,
+      "sha256": "bb485ae6cc162a679e5c50483d866370e674122e436977dd9e0b623fb9f9e509"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage2_v002/Harbor_Stage2_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "c73a6fc0ec911c73c625548f93931328e9407954ece582c2b912ac050e3b6833"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage2_v002/Harbor_Stage2_v002.prefab",
+      "bytes": 2754,
+      "sha256": "7504b2c6b3c8585b01642ec55bc846d77b8989d825588e3379ec8653c0b751c0"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage2_v002/Harbor_Stage2_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "b744f875bc4c718b4c698467990b86d2f220e9f7126754e7af899f697bf9213f"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage2_v002/IMPORT_README.md",
+      "bytes": 725,
+      "sha256": "44583a5c6bce1827af9a677e66cf82fc74f5771357800ffb32cbef0c5ef068d3"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage2_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "c405c731b551016a0b8cc6d079fd5ac02350fb5a03c9b96293134a8a84f2635d"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage2_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "86a2598f247d22b29b02bd7bb2c5e1b57b61fae49e387b739910075f78b85940"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage2_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "81062753a4cc8e7468ba3a04cda84b51954fbaab649cf9011c7617dd86785bc5"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage2_v002.meta",
+      "bytes": 172,
+      "sha256": "931e013682c06c445f8a78964a7ad7165f890064354d146def4ff38c18507b58"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage3_v002/Harbor_Stage3_v002.fbx",
+      "bytes": 29660,
+      "sha256": "bdad4a654fe72ab478c1f14ac1438404222fe7b6c75f98f50fc2b520027ee4ba"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage3_v002/Harbor_Stage3_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "6a81c935ede42c27803a30081cb80efc42af4ce00820774d98f6621dba801157"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage3_v002/Harbor_Stage3_v002.prefab",
+      "bytes": 2754,
+      "sha256": "babc698973e252a61db368ac13dd5d237cf40704ad5e4edb9b34a29fe0ff4c84"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage3_v002/Harbor_Stage3_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "5069b0e02c8b5a28cb6777d2d58dafa28f7f73f7837cdcac15bb9c545acc8128"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage3_v002/IMPORT_README.md",
+      "bytes": 725,
+      "sha256": "e5d2db50a60d20e24e5f1c11d93eb4eab8ea6af99dd93b9e5b0ce75ef10dce48"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage3_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "ac3bbf5172461e6ab0e971e8d0d3851e4ba21f779a2747f1dbe9256105ec24ec"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage3_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage3_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "9e520e9be754f3642c3775f13b2c9beaddbdd8013c7fee2d1c85e50f8b031946"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage3_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage3_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "78fc3aae477c7658088345ef4b84f77776f4788599bf1088d86408da5b1b4e1c"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage3_v002.meta",
+      "bytes": 172,
+      "sha256": "0039aa586b46fa99e72fd29ff4d588412809e22263c1a9499545257c9e18b655"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage4_v002/Harbor_Stage4_v002.fbx",
+      "bytes": 33180,
+      "sha256": "044ac7311995501e45f2ee2f08fce1ce0c0c70665bbd0336f36e5715a8580f18"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage4_v002/Harbor_Stage4_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "f173811ea9c86b872ccababa96e002331e8d894578b5baab4197e033ec42ac28"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage4_v002/Harbor_Stage4_v002.prefab",
+      "bytes": 3000,
+      "sha256": "2a1192cefa444cf619a5997a2efa3aa4e995c600a56562eba19f44c59d6005b9"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage4_v002/Harbor_Stage4_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "156883739e6f330ecba748c7a3eb92ff7fc01afa6baee9893919cc793f9217f8"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage4_v002/IMPORT_README.md",
+      "bytes": 725,
+      "sha256": "6c714e36cd814051a9f066dc338971329d2ea26d80d3a089e630f5a9c9a7a6bb"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage4_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "482e0b4ed43266f66edc1c4cea989ee4620a7f0ca2fc21a1131969f57e49cbc7"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage4_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage4_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "96fe2c87d337ab17dbe4b0c7a800671fed6f89ac00a8b6f1937e9caa880246b1"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage4_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage4_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "5f2e7ea57c0d0e09a872e5cc261ab036fb8289f9be7aac97fd97c808b05d3aff"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage4_v002.meta",
+      "bytes": 172,
+      "sha256": "0b27415a790264199d0695d90974ded03cee82d4d1302d3ee9316466395b43e2"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage5_v002/Harbor_Stage5_v002.fbx",
+      "bytes": 66892,
+      "sha256": "d9338bd090a60b9e2740148fb6ccd2c046460e3b2612b9d6c73e7c87521f5039"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage5_v002/Harbor_Stage5_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "dc0c70c355ae8353807fe2d76b973508b3c6cd57069f083b2eb59b1f775fc668"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage5_v002/Harbor_Stage5_v002.prefab",
+      "bytes": 51504,
+      "sha256": "e1c468981b09aafd238853c8bbdf123ef68137fe3415e522e3c2b2317eb5f964"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage5_v002/Harbor_Stage5_v002.prefab.meta",
+      "bytes": 154,
+      "sha256": "8b94cf59b9d03fe972cd2855b7341b20b0e9fde98a7c29fb4f96a36b1f91392b"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage5_v002/IMPORT_README.md",
+      "bytes": 726,
+      "sha256": "21b9682d8226e1648c4c9ac0cf725cdbe3f9e45d7694ee75924ba9c835882729"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage5_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "19611db37cfad32a126c259cc722a10825ce4f18f068210f7a16f18094be5f9b"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage5_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage5_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "c6615e6a536dd344b24636d817028a28d612ed96bc33e5e0cc96ce0b92310fff"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage5_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage5_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "41618643eee92bd31ceada3effa7cb07fcdf30358aeb5e3cb1465ee62da820b7"
+    },
+    {
+      "path": "Assets/3Dmodel/Harbor_Stage5_v002.meta",
+      "bytes": 172,
+      "sha256": "e8a9691dc52dfdc1eb9288046bda2dc0d7b579ad9f1a8f3bf524bdd4a188e391"
+    },
+    {
+      "path": "Assets/3Dmodel/Penguin_v002/IMPORT_README.md",
+      "bytes": 910,
+      "sha256": "f02b4bde82c0910343e537040c261488a8134368095206b3e685689c9c3f7d27"
+    },
+    {
+      "path": "Assets/3Dmodel/Penguin_v002/IMPORT_README.md.meta",
+      "bytes": 158,
+      "sha256": "d007e4f34499858cb9a0ca7d24139c19ad9351f6b3c486e1a4ce6928bcc35e1a"
+    },
+    {
+      "path": "Assets/3Dmodel/Penguin_v002/Penguin_Static_v002.fbx",
+      "bytes": 2741900,
+      "sha256": "957edbdaae623da8d02eaf342b9e3efd51aca2cffec34f44da2d151550fb7391"
+    },
+    {
+      "path": "Assets/3Dmodel/Penguin_v002/Penguin_Static_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "37728abbad190c551358ffec22aabb47a5ff0f7f277eac7e5de96c2a494c1144"
+    },
+    {
+      "path": "Assets/3Dmodel/Penguin_v002/PG_Body_BaseColor.png",
+      "bytes": 606242,
+      "sha256": "8b8708902d9c4c5614371477efe5d81f6f3d89b3ceb94cd30a6d584dabdaf2c4"
+    },
+    {
+      "path": "Assets/3Dmodel/Penguin_v002/PG_Body_BaseColor.png.meta",
+      "bytes": 3069,
+      "sha256": "0480ffb0ac837caeabef8827e92b84443323fa78d1b6410f127151e3bf5351a7"
+    },
+    {
+      "path": "Assets/3Dmodel/Penguin_v002/PG_Body_Normal.png",
+      "bytes": 3932472,
+      "sha256": "b446e224fe2a4f7b588c5cd25e50b1297650034df5455e75c7b637ad6c8d78de"
+    },
+    {
+      "path": "Assets/3Dmodel/Penguin_v002/PG_Body_Normal.png.meta",
+      "bytes": 3069,
+      "sha256": "212c8fe054e82b10f37ab423c2559adf3411751ba67b31f4821f7a63c87a8169"
+    },
+    {
+      "path": "Assets/3Dmodel/Penguin_v002.meta",
+      "bytes": 172,
+      "sha256": "aea481ee25be412e99dffaf08fd5bc5e2e89a700b678fde94f5cfbb52953896c"
+    },
+    {
+      "path": "Assets/3Dmodel/ProductionIsland_v002/ChefWhite.mat",
+      "bytes": 3889,
+      "sha256": "9c16e78ff0bf15c41ce798f59827cfe845d919c93bdf0ac375a29abe9e167dd0"
+    },
+    {
+      "path": "Assets/3Dmodel/ProductionIsland_v002/ChefWhite.mat.meta",
+      "bytes": 188,
+      "sha256": "d27a935eb4c5993c02131c763b0169400127d4481d4c91d143afab6cb1f66c91"
+    },
+    {
+      "path": "Assets/3Dmodel/ProductionIsland_v002/Running.mat",
+      "bytes": 3999,
+      "sha256": "09c1cb2c392cf337de3fdda9e5e863a33b2861ceda5b5644dccd15009a9934f0"
+    },
+    {
+      "path": "Assets/3Dmodel/ProductionIsland_v002/Running.mat.meta",
+      "bytes": 188,
+      "sha256": "4f7fcb49395e62efd1dce9d3eb152225d813b94fd6afdc014147f23843ef58b4"
+    },
+    {
+      "path": "Assets/3Dmodel/ProductionIsland_v002/Stopped.mat",
+      "bytes": 3998,
+      "sha256": "44393dcd9af1b1dde62f8805cd1c5d268277430b5002c3ec5cdf6f931ce2671e"
+    },
+    {
+      "path": "Assets/3Dmodel/ProductionIsland_v002/Stopped.mat.meta",
+      "bytes": 188,
+      "sha256": "862b42a8a35a1d1452e671665179e8032ff27ee21dbf2d9d645ac1065de343f6"
+    },
+    {
+      "path": "Assets/3Dmodel/ProductionIsland_v002/StrawHat.mat",
+      "bytes": 3907,
+      "sha256": "a083fbb29770e99b482c3b9d921eb758f34cc35dc44f28a0c757221e24926300"
+    },
+    {
+      "path": "Assets/3Dmodel/ProductionIsland_v002/StrawHat.mat.meta",
+      "bytes": 188,
+      "sha256": "4ef0f03ed30e9f24473a29864197a8f748cfbed6cf7c999c335cc01b9d577625"
+    },
+    {
+      "path": "Assets/3Dmodel/ProductionIsland_v002/WorkerBlue.mat",
+      "bytes": 3921,
+      "sha256": "29449960e9c5dd5eebc37a4c6bbb944501d4134f612518509395fb617f21ef73"
+    },
+    {
+      "path": "Assets/3Dmodel/ProductionIsland_v002/WorkerBlue.mat.meta",
+      "bytes": 188,
+      "sha256": "2314c49157cb51226975a66c71c67a52d06848ca5319b624d21246528e6efe29"
+    },
+    {
+      "path": "Assets/3Dmodel/ProductionIsland_v002.meta",
+      "bytes": 172,
+      "sha256": "a081fec5ffaed82b2aab213721957cc7a99a7c3c49bd844d682e704f1b19295a"
+    },
+    {
+      "path": "Assets/Editor/ProductionIsland/FacilityReviewFocus.cs",
+      "bytes": 1162,
+      "sha256": "8e50c51640685ccb4330ab18414cb879db4d173028618338456cda2378ed0bba"
+    },
+    {
+      "path": "Assets/Editor/ProductionIsland/FacilityReviewFocus.cs.meta",
+      "bytes": 59,
+      "sha256": "77af9571619b45833f2ccfefa3977748f709d52b3b80444adae1dbf07ff6044b"
+    },
+    {
+      "path": "Assets/Editor/ProductionIsland/FacilityRevisionBuilder.cs",
+      "bytes": 18340,
+      "sha256": "f0d21c50766fb9eda239f9ceee8ed353e4126b79cd7192e7c5a9c9105457b039"
+    },
+    {
+      "path": "Assets/Editor/ProductionIsland/FacilityRevisionBuilder.cs.meta",
+      "bytes": 59,
+      "sha256": "4b6fa03cb0573bfa4004e719bb364ff79355986c5754d30e16c2dd58c53f5651"
+    },
+    {
+      "path": "Assets/Editor/ProductionIsland/FacilityRevisionCapture.cs",
+      "bytes": 9955,
+      "sha256": "9549bd3504e91b937b65fab255ef2370d9e8d3b9af75816ab3ce14a6fcf65f1e"
+    },
+    {
+      "path": "Assets/Editor/ProductionIsland/FacilityRevisionCapture.cs.meta",
+      "bytes": 59,
+      "sha256": "621c3a52e2bac53f2bc64188aa5e4fdbbbbe6511deb4e6f211218e4835dcbb52"
+    },
+    {
+      "path": "Assets/Editor/ProductionIsland/KamabokoRevisionBuilder.cs",
+      "bytes": 14753,
+      "sha256": "3e92c4b85bb2c1bf947cfd3e6aabc17b11b4de60e9d9e64ff73067d742aa8aee"
+    },
+    {
+      "path": "Assets/Editor/ProductionIsland/KamabokoRevisionBuilder.cs.meta",
+      "bytes": 59,
+      "sha256": "0c0eb776a076714af904c7fe0157d46c22f530cd8a63e8c1f418388cb6b6e020"
+    },
+    {
+      "path": "Assets/InputSystem_Actions.inputactions",
+      "bytes": 41005,
+      "sha256": "1c6cbb519d65ecfe19a29231735b7f54741a20ac1a8ad4f46a18e1bfb28a3c39"
+    },
+    {
+      "path": "Assets/InputSystem_Actions.inputactions.meta",
+      "bytes": 376,
+      "sha256": "3b4e424a80f5b4fa76b6abd774884a24285eaa61f22ff9bb20e5ad505fd8b569"
+    },
+    {
+      "path": "Assets/Scenes/KamabokoDesignReview.unity",
+      "bytes": 69080,
+      "sha256": "604b59ce72f5884f3a4f466725ff7ee5b13b30fb1f70b4eeb377b6ee547048bd"
+    },
+    {
+      "path": "Assets/Scenes/KamabokoDesignReview.unity.meta",
+      "bytes": 155,
+      "sha256": "16b0d827850c13eb3f1931b7cfba7a53355cdfc0bd8e2dedd01929405e52cf5b"
+    },
+    {
+      "path": "Assets/Scenes/ProductionIslandFacilityReview.unity",
+      "bytes": 701477,
+      "sha256": "c7f45954434aaa7c2ec94fe168348efbc1a83923be44adc62d9f5dabb3172516"
+    },
+    {
+      "path": "Assets/Scenes/ProductionIslandFacilityReview.unity.meta",
+      "bytes": 155,
+      "sha256": "45e6744e2509e543c21799149b9a3a737d78ff0f38165acf0ce5c145fb772a3f"
+    },
+    {
+      "path": "Assets/Scripts/Presentation/World/FacilityDesignGallery.cs",
+      "bytes": 6546,
+      "sha256": "2c1b40040c1234e75145a993def84f14b5ba5759dddb54330f835bb61104e457"
+    },
+    {
+      "path": "Assets/Scripts/Presentation/World/FacilityDesignGallery.cs.meta",
+      "bytes": 59,
+      "sha256": "af6e144927bbcb24b2425d9b667de63f5c1dcb3a7ba9c13e03c248ba4de50a96"
+    },
+    {
+      "path": "Assets/Scripts/Presentation/World/FacilityProductionCycle.cs",
+      "bytes": 22372,
+      "sha256": "8baba12f4e02730fc3400b624f8ee151bf7754f6ea43d984680d0c45402c91d0"
+    },
+    {
+      "path": "Assets/Scripts/Presentation/World/FacilityProductionCycle.cs.meta",
+      "bytes": 59,
+      "sha256": "dc13001a0174d60d164a4862a27f8584447ed21730ac2013961e4a358e43d843"
+    },
+    {
+      "path": "Assets/Scripts/Presentation/World/KamabokoPenguinWorker.cs",
+      "bytes": 5900,
+      "sha256": "3f67cf766c2bdde95a0aaeaf180db104cfd00121f4b33a1404f284b68fd15a68"
+    },
+    {
+      "path": "Assets/Scripts/Presentation/World/KamabokoPenguinWorker.cs.meta",
+      "bytes": 59,
+      "sha256": "9da12a47aa75443cff288da8a1372ec4976ae425692c09fd0236e58d48c1b071"
+    },
+    {
+      "path": "Assets/Scripts/Presentation/World/KamabokoProductionCycle.cs",
+      "bytes": 5676,
+      "sha256": "019fa438af5a9bce529ba7e88da2cdb1ed6325c32759677f496b33993155559a"
+    },
+    {
+      "path": "Assets/Scripts/Presentation/World/KamabokoProductionCycle.cs.meta",
+      "bytes": 59,
+      "sha256": "8b425de5bc45af84ce19a78c816483bbd6483b9b10717dfada1a4a8c3c5f83fa"
+    },
+    {
+      "path": "Assets/Scripts/Presentation/World/WorkshopPenguin.cs",
+      "bytes": 5512,
+      "sha256": "8a2e032c2e6231f4cb3fe1b514ff17a15d5fa70626206d03a4c9edf1792da007"
+    },
+    {
+      "path": "Assets/Scripts/Presentation/World/WorkshopPenguin.cs.meta",
+      "bytes": 59,
+      "sha256": "e03ee479b569899d88c21e3d715efb8c4aa61c81639d11ab2cc9a3eeb32230a2"
+    },
+    {
+      "path": "Assets/UI/Fonts/MPLUSRounded1c-Regular.ttf",
+      "bytes": 3389792,
+      "sha256": "b75708b53e45b06d17d470aeeca5b766e3d1b3999f03f13ec4eb863ca846c14c"
+    },
+    {
+      "path": "Assets/UI/Fonts/MPLUSRounded1c-Regular.ttf.meta",
+      "bytes": 501,
+      "sha256": "002167eddd4979c14bde142894fb668e1bda145de51a355695d2840fbe8e36ab"
+    },
+    {
+      "path": "Assets/UI/ProductionIslandReview/FacilityReview.uss",
+      "bytes": 2252,
+      "sha256": "af867535ba58beedd57d8a7879945654a66608f2a564ed4023186ef81a60263c"
+    },
+    {
+      "path": "Assets/UI/ProductionIslandReview/FacilityReview.uss.meta",
+      "bytes": 336,
+      "sha256": "32b6dc0bc1376d516427d5bd9ad830252a596c0aafc0efa1bd566bac21d43567"
+    },
+    {
+      "path": "Assets/UI/ProductionIslandReview/FacilityReview.uxml",
+      "bytes": 1529,
+      "sha256": "760eef4255fce040859d8d72f71ec27d0165f96df2dda05a1356521e70462dd5"
+    },
+    {
+      "path": "Assets/UI/ProductionIslandReview/FacilityReview.uxml.meta",
+      "bytes": 282,
+      "sha256": "56eb03fa0339c5b31574306fd30dc932d564a33ddf062a24780e651385a5d75f"
+    },
+    {
+      "path": "Assets/UI/ProductionIslandReview/FacilityReviewPanel.asset",
+      "bytes": 2081,
+      "sha256": "7f076f5803aa47c962f11043ea23357520644349fd530c0d3dfe06ff3874969c"
+    },
+    {
+      "path": "Assets/UI/ProductionIslandReview/FacilityReviewPanel.asset.meta",
+      "bytes": 189,
+      "sha256": "ccacdf6ef6f62dc93b350ea0812fce94e27631998f02547bc09ba266e9402f13"
+    },
+    {
+      "path": "Assets/UI/ProductionIslandReview.meta",
+      "bytes": 172,
+      "sha256": "c7ed4bb9982f8930edfad70c4a194ff3dac6e967ab54c46b16e5d72f873a5266"
+    },
+    {
+      "path": "docs/kamaboko-design-v002.md",
+      "bytes": 5677,
+      "sha256": "546247a936059756801362bdf2dee2c63557a1680ebe98da627b08f36ce5b115"
+    },
+    {
+      "path": "docs/production-island-facilities-v002.md",
+      "bytes": 8608,
+      "sha256": "19b414214f2e7a8e85dc0cfc93698db8751a9fcd9faedbbe793cd90a57e847f5"
+    },
+    {
+      "path": "docs/production-island-facility-motions.md",
+      "bytes": 6870,
+      "sha256": "568541b5d25bf6c5259b95739a2c7e1b0a04b89ab643367cbb96e1c44985f586"
+    },
+    {
+      "path": "docs/production-island-review-user-guide.md",
+      "bytes": 5974,
+      "sha256": "2852260fd22bf58d9f727e5397c09e95c7c09046fdae32824edf714459b1c07e"
+    },
+    {
+      "path": "docs/testing/production-island-visual-review.md",
+      "bytes": 9189,
+      "sha256": "9d3faca68bea1897f1129a45be5735ca271e1e92cdac56f5b67f0ec55b594526"
+    },
+    {
+      "path": "scripts/package_production_island_v002.py",
+      "bytes": 5024,
+      "sha256": "190a12ece72e567f21ec8dd6d4181ea8201d007edd1859cc19beb53d08fbf74d"
+    }
+  ]
+}
