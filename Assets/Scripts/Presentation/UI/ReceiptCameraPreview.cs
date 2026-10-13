@@ -98,7 +98,7 @@ namespace ProjectPenguin.Presentation.UI
             _awaitingPermission = false;
             if (!authorized)
             {
-                SetStatus("カメラの使用が許可されていません。\n端末の設定から許可してください。");
+                SetStatus("カメラの使用が許可されていません。\nホーム右上の設定ボタンから許可してください。");
                 _startRoutine = null;
                 yield break;
             }
