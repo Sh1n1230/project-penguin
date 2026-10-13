@@ -61,4 +61,6 @@ echo '{"cwd":".","tool_input":{"command":"git push --force"}}' | uv run --no-pro
 
 ```bash
 uv run --no-project python .claude/hooks/japanese-guard.py --check <transcript.jsonl>
-```フックが読み込まれているかは `/context`、ルールの読み込み状況は `/memory` で確認できる。
+```
+
+フックが読み込まれているかは `/context`、ルールの読み込み状況は `/memory` で確認できる。
