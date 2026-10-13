@@ -175,6 +175,18 @@ CLI から回す場合は Editor でプロジェクトを閉じてから実行�
 
 ## 現状
 
-**Unity 6 URP プロジェクトの初期化と、ビルド・CI まわりの土台のみが完了しています。** Game Logic (GameState / PenguinSystem / IceSystem / DailyMission / Pokedex / Reward)、SQLite によるローカルデータ、FastAPI バックエンドはいずれも未実装です。
+上記アーキテクチャ図のうち、実装済みなのは Presentation の一部です。図はこれから作るものを含めた設計を表しています。
 
-上記アーキテクチャ図は実装済みの構成ではなく、これから作るものの設計を表しています。
+**実装済み (ゲームの状態とはまだつながっていない)**
+
+- ビルド・署名・CI の土台 (`Assets/Editor/Build/`、`.github/workflows/`、`scripts/`)
+- UI Toolkit による 7 画面 (ホーム / 記録 / ミッション / スキャン / 解析中 / 結果 / メニュー) と画面遷移、SafeArea 対応 (`Assets/UI/`、`Assets/Scripts/Presentation/UI/`)。デザインシステムは `docs/design-system.md`、画面構成は `docs/ui-structure.md`
+- スキャン画面のカメラプレビュー。撮影・解析はまだ行わず、解析中画面の進行と記録画面のグラフは仮の値で動く
+- ホームの 3D ワールド (`Assets/Scenes/HomeWorld.unity`)。氷山と小屋のモデル、円周上を歩くペンギン、端末の縦横比に合わせたカメラの画角調整 (`Assets/Scripts/Presentation/World/`)
+- 上記の EditMode テスト (`Assets/Tests/EditMode/`)
+
+**未実装**
+
+- Game Logic (GameState / PenguinSystem / IceSystem / DailyMission / Pokedex / Reward)。`Domain` / `Systems` の asmdef はあるが中身はまだ無い
+- SQLite によるローカルデータ (`Data`)
+- FastAPI バックエンド (`backend/`) とその Unity 側のクライアント (`Backend`)
