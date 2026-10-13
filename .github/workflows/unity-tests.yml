@@ -2,7 +2,7 @@
 # Project Penguin - Unity EditMode / PlayMode テスト
 #
 # Unity のテスト実行には Editor のライセンス認証が必要なため、
-# 手動起動 (workflow_dispatch) と main への push に限定している。
+# 同一リポジトリのPR、mainへのpush、手動起動で実行する。
 # 認証情報が未登録のうちは自動でスキップされ、CI を赤くしない。
 #
 # 有効化の手順:
@@ -17,6 +17,7 @@
 name: Unity Tests
 
 on:
+  pull_request:
   push:
     branches: [main]
   workflow_dispatch:
@@ -50,7 +51,7 @@ jobs:
   test:
     name: ${{ matrix.testMode }}
     needs: probe
-    if: needs.probe.outputs.licensed == 'true'
+    if: needs.probe.outputs.licensed == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
