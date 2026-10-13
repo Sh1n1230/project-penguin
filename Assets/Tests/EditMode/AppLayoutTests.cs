@@ -60,5 +60,16 @@ namespace ProjectPenguin.Tests.EditMode
                 Assert.That(scope.Q<Button>(route.Button), Is.Not.Null, $"'{route.Scope}' に Button '{route.Button}' がありません");
             }
         }
+
+        [Test]
+        public void EveryAppSettingsButtonExistsInItsScope()
+        {
+            foreach (var (scopeName, button) in ScreenNavigator.AppSettingsButtons)
+            {
+                var scope = _root.Q(scopeName);
+                Assert.That(scope, Is.Not.Null, $"'{scopeName}' がありません");
+                Assert.That(scope.Q<Button>(button), Is.Not.Null, $"'{scopeName}' に Button '{button}' がありません");
+            }
+        }
     }
 }

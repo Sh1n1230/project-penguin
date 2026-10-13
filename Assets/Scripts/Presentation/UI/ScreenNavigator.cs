@@ -66,6 +66,13 @@ namespace ProjectPenguin.Presentation.UI
             new Route(ElementNameOf(AppScreen.Menu), "menuMission", AppScreen.Mission),
         };
 
+        /// <summary>端末の設定アプリを開くボタン。アプリ内の設定画面ができるまでの暫定。</summary>
+        public static readonly IReadOnlyList<(string Scope, string Button)> AppSettingsButtons = new[]
+        {
+            (ElementNameOf(AppScreen.Home), "settingsButton"),
+            (ElementNameOf(AppScreen.Menu), "menuSettings"),
+        };
+
         [Tooltip("ホーム以外の不透明な画面の表示中に止める 3D ワールドのカメラ。見えない世界を描画し続けないため")]
         [SerializeField] private Camera _worldCamera;
 
@@ -125,6 +132,14 @@ namespace ProjectPenguin.Presentation.UI
                 var button = Require<Button>(Require(root, route.Scope), route.Button);
                 var target = route.Target;
                 Action handler = target.HasValue ? () => Show(target.Value) : () => Show(_lastTab);
+                button.clicked += handler;
+                _bindings.Add((button, handler));
+            }
+
+            foreach (var (scope, name) in AppSettingsButtons)
+            {
+                var button = Require<Button>(Require(root, scope), name);
+                Action handler = AppSettingsLauncher.Open;
                 button.clicked += handler;
                 _bindings.Add((button, handler));
             }
