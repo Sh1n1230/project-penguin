@@ -17,6 +17,21 @@
       "Bash(git lfs ls-files:*)",
       "Bash(git lfs env)",
       "Bash(gh:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git merge:*)",
+      "Bash(git rebase:*)",
+      "Bash(git cherry-pick:*)",
+      "Bash(git revert:*)",
+      "Bash(git reset:*)",
+      "Bash(git clean:*)",
+      "Bash(git checkout:*)",
+      "Bash(git switch:*)",
+      "Bash(git restore:*)",
+      "Bash(git stash:*)",
+      "Bash(git tag:*)",
+      "Bash(git rm:*)",
+      "Bash(git lfs untrack:*)",
       "Bash(ls:*)",
       "Bash(wc:*)",
       "Bash(find:*)",
@@ -51,21 +66,6 @@
       "Bash(git lfs uninstall:*)"
     ],
     "ask": [
-      "Bash(git commit:*)",
-      "Bash(git push:*)",
-      "Bash(git merge:*)",
-      "Bash(git rebase:*)",
-      "Bash(git cherry-pick:*)",
-      "Bash(git revert:*)",
-      "Bash(git reset:*)",
-      "Bash(git clean:*)",
-      "Bash(git checkout:*)",
-      "Bash(git switch:*)",
-      "Bash(git restore:*)",
-      "Bash(git stash:*)",
-      "Bash(git tag:*)",
-      "Bash(git rm:*)",
-      "Bash(git lfs untrack:*)",
       "Bash(uv add:*)",
       "Bash(uv remove:*)",
       "Edit(./.gitattributes)",
@@ -111,7 +111,9 @@
       }
     ]
   },
-  "enabledMcpjsonServers": ["UnityMCP"],
+  "enabledMcpjsonServers": [
+    "UnityMCP"
+  ],
   "enabledPlugins": {
     "unity@claude-plugins-official": true
   }
