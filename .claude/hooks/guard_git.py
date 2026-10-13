@@ -76,6 +76,50 @@ def current_branch(cwd: str) -> str:
         return ""
 
 
+# git push のうち、次の引数を値として取るオプション。値を refspec と取り違えないよう読み飛ばす。
+_PUSH_OPT_WITH_ARG = {"-o", "--push-option", "--repo", "--receive-pack", "--exec"}
+_PROTECTED = ("main", "master")
+
+
+def parse_push(args: list[str]) -> tuple[list[str], list[str]]:
+    """git push の引数を (オプション, refspec) に分ける。最初の位置引数はリモート名なので捨てる。"""
+    options: list[str] = []
+    positionals: list[str] = []
+    i = 0
+    while i < len(args):
+        arg = args[i]
+        if arg == "--":
+            positionals.extend(args[i + 1:])
+            break
+        if arg.startswith("-"):
+            options.append(arg)
+            if arg in _PUSH_OPT_WITH_ARG:
+                i += 1
+        else:
+            positionals.append(arg)
+        i += 1
+    return options, positionals[1:]
+
+
+def is_force_option(option: str) -> bool:
+    """force push になるオプションか。-uf のような短いオプションのまとめ書きも見る。"""
+    if option in ("--force", "--mirror"):
+        return True
+    if option.startswith(("--force-with-lease", "--force-if-includes")):
+        return True
+    # git push の短いオプションで f を含むのは -f (--force) だけ。
+    return re.fullmatch(r"-[A-Za-z0-9]*f[A-Za-z0-9]*", option) is not None
+
+
+def push_target(refspec: str, cwd: str) -> str:
+    """refspec の push 先のブランチ名。HEAD は今のブランチに、refs/heads/ は外して返す。"""
+    src, sep, dst = refspec.lstrip("+").partition(":")
+    target = dst if sep else src
+    if target in ("HEAD", "@"):
+        target = current_branch(cwd)
+    return target.removeprefix("refs/heads/")
+
+
 def main() -> None:
     try:
         payload = json.load(sys.stdin)
@@ -96,16 +140,21 @@ def main() -> None:
             )
 
         if sub == "push":
-            if any(a in ("-f", "--force") or a.startswith("--force-with-lease") or a.startswith("--force-if-includes") for a in args):
+            options, refspecs = parse_push(args)
+            # refspec 先頭の + も、そのブランチだけの force push になる。
+            if any(is_force_option(o) for o in options) or any(r.startswith("+") for r in refspecs):
                 deny(
                     "force push は禁止しています。公開リポジトリで履歴を書き換えると "
                     "LFS オブジェクトの参照も壊れます。手順の提示にとどめてください。"
                 )
-            refs = [a for a in args if not a.startswith("-")]
-            targets = " ".join(refs)
-            if re.search(r"(^|[\s:])(main|master)($|[\s:])", targets) or (
-                len(refs) <= 1 and current_branch(cwd) in ("main", "master")
-            ):
+            # --all はローカルの main も、refspec の省略は今のブランチを push する。
+            # ":" だけの refspec は同名のブランチをすべて push する。
+            pushes_main = (
+                any(o in ("--all", "--branches") for o in options)
+                or (not refspecs and current_branch(cwd) in _PROTECTED)
+                or any(r.lstrip("+") == ":" or push_target(r, cwd) in _PROTECTED for r in refspecs)
+            )
+            if pushes_main:
                 deny(
                     "main への直接 push は禁止しています。"
                     "feat/ fix/ chore/ などの作業ブランチを切って PR 経由でマージしてください。"
