@@ -190,3 +190,15 @@ CLI から回す場合は Editor でプロジェクトを閉じてから実行�
 - Game Logic (GameState / PenguinSystem / IceSystem / DailyMission / Pokedex / Reward)。`Domain` / `Systems` の asmdef はあるが中身はまだ無い
 - SQLite によるローカルデータ (`Data`)
 - FastAPI バックエンド (`backend/`) とその Unity 側のクライアント (`Backend`)
+
+## ライセンス
+
+**All Rights Reserved。** ソースコード・企画・ドキュメント・3D モデルなどの素材の権利はすべて Project Penguin Team に帰属し、事前の書面による許可のない利用・複製・改変・再配布を禁じます。リポジトリは公開していますが、オープンソースではありません。詳細は [`LICENSE`](LICENSE) を参照してください。
+
+同梱しているサードパーティのコンポーネントは、それぞれのライセンスに従います。
+
+| 対象 | ライセンス |
+|---|---|
+| `Assets/UI/Fonts/` の M PLUS Rounded 1c | SIL OFL 1.1 (`OFL.txt` 同梱) |
+| `Assets/TextMesh Pro/` | Unity Companion License (中の Liberation Sans は SIL OFL 1.1) |
+| `.agents/skills/`・`.claude/skills/` の外部スキル | 提供元のライセンス (`skills-lock.json` 参照。Unity-Technologies/skills は Unity Companion License、mattpocock/skills は MIT) |
