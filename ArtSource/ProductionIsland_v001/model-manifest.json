@@ -1,0 +1,728 @@
+[
+  {
+    "name": "Tile_Ice_Core",
+    "request": "T-01",
+    "triangles": 88,
+    "footprint": 1,
+    "dimensions_blender": [
+      1.0000001192092896,
+      1.0000001788139343,
+      0.22800002060830593
+    ],
+    "moving_parts": [],
+    "category": "terrain"
+  },
+  {
+    "name": "Tile_Ice_Expanded",
+    "request": "T-01",
+    "triangles": 44,
+    "footprint": 1,
+    "dimensions_blender": [
+      1.0000001192092896,
+      1.0000001192092896,
+      0.10000007649196974
+    ],
+    "moving_parts": [],
+    "category": "terrain"
+  },
+  {
+    "name": "Tile_Ice_CrackSmall",
+    "request": "T-02",
+    "triangles": 68,
+    "footprint": 1,
+    "dimensions_blender": [
+      1.0000001192092896,
+      1.0000001192092896,
+      0.1060000485740602
+    ],
+    "moving_parts": [],
+    "category": "terrain"
+  },
+  {
+    "name": "Tile_Ice_CrackLarge",
+    "request": "T-02",
+    "triangles": 92,
+    "footprint": 1,
+    "dimensions_blender": [
+      1.0000001192092896,
+      1.0000001192092896,
+      0.10600005742162466
+    ],
+    "moving_parts": [],
+    "category": "terrain"
+  },
+  {
+    "name": "Tile_Ice_Sinking",
+    "request": "T-02",
+    "triangles": 92,
+    "footprint": 1,
+    "dimensions_blender": [
+      1.0000001192092896,
+      1.0000001192092896,
+      0.06600005459040403
+    ],
+    "moving_parts": [],
+    "category": "terrain"
+  },
+  {
+    "name": "Tile_Sea",
+    "request": "T-03",
+    "triangles": 44,
+    "footprint": 1,
+    "dimensions_blender": [
+      1.0000001192092896,
+      1.0000001192092896,
+      0.03500007515086523
+    ],
+    "moving_parts": [],
+    "category": "terrain"
+  },
+  {
+    "name": "Tile_Sea_Expandable",
+    "request": "T-03",
+    "triangles": 68,
+    "footprint": 1,
+    "dimensions_blender": [
+      1.0000001192092896,
+      1.0000001192092896,
+      0.045000072568655014
+    ],
+    "moving_parts": [],
+    "category": "terrain"
+  },
+  {
+    "name": "Tile_Canal_OneBank",
+    "request": "T-04",
+    "triangles": 88,
+    "footprint": 1,
+    "dimensions_blender": [
+      1.0000001192092896,
+      1.0000001192092896,
+      0.1050000749528408
+    ],
+    "moving_parts": [],
+    "category": "terrain"
+  },
+  {
+    "name": "Tile_Canal_TwoBanks",
+    "request": "T-04",
+    "triangles": 132,
+    "footprint": 1,
+    "dimensions_blender": [
+      1.0000001192092896,
+      1.0000001192092896,
+      0.1050000749528408
+    ],
+    "moving_parts": [],
+    "category": "terrain"
+  },
+  {
+    "name": "Shore_Straight",
+    "request": "T-05",
+    "triangles": 44,
+    "footprint": 1,
+    "dimensions_blender": [
+      1.0,
+      0.12000015377998352,
+      0.09000001183144235
+    ],
+    "moving_parts": [],
+    "category": "terrain"
+  },
+  {
+    "name": "Shore_OuterCorner",
+    "request": "T-05",
+    "triangles": 88,
+    "footprint": 1,
+    "dimensions_blender": [
+      1.0000001192092896,
+      0.8799999952316284,
+      0.09000007143608713
+    ],
+    "moving_parts": [],
+    "category": "terrain"
+  },
+  {
+    "name": "Shore_InnerCorner",
+    "request": "T-05",
+    "triangles": 132,
+    "footprint": 1,
+    "dimensions_blender": [
+      1.0000001192092896,
+      0.8799999952316284,
+      0.09000007143608713
+    ],
+    "moving_parts": [],
+    "category": "terrain"
+  },
+  {
+    "name": "Marker_Fishing",
+    "request": "T-06",
+    "triangles": 188,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.30000007152557373,
+      0.30000007152557373,
+      0.08800001084784892
+    ],
+    "moving_parts": [],
+    "category": "terrain"
+  },
+  {
+    "name": "Marker_Salt",
+    "request": "T-06",
+    "triangles": 92,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.30000007152557373,
+      0.30000007152557373,
+      0.14000001192073253
+    ],
+    "moving_parts": [],
+    "category": "terrain"
+  },
+  {
+    "name": "Marker_Kelp",
+    "request": "T-06",
+    "triangles": 176,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.30000007152557373,
+      0.30000007152557373,
+      0.14844868719558146
+    ],
+    "moving_parts": [],
+    "category": "terrain"
+  },
+  {
+    "name": "Building_Fishery_2x2",
+    "request": "B-01",
+    "triangles": 756,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600002527236938,
+      1.8600002527236938,
+      1.1900001274335068
+    ],
+    "moving_parts": [
+      "Net_Anim",
+      "Boat_Anim"
+    ],
+    "category": "building"
+  },
+  {
+    "name": "Building_Warehouse_1x1",
+    "request": "B-02",
+    "triangles": 228,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.880000114440918,
+      0.880000114440918,
+      0.9400000904395363
+    ],
+    "moving_parts": [
+      "Door_Anim"
+    ],
+    "category": "building"
+  },
+  {
+    "name": "Building_Preparation_2x2",
+    "request": "B-04",
+    "triangles": 540,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600002527236938,
+      1.8600002527236938,
+      1.40000004637119
+    ],
+    "moving_parts": [
+      "Knife_Anim"
+    ],
+    "category": "building"
+  },
+  {
+    "name": "Building_Chikuwa_2x2",
+    "request": "B-05",
+    "triangles": 580,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600002527236938,
+      1.8600002527236938,
+      1.40000004637119
+    ],
+    "moving_parts": [
+      "Grill_Anim",
+      "FlameLow_Anim",
+      "FlameHigh_Anim"
+    ],
+    "category": "building"
+  },
+  {
+    "name": "Building_Kamaboko_2x2",
+    "request": "B-06",
+    "triangles": 484,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600002527236938,
+      1.8600002527236938,
+      1.40000004637119
+    ],
+    "moving_parts": [
+      "SteamerLid_Anim"
+    ],
+    "category": "building"
+  },
+  {
+    "name": "Building_Saltworks_2x2",
+    "request": "B-07",
+    "triangles": 628,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600002527236938,
+      1.8600002527236938,
+      1.1900001274335068
+    ],
+    "moving_parts": [
+      "SaltPan_Anim",
+      "SaltPan_Anim.001",
+      "SaltPan_Anim.002"
+    ],
+    "category": "building"
+  },
+  {
+    "name": "Building_Drying_2x2",
+    "request": "B-08",
+    "triangles": 928,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600002527236938,
+      1.8600002527236938,
+      1.245000194190709
+    ],
+    "moving_parts": [
+      "DryingNet_Anim"
+    ],
+    "category": "building"
+  },
+  {
+    "name": "Building_KelpFarm_2x2",
+    "request": "B-09",
+    "triangles": 816,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600002527236938,
+      1.8600002527236938,
+      1.1900001274335068
+    ],
+    "moving_parts": [
+      "Kelp_Anim",
+      "Kelp_Anim.001",
+      "Kelp_Anim.002",
+      "Kelp_Anim.003",
+      "Kelp_Anim.004",
+      "Kelp_Anim.005",
+      "Kelp_Anim.006",
+      "Kelp_Anim.007",
+      "Kelp_Anim.008"
+    ],
+    "category": "building"
+  },
+  {
+    "name": "Building_Oden_2x2",
+    "request": "B-10",
+    "triangles": 612,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600002527236938,
+      1.8600002527236938,
+      1.40000004637119
+    ],
+    "moving_parts": [
+      "Curtain_Anim"
+    ],
+    "category": "building"
+  },
+  {
+    "name": "Building_Power_2x2",
+    "request": "B-11",
+    "triangles": 516,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600002527236938,
+      1.8600002527236938,
+      1.5600001322018784
+    ],
+    "moving_parts": [
+      "WindRotor_Anim"
+    ],
+    "category": "building"
+  },
+  {
+    "name": "Building_Research_2x2",
+    "request": "B-12",
+    "triangles": 428,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600002527236938,
+      1.8600002527236938,
+      1.40000004637119
+    ],
+    "moving_parts": [
+      "Telescope_Anim",
+      "Lamp_Anim"
+    ],
+    "category": "building"
+  },
+  {
+    "name": "Building_Collection_1x1",
+    "request": "B-13",
+    "triangles": 228,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.880000114440918,
+      0.880000114440918,
+      0.7000000212981483
+    ],
+    "moving_parts": [
+      "Waterwheel_Anim"
+    ],
+    "category": "building"
+  },
+  {
+    "name": "Building_Dormitory_1x1",
+    "request": "B-14",
+    "triangles": 272,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.880000114440918,
+      0.880000114440918,
+      1.0000000332190773
+    ],
+    "moving_parts": [
+      "Door_Anim"
+    ],
+    "category": "building"
+  },
+  {
+    "name": "Building_Sorter_1x1",
+    "request": "B-15",
+    "triangles": 188,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.880000114440918,
+      0.880000114440918,
+      0.9400000308348915
+    ],
+    "moving_parts": [
+      "SortingPlate_Anim"
+    ],
+    "category": "building"
+  },
+  {
+    "name": "Harbor_Stage0",
+    "request": "B-03 / H-00",
+    "triangles": 168,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.5300003290176392,
+      1.3900002241134644,
+      0.40000011366599963
+    ],
+    "moving_parts": [],
+    "category": "building"
+  },
+  {
+    "name": "Harbor_Stage1",
+    "request": "B-03 / H-01",
+    "triangles": 44,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600002527236938,
+      1.8600003123283386,
+      0.30000014173862155
+    ],
+    "moving_parts": [],
+    "category": "building"
+  },
+  {
+    "name": "Harbor_Stage2",
+    "request": "B-03 / H-02",
+    "triangles": 280,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600002527236938,
+      1.8600003123283386,
+      1.1850001322018784
+    ],
+    "moving_parts": [],
+    "category": "building"
+  },
+  {
+    "name": "Harbor_Stage3",
+    "request": "B-03 / H-03",
+    "triangles": 288,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600002527236938,
+      1.8600003123283386,
+      1.43000013697025
+    ],
+    "moving_parts": [],
+    "category": "building"
+  },
+  {
+    "name": "Harbor_Stage4",
+    "request": "B-03 / H-04",
+    "triangles": 396,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600002527236938,
+      1.8600003123283386,
+      1.43000013697025
+    ],
+    "moving_parts": [
+      "Lantern_Anim",
+      "Lantern_Anim.001",
+      "Lantern_Anim.002"
+    ],
+    "category": "building"
+  },
+  {
+    "name": "Harbor_Stage5",
+    "request": "B-03 / H-05",
+    "triangles": 568,
+    "footprint": 2,
+    "dimensions_blender": [
+      1.8600002527236938,
+      1.8600003123283386,
+      1.5000000702130478
+    ],
+    "moving_parts": [
+      "Lantern_Anim",
+      "Lantern_Anim.001",
+      "Lantern_Anim.002"
+    ],
+    "category": "building"
+  },
+  {
+    "name": "Item_Pearl",
+    "request": "I-05",
+    "triangles": 96,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.1900000050663948,
+      0.1600000113248825,
+      0.11300001152345862
+    ],
+    "moving_parts": [],
+    "category": "item"
+  },
+  {
+    "name": "Item_Fish",
+    "request": "I-06",
+    "triangles": 144,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.2212500125169754,
+      0.11249999701976776,
+      0.060000003315508366
+    ],
+    "moving_parts": [],
+    "category": "item"
+  },
+  {
+    "name": "Item_Surimi",
+    "request": "I-07",
+    "triangles": 84,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.16167964041233063,
+      0.17000003159046173,
+      0.08950000908225775
+    ],
+    "moving_parts": [],
+    "category": "item"
+  },
+  {
+    "name": "Item_Salt",
+    "request": "I-08",
+    "triangles": 84,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.15000000596046448,
+      0.12000001594424248,
+      0.16000000095359468
+    ],
+    "moving_parts": [],
+    "category": "item"
+  },
+  {
+    "name": "Item_Kelp",
+    "request": "I-09",
+    "triangles": 132,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.13193096220493317,
+      0.01750002708286047,
+      0.1776562794111669
+    ],
+    "moving_parts": [],
+    "category": "item"
+  },
+  {
+    "name": "Item_Kamaboko",
+    "request": "I-10",
+    "triangles": 140,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.1900000125169754,
+      0.12000002712011337,
+      0.11000000312924385
+    ],
+    "moving_parts": [],
+    "category": "item"
+  },
+  {
+    "name": "Item_Chikuwa",
+    "request": "I-11",
+    "triangles": 96,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.18000002205371857,
+      0.08000003173947334,
+      0.08000000123177653
+    ],
+    "moving_parts": [],
+    "category": "item"
+  },
+  {
+    "name": "Item_DriedFish",
+    "request": "I-12",
+    "triangles": 144,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.2212500125169754,
+      0.11249999701976776,
+      0.060000003315508366
+    ],
+    "moving_parts": [],
+    "category": "item"
+  },
+  {
+    "name": "Item_Oden",
+    "request": "I-13",
+    "triangles": 172,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.09000000357627869,
+      0.07000002264976501,
+      0.20000000335772178
+    ],
+    "moving_parts": [],
+    "category": "item"
+  },
+  {
+    "name": "Link_Arrow_Normal",
+    "request": "L-02",
+    "triangles": 8,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.1599999964237213,
+      0.18000000715255737,
+      0.025000029703113213
+    ],
+    "moving_parts": [],
+    "category": "link"
+  },
+  {
+    "name": "Link_Arrow_Blocked",
+    "request": "L-02",
+    "triangles": 8,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.1599999964237213,
+      0.18000000715255737,
+      0.025000029703113213
+    ],
+    "moving_parts": [],
+    "category": "link"
+  },
+  {
+    "name": "Link_Port_Input_Free",
+    "request": "L-03",
+    "triangles": 68,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.14000000059604645,
+      0.14000000804662704,
+      0.03800001763313254
+    ],
+    "moving_parts": [],
+    "category": "link"
+  },
+  {
+    "name": "Link_Port_Input_Connected",
+    "request": "L-03",
+    "triangles": 68,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.14000000059604645,
+      0.14000000804662704,
+      0.03800001763313254
+    ],
+    "moving_parts": [],
+    "category": "link"
+  },
+  {
+    "name": "Link_Port_Input_Selectable",
+    "request": "L-03",
+    "triangles": 68,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.14000000059604645,
+      0.14000000804662704,
+      0.03800001763313254
+    ],
+    "moving_parts": [],
+    "category": "link"
+  },
+  {
+    "name": "Link_Port_Output_Free",
+    "request": "L-03",
+    "triangles": 68,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.14000000059604645,
+      0.14000000804662704,
+      0.03800001763313254
+    ],
+    "moving_parts": [],
+    "category": "link"
+  },
+  {
+    "name": "Link_Port_Output_Connected",
+    "request": "L-03",
+    "triangles": 68,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.14000000059604645,
+      0.14000000804662704,
+      0.03800001763313254
+    ],
+    "moving_parts": [],
+    "category": "link"
+  },
+  {
+    "name": "Link_Port_Output_Selectable",
+    "request": "L-03",
+    "triangles": 68,
+    "footprint": 1,
+    "dimensions_blender": [
+      0.14000000059604645,
+      0.14000000804662704,
+      0.03800001763313254
+    ],
+    "moving_parts": [],
+    "category": "link"
+  }
+]

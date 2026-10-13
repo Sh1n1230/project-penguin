@@ -1,0 +1,11 @@
+{
+  "models": 52,
+  "penguin_models": 1,
+  "svg_icons": 34,
+  "clips": 4,
+  "link_states": 5,
+  "vfx_prefabs": 7,
+  "metadata": "pass",
+  "unity_build": "PASS: native assets generated; materials, prefab references and four penguin clips verified.",
+  "max_model_triangles": 928
+}
