@@ -29,9 +29,11 @@ Claude Code (および互換エージェント) 向けの設定。**個人設定
 
 ## permissions
 
-- **allow** — 読み取り系の git / lint / test。確認プロンプトを出さない。
-- **ask** — commit・push・履歴操作・`.gitattributes` 編集など、実行前に人が見るべきもの。
-- **deny** — `.env` や `*.db` (購買履歴) の読み取り、force push、`filter-branch`。
+- **allow** — 読み取り系の git / lint / test に加え、git の書き込み系 (commit・push・merge・rebase・reset・clean など) と `gh`。auto モードで離席中の作業が確認待ちで止まらないようにするため (#40)。
+- **ask** — `uv add` / `uv remove` と、`.gitattributes`・`.gitignore`・`Packages/manifest.json` の編集。
+- **deny** — `.env` や `*.db` (購買履歴) の読み取り、`git push --force` / `-f`、`filter-branch`、`lfs uninstall`。
+
+`guard_git.py` (下の hooks) は 2026-10-13 から当面無効にしている (#39・#50。本番の運用に入るときに戻すかを決める)。そのため今は、`git push origin main --force` や `+refspec` のような deny の前方一致をすり抜ける force push、main への直接 push、秘密ファイルの `git add` を機械的には止めていない。CI の `check_secrets.py` と GitHub 側の設定が最後の歯止めになる。
 
 `CLAUDE.md` の記述は「文脈」であって強制力がない。**確実に止めたいものは permissions か hooks に書く。**
 
@@ -41,7 +43,7 @@ Python 標準ライブラリのみで書いてある (Windows で bash / jq に�
 
 | フック | イベント | ブロックするもの |
 |---|---|---|
-| `guard_git.py` | PreToolUse / Bash | force push、`main` への直接 push、`filter-branch`、`commit --no-verify`、`.env` や `*.db` の `git add` |
+| `guard_git.py` (**当面無効**。`settings.json` に登録していない) | PreToolUse / Bash | force push、`main` への直接 push、`filter-branch`、`commit --no-verify`、`.env` や `*.db` の `git add` |
 | `guard_write.py` | PreToolUse / Write・Edit | Unity YAML (`.unity` `.prefab` `.asset` `.meta` …) の直接編集、生成物への書き込み、`.env` への書き込み、API キー実値の混入 |
 | `japanese-guard.py` | Stop | ターンの最終回答が英語主体のときに終了させず、日本語での書き直しを求める (1 ターンにつき 1 回まで) |
 
