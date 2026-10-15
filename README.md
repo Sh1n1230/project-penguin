@@ -151,7 +151,7 @@ CLI から回す場合は Editor でプロジェクトを閉じてから実行�
 # iOS の Xcode プロジェクト (macOS)
 /Applications/Unity/Hub/Editor/6000.6.0f1/Unity.app/Contents/MacOS/Unity \
   -batchmode -nographics -projectPath . -logFile - \
-  -executeMethod ProjectPenguin.Editor.Build.BuildEntry.IosXcode -- --dev
+  -executeMethod ProjectPenguin.Editor.Build.BuildEntry.IosXcode -- --bundle-version 0.1.0 --build-number 5
 
 # Android の APK (MVP 後に Android を再開するとき用。Windows の例)
 "C:/Program Files/Unity/Hub/Editor/6000.6.0f1/Editor/Unity.exe" \
@@ -166,6 +166,7 @@ CLI から回す場合は Editor でプロジェクトを閉じてから実行�
 | `--dev` | Development Build にする |
 | `--output <dir>` | 出力先のルート (既定は `Builds/`) |
 | `--bundle-version <x.y.z>` | 表示用のバージョン (iOS の `CFBundleShortVersionString`、Android の versionName) |
+| `--build-number <n>` | iOS のビルド番号 (`CFBundleVersion`)。`5` や `1.0.3` のようにピリオド区切りで最大 3 つの数字。TestFlight に上げるたびに増やす |
 | `--version-code <n>` | Android の versionCode |
 
 ### 署名

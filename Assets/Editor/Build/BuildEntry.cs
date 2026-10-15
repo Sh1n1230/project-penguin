@@ -1,9 +1,13 @@
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+
+[assembly: InternalsVisibleTo("ProjectPenguin.Tests.EditMode")]
 
 namespace ProjectPenguin.Editor.Build
 {
@@ -12,11 +16,14 @@ namespace ProjectPenguin.Editor.Build
     ///
     ///   Unity -quit なしで実行し、終了コードはこちらの EditorApplication.Exit で返す:
     ///     Unity -batchmode -nographics -projectPath . -logFile - \
-    ///           -executeMethod ProjectPenguin.Editor.Build.BuildEntry.AndroidApk -- --dev
+    ///           -executeMethod ProjectPenguin.Editor.Build.BuildEntry.IosXcode -- --dev --build-number 5
     /// </summary>
     public static class BuildEntry
     {
         private const string MenuRoot = "Build/";
+
+        /// <summary>Apple のビルド番号の形式。ピリオド区切りで最大 3 つの非負整数。</summary>
+        private static readonly Regex IosBuildNumberPattern = new Regex(@"^[0-9]+(\.[0-9]+){0,2}$");
 
         // ---- Editor メニュー -------------------------------------------------
 
@@ -131,11 +138,25 @@ namespace ProjectPenguin.Editor.Build
 
                         request.AndroidVersionCode = code;
                         break;
+                    case "--build-number":
+                        var number = Next(args, i++, "--build-number");
+                        if (!IsValidIosBuildNumber(number))
+                        {
+                            throw new BuildRequestException(
+                                $"--build-number は「5」「1.0.3」のような、ピリオド区切りで最大 3 つの数字にしてください: {number}");
+                        }
+
+                        request.IosBuildNumber = number;
+                        break;
                 }
             }
 
             return request;
         }
+
+        /// <summary>CFBundleVersion として受け付けられる形式か。</summary>
+        internal static bool IsValidIosBuildNumber(string value) =>
+            value != null && IosBuildNumberPattern.IsMatch(value);
 
         private static string Next(string[] args, int index, string option)
         {

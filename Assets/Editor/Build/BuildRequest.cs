@@ -36,6 +36,12 @@ namespace ProjectPenguin.Editor.Build
         /// <summary>null なら ProjectSettings の versionCode をそのまま使う。</summary>
         public int? AndroidVersionCode { get; set; }
 
+        /// <summary>
+        /// iOS のビルド番号 (CFBundleVersion)。null なら ProjectSettings の値をそのまま使う。
+        /// TestFlight は同じバージョンの中でビルド番号が重複したビルドを受け付けない。
+        /// </summary>
+        public string IosBuildNumber { get; set; }
+
         public bool IsAndroid => Kind != BuildKind.IosXcode;
 
         public BuildTarget Target => IsAndroid ? BuildTarget.Android : BuildTarget.iOS;
