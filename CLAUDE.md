@@ -29,6 +29,7 @@
 | `ArtSource/` | UV レイアウトなど、ゲームには読み込まない制作素材。Unity に取り込ませないため `Assets/` の外に置く |
 | `backend/` | FastAPI (`src/penguin_backend/`, `tests/`) |
 | `scripts/` | CI とローカル共用の検査スクリプト |
+| `tests/hooks/` | `.claude/hooks/` と `scripts/` の判定のテスト (pytest、標準ライブラリのみ) |
 | `docs/` | 設計メモ (`ui-structure.md` 画面構成、`design-system.md` 見た目の決まりごと) と参考画像 |
 | `docs/game-logic.md` | ゲームロジックの仕様 (氷・盾・おかえり・段・来訪・スタンプ)。値と規則はこれを正とする |
 | `tools/game_sim/` | ゲームロジックの Python 参照実装。C# の期待値 (`GameSimGolden.cs`) を生成する |
@@ -49,6 +50,7 @@
 | `.meta` の整合性検査 | `uv run --no-project python scripts/check_unity_meta.py` |
 | Editor バージョンの一致検査 | `uv run --no-project python scripts/check_unity_version.py` |
 | 秘密情報の検査 | `uv run --no-project python scripts/check_secrets.py` |
+| フックと検査スクリプトのテスト | `uv run --no-project --with pytest pytest tests/hooks` |
 | Unity のテスト | Unity Editor の Test Runner (EditMode / PlayMode) |
 | アプリのビルド | Editor の `Build/` メニュー、または `/build` |
 

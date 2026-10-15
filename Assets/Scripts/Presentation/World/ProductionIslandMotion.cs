@@ -14,6 +14,7 @@ namespace ProjectPenguin.Presentation.World
         private Transform[] _parts;
         private Vector3[] _positions;
         private Quaternion[] _rotations;
+        private Vector3[] _scales;
         private Renderer[] _renderers;
         private Material[][] _originalMaterials;
         private ParticleSystem[] _particles;
@@ -42,10 +43,12 @@ namespace ProjectPenguin.Presentation.World
             _parts = Array.FindAll(GetComponentsInChildren<Transform>(true), p => p.name.EndsWith("_Anim", StringComparison.Ordinal));
             _positions = new Vector3[_parts.Length];
             _rotations = new Quaternion[_parts.Length];
+            _scales = new Vector3[_parts.Length];
             for (var i = 0; i < _parts.Length; i++)
             {
                 _positions[i] = _parts[i].localPosition;
                 _rotations[i] = _parts[i].localRotation;
+                _scales[i] = _parts[i].localScale;
             }
             _renderers = GetComponentsInChildren<Renderer>(true);
             _originalMaterials = new Material[_renderers.Length][];
@@ -61,9 +64,10 @@ namespace ProjectPenguin.Presentation.World
             {
                 var renderer = _renderers[index];
                 if (renderer is ParticleSystemRenderer) continue;
-                var material = _running ? _runningMaterial : _stoppedMaterial;
-                if (material == null) continue;
+                // 稼働中は元のマテリアルに戻すだけなので、_runningMaterial が未設定でも戻す。
                 if (_running) { renderer.sharedMaterials = _originalMaterials[index]; continue; }
+                var material = _stoppedMaterial;
+                if (material == null) continue;
                 var materials = renderer.sharedMaterials;
                 for (var i = 0; i < materials.Length; i++) materials[i] = material;
                 renderer.sharedMaterials = materials;
@@ -100,7 +104,7 @@ namespace ProjectPenguin.Presentation.World
                 else if (name.Contains("Door"))
                     part.localRotation = _rotations[i] * Quaternion.Euler(0f, 12f * wave, 0f);
                 else if (name.Contains("Flame"))
-                    part.localScale = Vector3.one * (1f + .08f * wave);
+                    part.localScale = _scales[i] * (1f + .08f * wave);
                 else
                     part.localRotation = _rotations[i] * Quaternion.Euler(0f, 0f, 4f * wave);
             }

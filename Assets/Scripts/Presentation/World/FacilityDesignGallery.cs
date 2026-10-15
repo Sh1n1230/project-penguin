@@ -15,8 +15,11 @@ namespace ProjectPenguin.Presentation.World
         private string _lastAction;
         private Button _overviewButton, _runningButton;
         private VisualElement _picker, _choices;
+        // 選んだ施設の部品。Update で毎フレーム GetComponent しないよう、選んだときに引く。
+        private FacilityProductionCycle _selectedCycle;
+        private bool _selectedIsKamaboko;
         public int SelectedIndex => _index;
-        public string SelectedLabel => _labels[_index];
+        public string SelectedLabel => _labels.Length == 0 ? null : _labels[_index];
         public int FacilityCount => _facilities.Length;
         public Transform GetFacility(int index) => _facilities[index];
 
@@ -53,9 +56,8 @@ namespace ProjectPenguin.Presentation.World
 
         private void Update()
         {
-            if (_action == null || _overview) return;
-            var cycle = _facilities[_index].GetComponent<FacilityProductionCycle>();
-            var text = cycle != null ? cycle.ActionLabel : _facilities[_index].GetComponent<KamabokoProductionCycle>() != null
+            if (_action == null || _overview || _facilities.Length == 0) return;
+            var text = _selectedCycle != null ? _selectedCycle.ActionLabel : _selectedIsKamaboko
                 ? "蒸し器の蓋・蒸気・完成品を確認" : "港の建設段階";
             if (_lastAction == text) return;
             _lastAction = text;
@@ -70,7 +72,10 @@ namespace ProjectPenguin.Presentation.World
         }
         public void Select(int index)
         {
+            if (_facilities == null || _facilities.Length == 0) return;
             _index = (index % _facilities.Length + _facilities.Length) % _facilities.Length;
+            _selectedCycle = _facilities[_index].GetComponent<FacilityProductionCycle>();
+            _selectedIsKamaboko = _facilities[_index].GetComponent<KamabokoProductionCycle>() != null;
             _overview = false;
             if (_picker != null) _picker.style.display = DisplayStyle.None;
             // Isolate the selected facility so its neighbour doesn't enter the close view.
@@ -85,6 +90,7 @@ namespace ProjectPenguin.Presentation.World
 
         public void ShowOverview()
         {
+            if (_facilities == null || _facilities.Length == 0) return;
             _overview = true;
             foreach (var facility in _facilities) facility.gameObject.SetActive(true);
             var bounds = new Bounds(_facilities[0].position, Vector3.zero);
@@ -111,7 +117,7 @@ namespace ProjectPenguin.Presentation.World
 
         private void RefreshLabels()
         {
-            if (_title == null) return;
+            if (_title == null || _facilities.Length == 0) return;
             _title.text = _overview ? "施設一覧" : (_index + 1) + "/" + _facilities.Length + "  " + _labels[_index];
             _recipe.text = _overview ? "全施設の動きを比較。「施設を選ぶ」で拡大表示" : _recipes[_index];
             _overviewButton.text = _overview ? "個別表示" : "全体表示";

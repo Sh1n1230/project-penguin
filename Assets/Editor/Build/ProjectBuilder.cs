@@ -62,6 +62,11 @@ namespace ProjectPenguin.Editor.Build
                 }
                 else
                 {
+                    if (!string.IsNullOrWhiteSpace(request.IosBuildNumber))
+                    {
+                        PlayerSettings.iOS.buildNumber = request.IosBuildNumber;
+                    }
+
                     var team = Environment.GetEnvironmentVariable(AppleTeamIdEnv);
                     if (!string.IsNullOrWhiteSpace(team))
                     {
@@ -147,7 +152,9 @@ namespace ProjectPenguin.Editor.Build
             builder.AppendLine($"[Build] {request.Label} を開始します。");
             builder.AppendLine($"  出力先        : {location}");
             builder.AppendLine($"  バージョン    : {PlayerSettings.bundleVersion}"
-                + (request.IsAndroid ? $" (versionCode {PlayerSettings.Android.bundleVersionCode})" : string.Empty));
+                + (request.IsAndroid
+                    ? $" (versionCode {PlayerSettings.Android.bundleVersionCode})"
+                    : $" (build {PlayerSettings.iOS.buildNumber})"));
             builder.AppendLine($"  Development   : {(request.Development ? "あり" : "なし")}");
             builder.AppendLine($"  署名          : {signing}");
             builder.AppendLine($"  スクリプト    : {PlayerSettings.GetScriptingBackend(request.NamedTarget)}");
