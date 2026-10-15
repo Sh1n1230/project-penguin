@@ -26,14 +26,15 @@ concurrency:
   group: unity-tests-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
-  checks: write
+# 既定は権限なし。必要なジョブだけに付ける (#56)。
+permissions: {}
 
 jobs:
   probe:
     name: ライセンス設定の確認
     runs-on: ubuntu-latest
+    # シークレットの有無を見るだけなので GITHUB_TOKEN の権限は要らない。
+    permissions: {}
     outputs:
       licensed: ${{ steps.check.outputs.licensed }}
     steps:
@@ -53,6 +54,10 @@ jobs:
     needs: probe
     if: needs.probe.outputs.licensed == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
+    # checkout に contents: read、unity-test-runner がテスト結果のチェックを作るのに checks: write が要る。
+    permissions:
+      contents: read
+      checks: write
     strategy:
       fail-fast: false
       matrix:
