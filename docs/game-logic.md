@@ -11,6 +11,8 @@
 |---|---|---|
 | 氷・盾・おかえり・かけら・段・来訪・スタンプの状態機械 | `Assets/Scripts/Domain/Game/` (`GameSession`・`GameParameters`・`IceTierRule`・`AppCalendar`・`PenguinCatalog`) | 実装済み (事前開発の「氷の増減」の範囲) |
 | 日付の区切り (JST 固定、`IClock`) | `Assets/Scripts/Domain/Clock/` | 実装済み |
+| 見た目の規則 (面積・気分・氷に乗る数・ひび) と吹き出しの選び方 (15c §1・§2) | `Assets/Scripts/Domain/World/` | 実装済み |
+| ホームへの反映 (氷の量のカード・吹き出し・氷山の大きさ・ペンギンの数・ひび) | `GameStateSystem` (Systems)、`HomeStatusPresenter`・`IceWorldView` (Presentation) | 実装済み。開発ビルドと Editor ではホームに「記録する」「1 日進める」のデモ用の操作が出る |
 | Python の参照実装と 8 人の利用者のシミュレーション | `tools/game_sim/` | 実装済み。C# との一致は `GameSimParityTests` で確かめる |
 | 週の選び方の氷 B (レシートの採点) | — | Hack Day で作る。`GameSession` は B を関数で受け取るので、それまでは 0 を返す関数を渡す |
 | ミッションの一覧・朝の 3 件の選び方 (15b §3.2) | — | Hack Day 以降。`GameSession` には選択と振り返りの入口だけがある |
