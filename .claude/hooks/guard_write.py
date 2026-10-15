@@ -10,11 +10,15 @@ import os
 import re
 import sys
 
-# Unity Editor 経由でしか触ってはいけない拡張子。
+# Unity Editor 経由でしか触ってはいけない拡張子 (Force Text で YAML として保存されるもの)。
+# 判定は小文字で行う。.gitattributes の merge=unityyaml の行と .editorconfig の
+# 「Unity が生成する YAML」の節も同じ集合にそろえる (tests/hooks で一致を検査している)。
 UNITY_YAML = {
     ".unity", ".prefab", ".asset", ".meta", ".mat", ".anim", ".controller",
     ".overridecontroller", ".mask", ".playable", ".signal", ".terrainlayer",
-    ".physicmaterial", ".physicsmaterial2d",
+    ".physicmaterial", ".physicsmaterial2d", ".lighting", ".spriteatlas",
+    ".spriteatlasv2", ".mixer", ".rendertexture", ".preset", ".giparams",
+    ".shadervariants", ".guiskin", ".fontsettings", ".flare", ".brush",
 }
 # Unity / IDE が再生成するもの。編集しても次のリコンパイルで消える。
 #
