@@ -21,6 +21,7 @@ _FORBIDDEN_ADD = re.compile(
     r"|\.(db|sqlite|sqlite3)(-(journal|wal|shm))?$"
     r"|\.(pem|key|p12|pfx|keystore|jks|mobileprovision)$"
     r"|^secrets\.json$"
+    r"|^ApiKeys\.cs$"
 )
 # git 本体のグローバルオプション。サブコマンドを探すときに読み飛ばす。
 _GLOBAL_OPT_WITH_ARG = {"-c", "-C", "--git-dir", "--work-tree", "--namespace", "--exec-path"}
