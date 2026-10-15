@@ -133,3 +133,28 @@ jobs:
         working-directory: backend
         run: |
           uv run pytest -q || { code=$?; [ "$code" -eq 5 ] && echo "テストがまだありません。" || exit "$code"; }
+
+  # ゲームロジックの参照実装。C# の Domain/Game はこれを写しており、
+  # 期待値 (GameSimGolden.cs) がこのファイルの出力と食い違っていないかも確かめる。
+  game-sim:
+    name: ゲームロジックの参照実装
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          lfs: false
+
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          python-version: '3.12'
+
+      - name: pytest
+        run: uv run --no-project --with pytest pytest tools/game_sim -q
+
+      - name: C# の期待値が最新か
+        run: |
+          uv run --no-project python tools/game_sim/gen_game_golden.py > /tmp/GameSimGolden.cs
+          if ! diff -q /tmp/GameSimGolden.cs Assets/Tests/EditMode/Domain/GameSimGolden.cs; then
+            echo "::error::GameSimGolden.cs が game_sim.py の出力と一致しません。tools/game_sim/README.md の手順で作り直してください。"
+            exit 1
+          fi

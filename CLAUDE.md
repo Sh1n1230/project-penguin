@@ -31,6 +31,8 @@
 | `scripts/` | CI とローカル共用の検査スクリプト |
 | `tests/hooks/` | `.claude/hooks/` と `scripts/` の判定のテスト (pytest、標準ライブラリのみ) |
 | `docs/` | 設計メモ (`ui-structure.md` 画面構成、`design-system.md` 見た目の決まりごと) と参考画像 |
+| `docs/game-logic.md` | ゲームロジックの仕様 (氷・盾・おかえり・段・来訪・スタンプ)。値と規則はこれを正とする |
+| `tools/game_sim/` | ゲームロジックの Python 参照実装。C# の期待値 (`GameSimGolden.cs`) を生成する |
 | `docs/decisions.md` | チームの決定事項 (Discord・JPHACKS の Notion と Slack から抽出)。仕様や前提を確かめるときに読む |
 | `.claude/rules/` | 領域別ルール (該当ファイルを読むと自動適用される) |
 | `.claude/hooks/` | 破壊的操作を機械的に止める PreToolUse フック |
@@ -44,6 +46,7 @@
 | backend の lint | `cd backend && uv run ruff check .` |
 | backend の型検査 | `cd backend && uv run mypy .` |
 | backend のテスト | `cd backend && uv run pytest` |
+| ゲームロジックの参照実装のテスト | `uv run --no-project --with pytest pytest tools/game_sim` |
 | `.meta` の整合性検査 | `uv run --no-project python scripts/check_unity_meta.py` |
 | Editor バージョンの一致検査 | `uv run --no-project python scripts/check_unity_version.py` |
 | 秘密情報の検査 | `uv run --no-project python scripts/check_secrets.py` |
@@ -121,7 +124,7 @@ scope は `unity` / `backend` / `docs` / `ci`。プロジェクト全体にま�
 
 ## 現状
 
-- **実装済み**: ビルド・CI の土台、UI Toolkit の 7 画面と画面遷移 (`ScreenNavigator`)・SafeArea・カメラプレビュー (`Assets/Scripts/Presentation/UI/`)、ホームの 3D ワールド (`HomeWorld.unity`、`Assets/Scripts/Presentation/World/`)、その EditMode テスト。UI の値は仮データで、ゲームの状態とはつながっていない。
-- **未実装**: GameState / PenguinSystem / IceSystem / DailyMission / Pokedex / Reward、SQLite、FastAPI とその Unity 側のクライアント。
+- **実装済み**: ビルド・CI の土台、UI Toolkit の 7 画面と画面遷移 (`ScreenNavigator`)・SafeArea・カメラプレビュー (`Assets/Scripts/Presentation/UI/`)、ホームの 3D ワールド (`HomeWorld.unity`、`Assets/Scripts/Presentation/World/`)、その EditMode テスト。ゲームロジック v3 の状態機械 (氷・盾・おかえり・かけら・段・ペンギンの来訪・スタンプ。`Assets/Scripts/Domain/Game/`、仕様は `docs/game-logic.md`、Python の参照実装は `tools/game_sim/`)。UI の値は仮データで、ゲームの状態とはつながっていない。
+- **未実装**: ゲームの状態を Unity につなぐ Systems・ミッションの一覧と選び方・図鑑・CO₂ の採点 (週の選び方の氷 B)、SQLite、FastAPI とその Unity 側のクライアント。
 
 UI や画面遷移を触る前に、既存の Presenter と `docs/ui-structure.md` を読むこと。未実装の領域で実装を探して見つからない場合は「まだ存在しない」が正しい答えであり、既存実装を推測で仮定しないこと。
