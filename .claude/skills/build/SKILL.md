@@ -68,12 +68,12 @@ description: Project Penguin を Android (APK / AAB) または iOS (Xcode プロ
 
 未設定なら APK は debug 鍵で通り、AAB は明示的に失敗する。`PlayerSettingsScope` がビルド後に PlayerSettings を必ず元へ戻すので、**パスワードが `ProjectSettings.asset` に残ることはない**。ビルド後に `git status` が汚れていたらそれ自体がバグなので報告する。
 
+会社名は `ueco`、アプリ ID は `com.ueco.projectpenguin` (2026-10-15 に決定。ストアに上げた後は変えられないので、勝手に変えない)。
+
 ## ProjectSettings 側でまだ直っていないもの
 
 これらは `.asset` の直接編集が禁止されているため、**Unity Editor 上での操作をユーザーに依頼する**。勝手に書き換えない。
 
-- `companyName` が `DefaultCompany` のまま
-- `applicationIdentifier` が URP テンプレートの既定値 (`com.UnityTechnologies.com.unity.template.urpblank`) のまま。配布前に自前のものへ変える
 - `AndroidTargetSdkVersion` が `0` (= Automatic / インストール済みの最新)
 
 ## よくある失敗
