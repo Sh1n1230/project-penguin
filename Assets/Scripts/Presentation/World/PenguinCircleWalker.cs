@@ -20,20 +20,35 @@ namespace ProjectPenguin.Presentation.World
 
         private Vector3 _center;
         private float _angle;
+        private float _radiusScale = 1f;
+
+        /// <summary>歩く速さの倍率。氷が少なくさむそうな段ではゆっくり歩く (IceWorldView が設定する)。</summary>
+        public float SpeedMultiplier { get; set; } = 1f;
+
+        /// <summary>円の中心 (親のローカル座標)。</summary>
+        public Vector3 Center => _center;
 
         private void Awake() => _center = transform.localPosition;
 
+        /// <summary>氷山の大きさが変わったときに、円の中心と半径の倍率を差し替える。</summary>
+        public void SetCircle(Vector3 center, float radiusScale)
+        {
+            _center = center;
+            _radiusScale = Mathf.Max(0f, radiusScale);
+        }
+
         private void Update()
         {
-            if (_radius <= 0f)
+            var radius = _radius * _radiusScale;
+            if (radius <= 0f)
             {
                 return;
             }
 
-            _angle += (_clockwise ? -1f : 1f) * _speed / _radius * Time.deltaTime;
+            _angle += (_clockwise ? -1f : 1f) * _speed * SpeedMultiplier / radius * Time.deltaTime;
             _angle = Mathf.Repeat(_angle, 2f * Mathf.PI);
             transform.SetLocalPositionAndRotation(
-                PointOnCircle(_center, _radius, _angle),
+                PointOnCircle(_center, radius, _angle),
                 Quaternion.LookRotation(DirectionOnCircle(_angle, _clockwise)));
         }
 

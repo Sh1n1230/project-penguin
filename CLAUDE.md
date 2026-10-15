@@ -124,7 +124,7 @@ scope は `unity` / `backend` / `docs` / `ci`。プロジェクト全体にま�
 
 ## 現状
 
-- **実装済み**: ビルド・CI の土台、UI Toolkit の 7 画面と画面遷移 (`ScreenNavigator`)・SafeArea・カメラプレビュー (`Assets/Scripts/Presentation/UI/`)、ホームの 3D ワールド (`HomeWorld.unity`、`Assets/Scripts/Presentation/World/`)、その EditMode テスト。ゲームロジック v3 の状態機械 (氷・盾・おかえり・かけら・段・ペンギンの来訪・スタンプ。`Assets/Scripts/Domain/Game/`、仕様は `docs/game-logic.md`、Python の参照実装は `tools/game_sim/`)。UI の値は仮データで、ゲームの状態とはつながっていない。
-- **未実装**: ゲームの状態を Unity につなぐ Systems・ミッションの一覧と選び方・図鑑・CO₂ の採点 (週の選び方の氷 B)、SQLite、FastAPI とその Unity 側のクライアント。
+- **実装済み**: ビルド・CI の土台、UI Toolkit の 7 画面と画面遷移 (`ScreenNavigator`)・SafeArea・カメラプレビュー (`Assets/Scripts/Presentation/UI/`)、ホームの 3D ワールド (`HomeWorld.unity`、`Assets/Scripts/Presentation/World/`)、その EditMode テスト。ゲームロジック v3 の状態機械 (氷・盾・おかえり・かけら・段・ペンギンの来訪・スタンプ。`Assets/Scripts/Domain/Game/`、仕様は `docs/game-logic.md`、Python の参照実装は `tools/game_sim/`)。ホームの氷の量のカード・吹き出し・氷山の大きさ・ペンギンの数はゲームの状態 (`GameStateSystem`) につながっている (開発ビルドではダミーの記録と時計の早送りで動かせる)。それ以外の画面の値は仮データ。
+- **未実装**: ゲームの状態の保存 (再起動で初期状態に戻る)・ミッションの一覧と選び方・図鑑・CO₂ の採点 (週の選び方の氷 B)、SQLite、FastAPI とその Unity 側のクライアント。
 
 UI や画面遷移を触る前に、既存の Presenter と `docs/ui-structure.md` を読むこと。未実装の領域で実装を探して見つからない場合は「まだ存在しない」が正しい答えであり、既存実装を推測で仮定しないこと。

@@ -37,3 +37,24 @@
 .home__speech {
     margin: 0 var(--space-8) var(--space-4) var(--space-4);
 }
+
+/* デモ用の操作。既定は隠し、開発ビルドだけ HomeStatusPresenter が表示する */
+.home__demo {
+    display: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: var(--space-2) var(--space-4) 0 var(--space-4);
+}
+
+.home__demo--visible {
+    display: flex;
+}
+
+.home__demo-badge {
+    margin-right: var(--space-2);
+}
+
+.home__demo-button {
+    margin-right: var(--space-2);
+}

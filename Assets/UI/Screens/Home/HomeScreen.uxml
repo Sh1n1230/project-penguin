@@ -36,6 +36,13 @@
                 </ui:VisualElement>
             </ui:VisualElement>
 
+            <!-- 開発ビルドと Editor だけで出す。ダミーの記録と時計の早送りでゲームの状態を動かす (HomeStatusPresenter) -->
+            <ui:VisualElement name="demoControls" class="home__demo" picking-mode="Ignore">
+                <ui:Label name="demoBadge" text="デモ用：時間を進めています" class="pp-badge pp-badge--accent home__demo-badge" />
+                <ui:Button name="demoRecordButton" text="記録する" class="pp-chip home__demo-button" />
+                <ui:Button name="demoAdvanceButton" text="1 日進める" class="pp-chip home__demo-button" />
+            </ui:VisualElement>
+
             <ui:VisualElement name="worldViewport" class="home__world" picking-mode="Ignore" />
 
             <ui:VisualElement name="speech" class="pp-speech home__speech" picking-mode="Ignore">

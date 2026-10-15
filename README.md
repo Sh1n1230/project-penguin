@@ -202,12 +202,12 @@ Android (MVP 後に再開するとき用):
 - UI Toolkit による 7 画面 (ホーム / 記録 / ミッション / スキャン / 解析中 / 結果 / メニュー) と画面遷移、SafeArea 対応 (`Assets/UI/`、`Assets/Scripts/Presentation/UI/`)。デザインシステムは `docs/design-system.md`、画面構成は `docs/ui-structure.md`
 - スキャン画面のカメラプレビュー。撮影・解析はまだ行わず、解析中画面の進行と記録画面のグラフは仮の値で動く
 - ホームの 3D ワールド (`Assets/Scenes/HomeWorld.unity`)。氷山と小屋のモデル、円周上を歩くペンギン、端末の縦横比に合わせたカメラの画角調整 (`Assets/Scripts/Presentation/World/`)
-- ゲームロジック v3 の状態機械 (`Assets/Scripts/Domain/Game/`)。氷・盾・おかえり・氷のかけら・見た目の段・ペンギンの来訪・スタンプを、時計を注入して 1 日ずつ進める。仕様は [`docs/game-logic.md`](docs/game-logic.md)、Python の参照実装と 8 人の利用者のシミュレーションは `tools/game_sim/`
+- ゲームロジック v3 の状態機械 (`Assets/Scripts/Domain/Game/`)。氷・盾・おかえり・氷のかけら・見た目の段・ペンギンの来訪・スタンプを、時計を注入して 1 日ずつ進める。仕様は [`docs/game-logic.md`](docs/game-logic.md)、Python の参照実装と 8 人の利用者のシミュレーションは `tools/game_sim/`。ホームの氷の量・吹き出し・氷山の大きさ・ペンギンの数はこの状態につながっており、開発ビルドでは「記録する」「1 日進める」で動かせる
 - 上記の EditMode テスト (`Assets/Tests/EditMode/`)
 
 **未実装**
 
-- ゲームの状態を Unity につなぐ部分 (`Systems`)、ミッションの一覧と選び方、図鑑、CO₂ の採点 (週の選び方の氷)
+- ゲームの状態の保存 (今はアプリを再起動すると初期状態に戻る)、ミッションの一覧と選び方、図鑑、CO₂ の採点 (週の選び方の氷)
 - SQLite によるローカルデータ (`Data`)
 - FastAPI バックエンド (`backend/`) とその Unity 側のクライアント (`Backend`)
 
