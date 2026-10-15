@@ -45,10 +45,10 @@
 | backend の lint | `cd backend && uv run ruff check .` |
 | backend の型検査 | `cd backend && uv run mypy .` |
 | backend のテスト | `cd backend && uv run pytest` |
+| ゲームロジックの参照実装のテスト | `uv run --no-project --with pytest pytest tools/game_sim` |
 | `.meta` の整合性検査 | `uv run --no-project python scripts/check_unity_meta.py` |
 | Editor バージョンの一致検査 | `uv run --no-project python scripts/check_unity_version.py` |
 | 秘密情報の検査 | `uv run --no-project python scripts/check_secrets.py` |
-| ゲームロジックの参照実装のテスト | `uv run --no-project --with pytest pytest tools/game_sim` |
 | Unity のテスト | Unity Editor の Test Runner (EditMode / PlayMode) |
 | アプリのビルド | Editor の `Build/` メニュー、または `/build` |
 
