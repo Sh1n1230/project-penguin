@@ -35,6 +35,7 @@
 #   シーン / プレハブのコンフリクトを UnityYAMLMerge が構造的に解決する。
 #   利用するには各自の .git/config への登録が必要 (README のセットアップ参照)。
 #   未登録の環境では単に通常マージにフォールバックするため実害はない。
+#   拡張子の一覧は .claude/hooks/guard_write.py の UNITY_YAML と .editorconfig にそろえる。
 # ---------------------------------------------------------------
 *.unity            merge=unityyaml eol=lf
 *.prefab           merge=unityyaml eol=lf
@@ -50,6 +51,18 @@
 *.playable         merge=unityyaml eol=lf
 *.terrainlayer     merge=unityyaml eol=lf
 *.signal           merge=unityyaml eol=lf
+*.lighting         merge=unityyaml eol=lf
+*.spriteatlas      merge=unityyaml eol=lf
+*.spriteatlasv2    merge=unityyaml eol=lf
+*.mixer            merge=unityyaml eol=lf
+*.renderTexture    merge=unityyaml eol=lf
+*.preset           merge=unityyaml eol=lf
+*.giparams         merge=unityyaml eol=lf
+*.shadervariants   merge=unityyaml eol=lf
+*.guiskin          merge=unityyaml eol=lf
+*.fontsettings     merge=unityyaml eol=lf
+*.flare            merge=unityyaml eol=lf
+*.brush            merge=unityyaml eol=lf
 *.inputactions     text eol=lf
 
 # ---------------------------------------------------------------

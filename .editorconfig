@@ -27,7 +27,8 @@ max_line_length = 100
 indent_style = tab
 
 # Unity が生成する YAML は手で触らない。整形もしない。
-[*.{unity,prefab,asset,meta,mat,anim,controller,mask,playable}]
+# 拡張子の一覧は .claude/hooks/guard_write.py の UNITY_YAML と .gitattributes にそろえる。
+[*.{unity,prefab,asset,meta,mat,anim,controller,overrideController,mask,playable,signal,terrainlayer,physicMaterial,physicsMaterial2D,lighting,spriteatlas,spriteatlasv2,mixer,renderTexture,preset,giparams,shadervariants,guiskin,fontsettings,flare,brush}]
 trim_trailing_whitespace = false
 insert_final_newline = false
 

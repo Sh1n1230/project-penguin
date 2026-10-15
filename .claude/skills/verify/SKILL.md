@@ -29,7 +29,15 @@ uv run --no-project python scripts/check_unity_version.py
 - `.meta` 欠けは、**新しくスクリプトやアセットを足した直後に必ず出る**。Unity Editor を一度開けば生成されるので、ユーザーに開いてもらう。エージェント側で `.meta` を書いて埋めてはいけない。
 - バージョン不一致は `ProjectSettings/ProjectVersion.txt` と `README.md` / `.github/workflows/unity-tests.yml` の食い違い。Editor を上げたなら参照側を揃える。
 
-### 3. backend
+### 3. フックと検査スクリプト
+
+```bash
+uv run --no-project --with pytest pytest tests/hooks -q
+```
+
+`.claude/hooks/` や `scripts/` の判定、Unity YAML の拡張子の一覧 (`guard_write.py`・`.gitattributes`・`.editorconfig`) を変えたときに落ちる。3 か所の一覧は同じ集合にそろえる。
+
+### 4. backend
 
 `backend/pyproject.toml` があるときだけ。
 
@@ -43,7 +51,7 @@ uv run pytest -q
 
 `pytest` の終了コード 5 (テストが 1 件も無い) は CI 上では失敗扱いにしていない。整形だけの差分なら `uv run ruff format .` を先に流してよい。
 
-### 4. Unity のテスト
+### 5. Unity のテスト
 
 CI では回らない (ライセンス認証が要るため `main` への push と手動起動に限定)。**`Assets/Scripts/` や `Assets/Tests/` を触ったなら、Unity Editor の Test Runner で EditMode を回すようユーザーに依頼する。** 特に `Domain` は `UnityEngine` 非依存なので EditMode だけで検証できる。
 
