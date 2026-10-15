@@ -129,7 +129,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
             if (shader == null) throw new InvalidOperationException("URP Lit required.");
             var mat = AssetDatabase.LoadAssetAtPath<Material>(Folder + "/Running.mat");
             if (mat == null) { mat = new Material(shader); AssetDatabase.CreateAsset(mat, Folder + "/Running.mat"); }
-            mat.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(Folder + "/ProductionIsland_ColorAtlas_v002.png"));
+            mat.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(FacilityRevisionBuilder.SharedFolder + "/ProductionIsland_ColorAtlas_v002.png"));
             mat.SetColor("_BaseColor", Color.white); mat.SetFloat("_Smoothness", .12f); EditorUtility.SetDirty(mat);
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
             try

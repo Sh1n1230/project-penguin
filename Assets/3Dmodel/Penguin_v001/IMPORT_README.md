@@ -20,4 +20,4 @@ FBXにはBaseColor、Normal、元のRoughness・Metallic画像へのマテリア
 
 歩行版はUnityのModel Import SettingsでAnimationを有効にし、クリップのLoop Timeを有効にしてください。BlenderでFBXを再読込した結果、左右の足上げがあり、ループの始点と終点は一致します。Unity内でのクリップ表示はライセンスサービスの不調により未確認です。
 
-`Penguin_UV0_Layout.png` は元テクスチャの上にUVを重ねた確認用画像です。`Penguin_Unity_v001.blend` は親のPenguinフォルダにある静止版Blenderファイルで、プレビューとマテリアル確認に使えます。
+`Penguin_UV0_Layout.png` は元テクスチャの上にUVを重ねた確認用画像で、ゲームには読み込まないため `ArtSource/Penguin_v001/` に置いています。`Penguin_Unity_v001.blend` は親のPenguinフォルダにある静止版Blenderファイルで、プレビューとマテリアル確認に使えます。

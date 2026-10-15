@@ -72,5 +72,5 @@ MCPはCodexがUnityへ操作命令を送るための接続です。あなたが�
 - `Assets/Scenes/ProductionIslandFacilityReview.unity`：v002の確認シーン。
 - `Assets/Scripts/Presentation/World/`：施設の動作・表示コード。
 - `ArtSource/`：Blender制作元、生成コード、工程の確認画像。
-- `docs/production-island-v002/`：入口のREADMEと、元の相対パス・SHA-256を記録したmanifest。
+- `docs/production-island/production-island-v002/`：入口のREADMEと、元の相対パス・SHA-256を記録したmanifest。
 - `scripts/package_production_island_v002.py`：ファイル一覧を更新するスクリプト。素材やコードのコピーは作りません。

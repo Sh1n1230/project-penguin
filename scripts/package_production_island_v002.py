@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DESTINATION = ROOT / "docs/production-island-v002"
+DESTINATION = ROOT / "docs/production-island/production-island-v002"
 
 
 def selected_paths() -> list[Path]:
@@ -25,11 +25,11 @@ def selected_paths() -> list[Path]:
         "Assets/Scenes/ProductionIslandFacilityReview.unity",
         "Assets/Scenes/KamabokoDesignReview.unity",
         "ArtSource/ProductionIsland_v001/generate_models.py",
-        "docs/production-island-facilities-v002.md",
-        "docs/production-island-facility-motions.md",
-        "docs/production-island-review-user-guide.md",
-        "docs/kamaboko-design-v002.md",
-        "docs/testing/production-island-visual-review.md",
+        "docs/production-island/production-island-facilities-v002.md",
+        "docs/production-island/production-island-facility-motions.md",
+        "docs/production-island/production-island-review-user-guide.md",
+        "docs/production-island/kamaboko-design-v002.md",
+        "docs/production-island/testing/production-island-visual-review.md",
         "scripts/package_production_island_v002.py",
     ))
     paths.extend(ROOT / "Assets/Scripts/Presentation/World" / (name + ".cs") for name in (
