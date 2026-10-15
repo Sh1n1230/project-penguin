@@ -20,6 +20,7 @@ namespace ProjectPenguin.Editor.Build
         private readonly string _keyaliasName;
         private readonly string _keyaliasPass;
         private readonly string _appleTeamId;
+        private readonly string _iosBuildNumber;
         private readonly bool _buildAppBundle;
 
         public PlayerSettingsScope()
@@ -32,6 +33,7 @@ namespace ProjectPenguin.Editor.Build
             _keyaliasName = PlayerSettings.Android.keyaliasName;
             _keyaliasPass = PlayerSettings.Android.keyaliasPass;
             _appleTeamId = PlayerSettings.iOS.appleDeveloperTeamID;
+            _iosBuildNumber = PlayerSettings.iOS.buildNumber;
             _buildAppBundle = EditorUserBuildSettings.buildAppBundle;
         }
 
@@ -40,12 +42,23 @@ namespace ProjectPenguin.Editor.Build
             PlayerSettings.bundleVersion = _bundleVersion;
             PlayerSettings.Android.bundleVersionCode = _androidVersionCode;
             PlayerSettings.Android.useCustomKeystore = _useCustomKeystore;
-            PlayerSettings.Android.keystoreName = _keystoreName;
+            // 空文字を代入すると Unity が "{inproject}: " に置き換えて保存するため、変わったときだけ戻す。
+            if (PlayerSettings.Android.keystoreName != _keystoreName)
+            {
+                PlayerSettings.Android.keystoreName = _keystoreName;
+            }
+
             PlayerSettings.Android.keystorePass = _keystorePass;
             PlayerSettings.Android.keyaliasName = _keyaliasName;
             PlayerSettings.Android.keyaliasPass = _keyaliasPass;
             PlayerSettings.iOS.appleDeveloperTeamID = _appleTeamId;
+            PlayerSettings.iOS.buildNumber = _iosBuildNumber;
             EditorUserBuildSettings.buildAppBundle = _buildAppBundle;
+
+            // BuildPlayer はビルド中の値で ProjectSettings.asset を保存する。メモリ上で戻すだけだと
+            // 次に Editor が保存するまでディスクにビルド時の値 (ビルド番号・署名など) が残り、
+            // そのままコミットされうるので、戻した値をすぐに書き出す。
+            AssetDatabase.SaveAssets();
         }
     }
 

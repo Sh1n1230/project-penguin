@@ -49,6 +49,7 @@ description: Project Penguin を Android (APK / AAB) または iOS (Xcode プロ
 | `--dev` | Development Build (プロファイラ / デバッガ接続) |
 | `--output <dir>` | 出力ルート。既定は `Builds` |
 | `--bundle-version <x.y.z>` | この回だけ bundleVersion を上書き |
+| `--build-number <n>` | この回だけ iOS のビルド番号 (`CFBundleVersion`) を上書き。ピリオド区切りで最大 3 つの数字。TestFlight に同じバージョンで上げ直すときは必ず増やす |
 | `--version-code <n>` | この回だけ Android の versionCode を上書き |
 
 初回は IL2CPP のビルドで 20〜40 分かかる。バックグラウンド実行にして、進捗はログで見る。
