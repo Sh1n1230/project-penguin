@@ -190,7 +190,7 @@ Android (MVP 後に再開するとき用):
 
 未設定の場合、APK は debug 鍵でビルドされ (配布不可)、AAB は明示的に失敗します。
 
-なお `companyName` と `applicationIdentifier` は URP テンプレートの既定値のままです (#22)。配布前に Unity Editor の Project Settings で自前の値に変更してください。
+会社名は `ueco`、アプリ ID (Bundle Identifier) は iOS・Android とも `com.ueco.projectpenguin` です。TestFlight やストアに一度上げると変えられないので、変えるときはチームで決めてからにしてください。
 
 ## 現状
 
