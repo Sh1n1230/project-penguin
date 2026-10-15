@@ -65,6 +65,24 @@ jobs:
       - name: Editor バージョンの一致
         run: python scripts/check_unity_version.py
 
+  # フックと検査スクリプトはレシートと API キーを入れないための最後の歯止め。
+  # 判定が壊れたまま気付かないことがないよう、判定そのものをテストする。
+  hooks:
+    name: フックと検査スクリプトのテスト
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          lfs: false
+
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          python-version: '3.12'
+
+      # backend とは依存を混ぜない (どちらも標準ライブラリだけで書かれている)。
+      - name: pytest
+        run: uv run --no-project --with pytest pytest tests/hooks -q
+
   backend:
     name: backend (lint / format / type / test)
     runs-on: ubuntu-latest
