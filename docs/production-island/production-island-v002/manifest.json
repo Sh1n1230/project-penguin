@@ -3,8 +3,8 @@
   "kind": "v002 canonical file index",
   "sha256_text_newlines": "LF",
   "original_unity_assets_kept": true,
-  "verified_files": 388,
-  "total_bytes": 52354883,
+  "verified_files": 308,
+  "total_bytes": 51585518,
   "files": [
     {
       "path": "ArtSource/Building_Chikuwa_2x2_v002/Building_Chikuwa_2x2_v002.blend",
@@ -115,16 +115,6 @@
       "path": "ArtSource/ProductionIsland_v001/generate_models.py",
       "bytes": 23747,
       "sha256": "a0e4ac7f46b48c748d250d15224109224bc98e6a8a59c0ed70866b0923ae975c"
-    },
-    {
-      "path": "ArtSource/ProductionIsland_v002/Facilities/build-result.txt",
-      "bytes": 90,
-      "sha256": "a1e9f2ff536ed40503d538071dfa59d2bf431dbb83c74370c2098cd9a12962cb"
-    },
-    {
-      "path": "ArtSource/ProductionIsland_v002/Facilities/manifest.json",
-      "bytes": 7032,
-      "sha256": "2d338c7baec9223353d64a84b399217b52e0b61a321e7b45f1969e678e8ace5e"
     },
     {
       "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Building_Chikuwa_2x2_v002-Output.png",
@@ -277,29 +267,9 @@
       "sha256": "4ca2743412ef44e15919c53132e72dc5ffe6e497f99bef14bd89cea5b08447b2"
     },
     {
-      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/current-picker.png",
-      "bytes": 157489,
-      "sha256": "6b6d6c778bccc6af7e946a7e28e3be5fab078460ed25d2aa83cf98de171548d9"
-    },
-    {
-      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/electric-charged.png",
-      "bytes": 280524,
-      "sha256": "ffcc07c043c54ee5514cca7ad0fba2f48348fc61c78e0269edb45614d988ba6c"
-    },
-    {
-      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/facility-picker.png",
-      "bytes": 158197,
-      "sha256": "106d879e139513f84ef03e58108d14a3ebb9bd50250cb0df26cf120760eaca43"
-    },
-    {
       "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Gallery-Overview.png",
       "bytes": 248645,
       "sha256": "f8e66f478746af1416874e17b014890e6a7bf1ffd16753e04f9fa0167984215e"
-    },
-    {
-      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/gas-adjusted.png",
-      "bytes": 289116,
-      "sha256": "6756c64f42691bb18fe06ef72227c3b070d10db7b3697117e6c31aede2ee28dd"
     },
     {
       "path": "ArtSource/ProductionIsland_v002/Facilities/Review/Harbor_Stage0_v002.png",
@@ -337,13 +307,33 @@
       "sha256": "b89391739fe369a8268febd18c1ea746157705de1187b7a6fa0244288b13f03a"
     },
     {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/current-picker.png",
+      "bytes": 157489,
+      "sha256": "6b6d6c778bccc6af7e946a7e28e3be5fab078460ed25d2aa83cf98de171548d9"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/electric-charged.png",
+      "bytes": 280524,
+      "sha256": "ffcc07c043c54ee5514cca7ad0fba2f48348fc61c78e0269edb45614d988ba6c"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/facility-picker.png",
+      "bytes": 158197,
+      "sha256": "106d879e139513f84ef03e58108d14a3ebb9bd50250cb0df26cf120760eaca43"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/Facilities/Review/gas-adjusted.png",
+      "bytes": 289116,
+      "sha256": "6756c64f42691bb18fe06ef72227c3b070d10db7b3697117e6c31aede2ee28dd"
+    },
+    {
       "path": "ArtSource/ProductionIsland_v002/Facilities/Review/individual-motion-verification.txt",
-      "bytes": 258,
+      "bytes": 250,
       "sha256": "9871570ca61c84067c6f3a4b9d40f81e4f694353e34c1827dcc9abc91a643508"
     },
     {
       "path": "ArtSource/ProductionIsland_v002/Facilities/Review/pointer-input-verification.txt",
-      "bytes": 2329,
+      "bytes": 2277,
       "sha256": "75fda4a190893d369110d8c837a910ad0785958f25ad230322cfd55ccfccebf1"
     },
     {
@@ -363,7 +353,7 @@
     },
     {
       "path": "ArtSource/ProductionIsland_v002/Facilities/Review/ui-verification.txt",
-      "bytes": 429,
+      "bytes": 400,
       "sha256": "2862a68ae4fa38626ff57b75d29e7feb30991ff7ca2c16a918434f0bea16d8ba"
     },
     {
@@ -377,19 +367,14 @@
       "sha256": "465532556c78a07436ca7d002aacb3bd8b7920ac38448ac367e8992f3d830a02"
     },
     {
-      "path": "ArtSource/ProductionIsland_v002/generate_facilities.py",
-      "bytes": 23706,
-      "sha256": "8b59ee9be994e4bb9dc2d164920ce8aead025adbf37d65824fd41f3287bda594"
+      "path": "ArtSource/ProductionIsland_v002/Facilities/build-result.txt",
+      "bytes": 90,
+      "sha256": "a1e9f2ff536ed40503d538071dfa59d2bf431dbb83c74370c2098cd9a12962cb"
     },
     {
-      "path": "ArtSource/ProductionIsland_v002/generate_kamaboko.py",
-      "bytes": 6539,
-      "sha256": "73c530c93c4da5024595e9a229b9f40e357e8d2037dadf9863bbc171721fa97f"
-    },
-    {
-      "path": "ArtSource/ProductionIsland_v002/kamaboko-manifest.json",
-      "bytes": 441,
-      "sha256": "a56fa235d5b8ba66b6b4a4e367fb26cd76dea2a4a491036525ad83daae04a225"
+      "path": "ArtSource/ProductionIsland_v002/Facilities/manifest.json",
+      "bytes": 6711,
+      "sha256": "2d338c7baec9223353d64a84b399217b52e0b61a321e7b45f1969e678e8ace5e"
     },
     {
       "path": "ArtSource/ProductionIsland_v002/Kamaboko_Design.png",
@@ -457,6 +442,21 @@
       "sha256": "d1ceb19ddafb8e0266c3156f80cc131e6f9334c204da10588a4f06d08d2b798d"
     },
     {
+      "path": "ArtSource/ProductionIsland_v002/generate_facilities.py",
+      "bytes": 23706,
+      "sha256": "8b59ee9be994e4bb9dc2d164920ce8aead025adbf37d65824fd41f3287bda594"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/generate_kamaboko.py",
+      "bytes": 6539,
+      "sha256": "73c530c93c4da5024595e9a229b9f40e357e8d2037dadf9863bbc171721fa97f"
+    },
+    {
+      "path": "ArtSource/ProductionIsland_v002/kamaboko-manifest.json",
+      "bytes": 420,
+      "sha256": "a56fa235d5b8ba66b6b4a4e367fb26cd76dea2a4a491036525ad83daae04a225"
+    },
+    {
       "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002/Building_Chikuwa_2x2_v002.fbx",
       "bytes": 62732,
       "sha256": "0f37a68c28c1f2328f8d24f5f7b6750e9c69037899ea6a48d2de7a9f5295c7ed"
@@ -478,33 +478,13 @@
     },
     {
       "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002/IMPORT_README.md",
-      "bytes": 747,
+      "bytes": 739,
       "sha256": "57ec3cd6835773064fcae8520cb7294d9dc610f6a4fa342e726d7661b4140391"
     },
     {
       "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "d3e211bfaa9bbc33384741931b5395761afa647104ee4546fbc28371ef3c11d3"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "992bbab092490a42adbebf5a96a1435c4852a2dc88559f2acdcdacab692b3ab1"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "9d959de0ff0a2d4be3de964b1723fbd1aa3de8755697ffe41ee269faaa09e207"
     },
     {
       "path": "Assets/3Dmodel/Building_Chikuwa_2x2_v002.meta",
@@ -533,33 +513,13 @@
     },
     {
       "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002/IMPORT_README.md",
-      "bytes": 752,
+      "bytes": 744,
       "sha256": "b54dc37269d14ac50b34785e7ad796a3401ca52aeed9fe9a6db47d70fc8f9cb8"
     },
     {
       "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "a1cbeaf18fc176e9ae2645ca683342e92b2922f3dd65899e57cb1d126635a3e0"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "6976985baab66087ed9d54f86202872bad439a3e02f9f8b4830239e4e7651fe0"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "4b1f0094d9af0152204246cddc38cf6baf0a4e165c4fa319274d2860dececfe7"
     },
     {
       "path": "Assets/3Dmodel/Building_Dormitory_1x1_v002.meta",
@@ -588,33 +548,13 @@
     },
     {
       "path": "Assets/3Dmodel/Building_Drying_2x2_v002/IMPORT_README.md",
-      "bytes": 744,
+      "bytes": 736,
       "sha256": "d52006e2326bd7801894ce20356c6f852306c19eb9274e3adaa9290897cea3d7"
     },
     {
       "path": "Assets/3Dmodel/Building_Drying_2x2_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "8455d5f8e5131b04cea3d7172823a22eb7ab2ce83f42d81110a880d3ccc21d70"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Drying_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Drying_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "8d9c43f2dae03faf08b88d4a80f21c0a104af92c95ee3ab110cdfb8e611e28a1"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Drying_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Drying_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "bb907c93bf0933e9fe71a6ebcf9513a2faa27d39425476befd7c7804dcbc2487"
     },
     {
       "path": "Assets/3Dmodel/Building_Drying_2x2_v002.meta",
@@ -643,33 +583,13 @@
     },
     {
       "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002/IMPORT_README.md",
-      "bytes": 777,
+      "bytes": 769,
       "sha256": "3c44f72f266785ae6b9eaad3189efa7bfffa20cd99595029461a68ef063bfb83"
     },
     {
       "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "b19970581b55b02fbbe24f357a2f9e32490c5e66b2a032e05f8366b90ad77bc3"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "0a032a08052eff613c52a219b23b1233d72dbd9bfdac8bfd779983c3b7e50cc1"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "bc1d77488ecec076e1902a8f36ee8ec2bcf535ccf0cd9dba0936040c77708aa0"
     },
     {
       "path": "Assets/3Dmodel/Building_ElectricAmplifier_2x2_v002.meta",
@@ -698,33 +618,13 @@
     },
     {
       "path": "Assets/3Dmodel/Building_Fishery_2x2_v002/IMPORT_README.md",
-      "bytes": 747,
+      "bytes": 739,
       "sha256": "feb72e4bca7037c67fdbee3707855c8437a9b832badfd728498cc0ca4421a617"
     },
     {
       "path": "Assets/3Dmodel/Building_Fishery_2x2_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "766e3c9751b90f92bcdf3e659994407cc486ab9cd0253b2bfd0a28a9e7c7c1c9"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Fishery_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Fishery_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "d8a383fa03829564d9dae24bd3afbbc4951f2eedd2cf05f6894f37234127189c"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Fishery_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Fishery_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "af96dd6fe5b65b5bc848287dcfd1f1b5caddccc5235ca573202848bf8f47263d"
     },
     {
       "path": "Assets/3Dmodel/Building_Fishery_2x2_v002.meta",
@@ -753,33 +653,13 @@
     },
     {
       "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002/IMPORT_README.md",
-      "bytes": 762,
+      "bytes": 754,
       "sha256": "492e84afe57aa740873d471ecfb73e0bdf83248f2e43b68fdf4de4cd40f44bdc"
     },
     {
       "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "083953a6fd5a244cd5708bf39e5b1fb8891765bfd8b87696cee744a9e55a65e9"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "efe09d1307695d8850aa55fadc8e2ffe04b684a23c1c465a2a833d5452d309ee"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "32ded15e763d3b7c0a0ef153430cdcc88cc60c684b8d1797657926354e463adf"
     },
     {
       "path": "Assets/3Dmodel/Building_GasAmplifier_2x2_v002.meta",
@@ -838,7 +718,7 @@
     },
     {
       "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/IMPORT_README.md",
-      "bytes": 611,
+      "bytes": 604,
       "sha256": "743925f508f15052a88080d326502f94f1a2dcbe2a9c55ba33d344b32a3084db"
     },
     {
@@ -847,29 +727,9 @@
       "sha256": "f6432b1b3f472634ae3bfac4559616e8505015177508898a1f3b9e488c53c4af"
     },
     {
-      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "97a2521cae2b7492576990d565ca2af8bd8f3a4b55b27a734c59878ebced83ec"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "4517269cafa476ed55a74f769e9c0c43b06ced0a4930d96048ecbf2c5aff3077"
-    },
-    {
       "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/Running.mat",
       "bytes": 3999,
-      "sha256": "9deaf0c0705242ed8c3f097f9366f477328ff6de15993d70ba8755cc5883167e"
+      "sha256": "e00a90e8e5247c328356d454de303f0ab66746a0a989a887de690753684a9e16"
     },
     {
       "path": "Assets/3Dmodel/Building_Kamaboko_2x2_v002/Running.mat.meta",
@@ -903,33 +763,13 @@
     },
     {
       "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002/IMPORT_README.md",
-      "bytes": 750,
+      "bytes": 742,
       "sha256": "6a046f3a50c83cba0e0eaf8dd0e7fff98bf0dd39f5338e0562a93794ec791c94"
     },
     {
       "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "e54a80bb9aeaac7f3d5eed457a794afed16d7b2d4d52ea63378d6efeb6b8ba70"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "8966423ecd984b956480108d81e3c359a7dbfdf140cf765b8676adc888cd1356"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "21bb57ca75bf03153d4e720af37726915ce7758213ed3d5f0c408c0a67bf5ba3"
     },
     {
       "path": "Assets/3Dmodel/Building_KelpFarm_2x2_v002.meta",
@@ -958,33 +798,13 @@
     },
     {
       "path": "Assets/3Dmodel/Building_Oden_2x2_v002/IMPORT_README.md",
-      "bytes": 738,
+      "bytes": 730,
       "sha256": "ea721d34d0494d04cb1fc39718f66797cf85f21fc589ccf0a410c1ffac446c34"
     },
     {
       "path": "Assets/3Dmodel/Building_Oden_2x2_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "2c4828b73fc2674ab21277926471186522f4d7bd6fe730fdc7b35f78766024be"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Oden_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Oden_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "8ed8e20e70ba64ac5b324766f6bc0894bace08b8bf0e812716f6abc178e745a2"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Oden_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Oden_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "2fdf5456aec93d1e36b5678044b36f91088e411aa7ea849cdafb29bec2d59e4d"
     },
     {
       "path": "Assets/3Dmodel/Building_Oden_2x2_v002.meta",
@@ -1013,33 +833,13 @@
     },
     {
       "path": "Assets/3Dmodel/Building_Preparation_2x2_v002/IMPORT_README.md",
-      "bytes": 759,
+      "bytes": 751,
       "sha256": "abf453cae993581d9fe92a2a1a6e9fe9769baed2e65458de8d9fa3541defe0d7"
     },
     {
       "path": "Assets/3Dmodel/Building_Preparation_2x2_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "7140c6db051ad3b404ec26832868bd7313e121b586f3749d23f513d730f468a4"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Preparation_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Preparation_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "7bdaeb303cf87f65aa1b8c9539ba67bcf8cb51bf3a826f3ea258774a65a099e7"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Preparation_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Preparation_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "efc8bc059086cdeef1c3112ba8e7b2483fb0416cb7a9425376adf9186a0e8e61"
     },
     {
       "path": "Assets/3Dmodel/Building_Preparation_2x2_v002.meta",
@@ -1068,33 +868,13 @@
     },
     {
       "path": "Assets/3Dmodel/Building_Research_2x2_v002/IMPORT_README.md",
-      "bytes": 750,
+      "bytes": 742,
       "sha256": "aaf7f8086c49319d06111234ce0090e123f983b241c25d4a3f330c6d4ce44b36"
     },
     {
       "path": "Assets/3Dmodel/Building_Research_2x2_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "cd50ceec49f075f6f1a81a7248f622c48e0708f02e0dcb37d36c0b8820e8b6ff"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Research_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Research_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "bd26e5586c9fbe80e36a34a45c114e0763ab87bec25c08f4a5a3195097a9fc31"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Research_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Research_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "dd1caffac916ccd84dc6ed465359a57c08eca39a74a1c5adc7395ada7aedfa37"
     },
     {
       "path": "Assets/3Dmodel/Building_Research_2x2_v002.meta",
@@ -1123,33 +903,13 @@
     },
     {
       "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002/IMPORT_README.md",
-      "bytes": 753,
+      "bytes": 745,
       "sha256": "16b13dbe3cdc4e6dddab039904269a458d464b68d5786f50400f342ecdacd171"
     },
     {
       "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "8afbd4d8681e4296ae31eec1debb72f5239b86eaaac4a8b503255be860ef35e7"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "add9765dfe64e0dc92132e350c34e274ba585f669b824373a7df42180a01d679"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "0dceb2d43ea27bc6ed13a1b0e89cf7e4ed3b71f4838ce6badc507e629317bcf8"
     },
     {
       "path": "Assets/3Dmodel/Building_Saltworks_2x2_v002.meta",
@@ -1178,33 +938,13 @@
     },
     {
       "path": "Assets/3Dmodel/Building_Sorter_1x1_v002/IMPORT_README.md",
-      "bytes": 744,
+      "bytes": 736,
       "sha256": "8f33e1122e4114547cb7c36921060427cef7c54f578589c85d4a216f97fc6cf2"
     },
     {
       "path": "Assets/3Dmodel/Building_Sorter_1x1_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "52650ae1e6b2ae26b478593e8fa751e491181c6fc7a7b5f6f30f51c000c3579d"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Sorter_1x1_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Sorter_1x1_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "e90f0c413efbf8de8bea903315303d68cd2d36b9755f641753836f3a89da4e94"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Sorter_1x1_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Sorter_1x1_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "479412f37df93c65036528b5e40041dc949fdd05c26a418b37378125f4f371af"
     },
     {
       "path": "Assets/3Dmodel/Building_Sorter_1x1_v002.meta",
@@ -1233,33 +973,13 @@
     },
     {
       "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002/IMPORT_README.md",
-      "bytes": 753,
+      "bytes": 745,
       "sha256": "08f17f47fde74660fcd5747b90e291971de863a77028e358ff3dee830b1b4826"
     },
     {
       "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "fd5f8a39d043d5b51e474123d8836602c7dd26d8f2d5f9ba34c96e8510cb726b"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "c4cfda2c13685c7fa8f09133731c8bca60a658f5b9a9beb81b387ade87dd32e3"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "72a28972c8a987a38133a3c3fdf4d32b2c7da820326441c17740fcbee463f4c4"
     },
     {
       "path": "Assets/3Dmodel/Building_Warehouse_1x1_v002.meta",
@@ -1288,33 +1008,13 @@
     },
     {
       "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002/IMPORT_README.md",
-      "bytes": 768,
+      "bytes": 760,
       "sha256": "be7cbc998ea5f20c3d9c64dee027d4ebe58aeaece5ba5065a00314e9e3463692"
     },
     {
       "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "a9c784908b461158fdb816cdac46c57104a85217c26fd4acdf4c73c1d9c4fe5e"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "39e750c07b4a29c213a712ec48696ea8dbe9487fcebcde3ee5c0a9d7e8d115ef"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "4a430d18cea163aa1dc8b65753888f3ce6de8eabf921195cbf9b04f48904756e"
     },
     {
       "path": "Assets/3Dmodel/Building_WaterAmplifier_2x2_v002.meta",
@@ -1343,33 +1043,13 @@
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage0_v002/IMPORT_README.md",
-      "bytes": 725,
+      "bytes": 717,
       "sha256": "3d165c072ffe7e322f19bdabc119bbdab39ead3c0b49f84e51a6609cafc39004"
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage0_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "72fecbd68faa8c76329271bd17649e19bb6394566da0bec2e8afe25b0d2560ce"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage0_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage0_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "0b7364077ee5bbf9bafa23f8fb3947c9f3cc2fc50697ead6da3f96538e701551"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage0_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage0_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "1113dc67ef43e3fcec3c4ede41cc8e3ea00318fedad285131dd4d0f05bd1d74d"
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage0_v002.meta",
@@ -1398,33 +1078,13 @@
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage1_v002/IMPORT_README.md",
-      "bytes": 725,
+      "bytes": 717,
       "sha256": "793e2aead4ab86d96cb9fcfa20f6ccc33e35b9bf20a81da50b1b24488773a8f5"
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage1_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "457ec7fc36dba43ecf7f645aa1af55e5ad7cbe7e6371fc46a14a821aeb3a18c4"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage1_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage1_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "e06c32ab51519f881dc55021f995cf4ebda3170906515b74739cebd9a1e5a663"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage1_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage1_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "d871d5190fe510a4680024a9c8fe4b861995347641721e12af95eb62c8b4741f"
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage1_v002.meta",
@@ -1453,33 +1113,13 @@
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage2_v002/IMPORT_README.md",
-      "bytes": 725,
+      "bytes": 717,
       "sha256": "44583a5c6bce1827af9a677e66cf82fc74f5771357800ffb32cbef0c5ef068d3"
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage2_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "c405c731b551016a0b8cc6d079fd5ac02350fb5a03c9b96293134a8a84f2635d"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage2_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage2_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "86a2598f247d22b29b02bd7bb2c5e1b57b61fae49e387b739910075f78b85940"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage2_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage2_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "81062753a4cc8e7468ba3a04cda84b51954fbaab649cf9011c7617dd86785bc5"
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage2_v002.meta",
@@ -1508,33 +1148,13 @@
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage3_v002/IMPORT_README.md",
-      "bytes": 725,
+      "bytes": 717,
       "sha256": "e5d2db50a60d20e24e5f1c11d93eb4eab8ea6af99dd93b9e5b0ce75ef10dce48"
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage3_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "ac3bbf5172461e6ab0e971e8d0d3851e4ba21f779a2747f1dbe9256105ec24ec"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage3_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage3_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "9e520e9be754f3642c3775f13b2c9beaddbdd8013c7fee2d1c85e50f8b031946"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage3_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage3_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "78fc3aae477c7658088345ef4b84f77776f4788599bf1088d86408da5b1b4e1c"
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage3_v002.meta",
@@ -1563,33 +1183,13 @@
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage4_v002/IMPORT_README.md",
-      "bytes": 725,
+      "bytes": 717,
       "sha256": "6c714e36cd814051a9f066dc338971329d2ea26d80d3a089e630f5a9c9a7a6bb"
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage4_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "482e0b4ed43266f66edc1c4cea989ee4620a7f0ca2fc21a1131969f57e49cbc7"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage4_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage4_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "96fe2c87d337ab17dbe4b0c7a800671fed6f89ac00a8b6f1937e9caa880246b1"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage4_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage4_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "5f2e7ea57c0d0e09a872e5cc261ab036fb8289f9be7aac97fd97c808b05d3aff"
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage4_v002.meta",
@@ -1618,33 +1218,13 @@
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage5_v002/IMPORT_README.md",
-      "bytes": 726,
+      "bytes": 718,
       "sha256": "21b9682d8226e1648c4c9ac0cf725cdbe3f9e45d7694ee75924ba9c835882729"
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage5_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "19611db37cfad32a126c259cc722a10825ce4f18f068210f7a16f18094be5f9b"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage5_v002/ProductionIsland_ColorAtlas_v002.png",
-      "bytes": 16379,
-      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage5_v002/ProductionIsland_ColorAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "c6615e6a536dd344b24636d817028a28d612ed96bc33e5e0cc96ce0b92310fff"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage5_v002/ProductionIsland_StoppedAtlas_v002.png",
-      "bytes": 15994,
-      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
-    },
-    {
-      "path": "Assets/3Dmodel/Harbor_Stage5_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
-      "bytes": 3069,
-      "sha256": "41618643eee92bd31ceada3effa7cb07fcdf30358aeb5e3cb1465ee62da820b7"
     },
     {
       "path": "Assets/3Dmodel/Harbor_Stage5_v002.meta",
@@ -1660,16 +1240,6 @@
       "path": "Assets/3Dmodel/Penguin_v002/IMPORT_README.md.meta",
       "bytes": 158,
       "sha256": "d007e4f34499858cb9a0ca7d24139c19ad9351f6b3c486e1a4ce6928bcc35e1a"
-    },
-    {
-      "path": "Assets/3Dmodel/Penguin_v002/Penguin_Static_v002.fbx",
-      "bytes": 2741900,
-      "sha256": "957edbdaae623da8d02eaf342b9e3efd51aca2cffec34f44da2d151550fb7391"
-    },
-    {
-      "path": "Assets/3Dmodel/Penguin_v002/Penguin_Static_v002.fbx.meta",
-      "bytes": 3063,
-      "sha256": "37728abbad190c551358ffec22aabb47a5ff0f7f277eac7e5de96c2a494c1144"
     },
     {
       "path": "Assets/3Dmodel/Penguin_v002/PG_Body_BaseColor.png",
@@ -1692,6 +1262,16 @@
       "sha256": "212c8fe054e82b10f37ab423c2559adf3411751ba67b31f4821f7a63c87a8169"
     },
     {
+      "path": "Assets/3Dmodel/Penguin_v002/Penguin_Static_v002.fbx",
+      "bytes": 2741900,
+      "sha256": "957edbdaae623da8d02eaf342b9e3efd51aca2cffec34f44da2d151550fb7391"
+    },
+    {
+      "path": "Assets/3Dmodel/Penguin_v002/Penguin_Static_v002.fbx.meta",
+      "bytes": 3063,
+      "sha256": "37728abbad190c551358ffec22aabb47a5ff0f7f277eac7e5de96c2a494c1144"
+    },
+    {
       "path": "Assets/3Dmodel/Penguin_v002.meta",
       "bytes": 172,
       "sha256": "aea481ee25be412e99dffaf08fd5bc5e2e89a700b678fde94f5cfbb52953896c"
@@ -1705,6 +1285,26 @@
       "path": "Assets/3Dmodel/ProductionIsland_v002/ChefWhite.mat.meta",
       "bytes": 188,
       "sha256": "d27a935eb4c5993c02131c763b0169400127d4481d4c91d143afab6cb1f66c91"
+    },
+    {
+      "path": "Assets/3Dmodel/ProductionIsland_v002/ProductionIsland_ColorAtlas_v002.png",
+      "bytes": 16379,
+      "sha256": "9de0ea08ab4a0a29dddc5e43c93a9bc3be184d76d6d6e4a3e4f8653f41d41472"
+    },
+    {
+      "path": "Assets/3Dmodel/ProductionIsland_v002/ProductionIsland_ColorAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "d8a383fa03829564d9dae24bd3afbbc4951f2eedd2cf05f6894f37234127189c"
+    },
+    {
+      "path": "Assets/3Dmodel/ProductionIsland_v002/ProductionIsland_StoppedAtlas_v002.png",
+      "bytes": 15994,
+      "sha256": "ab3b0380bdcc401995a7ee5c2d0bfa5c95443c54d16441af0ea502df7830b1fa"
+    },
+    {
+      "path": "Assets/3Dmodel/ProductionIsland_v002/ProductionIsland_StoppedAtlas_v002.png.meta",
+      "bytes": 3069,
+      "sha256": "af96dd6fe5b65b5bc848287dcfd1f1b5caddccc5235ca573202848bf8f47263d"
     },
     {
       "path": "Assets/3Dmodel/ProductionIsland_v002/Running.mat",
@@ -1763,8 +1363,8 @@
     },
     {
       "path": "Assets/Editor/ProductionIsland/FacilityRevisionBuilder.cs",
-      "bytes": 18340,
-      "sha256": "f0d21c50766fb9eda239f9ceee8ed353e4126b79cd7192e7c5a9c9105457b039"
+      "bytes": 18431,
+      "sha256": "342df404863c332b3a88e1c9f8e60dac06641cfea23d5586ae164ae446367f3c"
     },
     {
       "path": "Assets/Editor/ProductionIsland/FacilityRevisionBuilder.cs.meta",
@@ -1783,8 +1383,8 @@
     },
     {
       "path": "Assets/Editor/ProductionIsland/KamabokoRevisionBuilder.cs",
-      "bytes": 14753,
-      "sha256": "3e92c4b85bb2c1bf947cfd3e6aabc17b11b4de60e9d9e64ff73067d742aa8aee"
+      "bytes": 14783,
+      "sha256": "d637c0d05fc0b79df0d78d8992b35c4afdea6aec71ed7e7a11c705619abb791d"
     },
     {
       "path": "Assets/Editor/ProductionIsland/KamabokoRevisionBuilder.cs.meta",
@@ -1823,8 +1423,8 @@
     },
     {
       "path": "Assets/Scripts/Presentation/World/FacilityDesignGallery.cs",
-      "bytes": 6546,
-      "sha256": "2c1b40040c1234e75145a993def84f14b5ba5759dddb54330f835bb61104e457"
+      "bytes": 7072,
+      "sha256": "b8788cb0b676dc5a04053a3391335e072fa4dda2064fc828ca98419f710c93ae"
     },
     {
       "path": "Assets/Scripts/Presentation/World/FacilityDesignGallery.cs.meta",
@@ -1833,8 +1433,8 @@
     },
     {
       "path": "Assets/Scripts/Presentation/World/FacilityProductionCycle.cs",
-      "bytes": 22372,
-      "sha256": "8baba12f4e02730fc3400b624f8ee151bf7754f6ea43d984680d0c45402c91d0"
+      "bytes": 23033,
+      "sha256": "c0f0eef5424fc47f61cec3092f62936d5c882b7095eeffeb4d0a9a5efc235d5b"
     },
     {
       "path": "Assets/Scripts/Presentation/World/FacilityProductionCycle.cs.meta",
@@ -1917,34 +1517,34 @@
       "sha256": "c7ed4bb9982f8930edfad70c4a194ff3dac6e967ab54c46b16e5d72f873a5266"
     },
     {
-      "path": "docs/kamaboko-design-v002.md",
+      "path": "docs/production-island/kamaboko-design-v002.md",
       "bytes": 5677,
       "sha256": "546247a936059756801362bdf2dee2c63557a1680ebe98da627b08f36ce5b115"
     },
     {
-      "path": "docs/production-island-facilities-v002.md",
+      "path": "docs/production-island/production-island-facilities-v002.md",
       "bytes": 8608,
       "sha256": "19b414214f2e7a8e85dc0cfc93698db8751a9fcd9faedbbe793cd90a57e847f5"
     },
     {
-      "path": "docs/production-island-facility-motions.md",
+      "path": "docs/production-island/production-island-facility-motions.md",
       "bytes": 6870,
       "sha256": "568541b5d25bf6c5259b95739a2c7e1b0a04b89ab643367cbb96e1c44985f586"
     },
     {
-      "path": "docs/production-island-review-user-guide.md",
-      "bytes": 5974,
-      "sha256": "2852260fd22bf58d9f727e5397c09e95c7c09046fdae32824edf714459b1c07e"
+      "path": "docs/production-island/production-island-review-user-guide.md",
+      "bytes": 5992,
+      "sha256": "f0b0eb891d98739269e936fdbfd193d4353416223d24e26d654331fa45641f8a"
     },
     {
-      "path": "docs/testing/production-island-visual-review.md",
-      "bytes": 9189,
-      "sha256": "9d3faca68bea1897f1129a45be5735ca271e1e92cdac56f5b67f0ec55b594526"
+      "path": "docs/production-island/testing/production-island-visual-review.md",
+      "bytes": 9208,
+      "sha256": "bdc021f21319df8581d41dcd1e4941f13a0138310820ab33f3a50fae1277b3df"
     },
     {
       "path": "scripts/package_production_island_v002.py",
-      "bytes": 5024,
-      "sha256": "190a12ece72e567f21ec8dd6d4181ea8201d007edd1859cc19beb53d08fbf74d"
+      "bytes": 5132,
+      "sha256": "80370cc7ea51be16801ec0b9fad4d0065b6f8e40009f90b6b0e21f5b56f89357"
     }
   ]
 }

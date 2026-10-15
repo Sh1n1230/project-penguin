@@ -59,6 +59,6 @@
 - RuntimeのGalleryからInput System設定の書き換え・マウス強制有効化・Editor処理を削除。Editor側のFacilityReviewFocusがGameを開くだけの処理に分離した。
 - かまぼこ判定は配置番号ではなくKamabokoProductionCycleの有無で行う。
 - 工程の境界時刻と設定を変更しない入力処理をEditModeテストへ移した。テスト用JSONや接続記録はGitに保存しない。
-- DeliveryのコピーはGitの公開対象から外し、docs/production-island-v002に相対パスの一覧を置く。ローカル保管データは削除せず保持した。
+- DeliveryのコピーはGitの公開対象から外し、docs/production-island/production-island-v002 に相対パスの一覧を置く。ローカル保管データは削除せず保持した。
 - v001のアトラスと稼働・停止マテリアルを共有化し、Prefabと素材一覧シーンをUnity Editor APIで更新した。
 - コード、v002素材、v001素材の3つのPRへ分割する。
