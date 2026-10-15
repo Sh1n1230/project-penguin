@@ -102,6 +102,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
                 galleryGo.AddComponent<FacilityDesignGallery>().Configure(camera, facilities.ToArray(), labels.ToArray(), recipes.ToArray());
                 ConfigureReviewUI(galleryGo);
                 EditorSceneManager.SaveScene(scene, ScenePath); AssetDatabase.SaveAssets();
+                Directory.CreateDirectory("ArtSource/ProductionIsland_v002/Facilities");
                 File.WriteAllText("ArtSource/ProductionIsland_v002/Facilities/build-result.txt", "PASS: 20 new prefabs + approved Kamaboko; existing Penguin_v002; interactive review scene.");
             }
             finally { EditorSceneManager.CloseScene(scene, true); }
@@ -191,7 +192,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
             importer.materialImportMode = ModelImporterMaterialImportMode.None; importer.SaveAndReimport();
             var go = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(path), scene);
             go.name = name;
-            foreach (var renderer in go.GetComponentsInChildren<Renderer>(true)) renderer.sharedMaterial = running;
+            foreach (var renderer in go.GetComponentsInChildren<Renderer>(true)) FacilityProductionCycle.FillMaterialSlots(renderer, running);
             return go;
         }
 

@@ -148,7 +148,19 @@ namespace ProjectPenguin.Presentation.World
         {
             var material = _running ? _runningMaterial : _stoppedMaterial;
             if (_facilityRenderers == null || material == null) return;
-            foreach (var renderer in _facilityRenderers) renderer.sharedMaterial = material;
+            foreach (var renderer in _facilityRenderers) FillMaterialSlots(renderer, material);
+        }
+
+        /// <summary>
+        /// すべてのマテリアルスロットを同じマテリアルにする。sharedMaterial への代入はスロット 0 だけを
+        /// 置き換えるため、マルチマテリアルのメッシュでは 2 つ目以降が元のまま (または空) になる。
+        /// </summary>
+        public static void FillMaterialSlots(Renderer renderer, Material material)
+        {
+            var slots = renderer.sharedMaterials;
+            if (slots.Length == 0) slots = new Material[1];
+            for (var i = 0; i < slots.Length; i++) slots[i] = material;
+            renderer.sharedMaterials = slots;
         }
         private void Update()
         {

@@ -22,6 +22,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
         public static void BuildAndReport()
         {
             const string report = ".local-tools/production-island-build-result.txt";
+            Directory.CreateDirectory(Path.GetDirectoryName(report));
             File.WriteAllText(report, "RUNNING");
             try
             {
@@ -320,7 +321,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
                 {
                     // Item meshes mix with the paper particles, as requested.
                     var itemGo = new GameObject("ItemConfetti"); itemGo.transform.SetParent(root.transform, false);
-                    var itemPs = CreateParticle(itemGo, AssetDatabase.LoadAssetAtPath<Material>("Assets/3Dmodel/Item_Fish_v001/Running.mat"), Color.white, .35f, 2.4f, false, 12);
+                    var itemPs = CreateParticle(itemGo, AssetDatabase.LoadAssetAtPath<Material>(SharedModelFolder + "/Running.mat"), Color.white, .35f, 2.4f, false, 12);
                     var main = itemPs.main; main.startSpeed = 1.3f; main.gravityModifier = .25f;
                     var renderer = itemPs.GetComponent<ParticleSystemRenderer>(); renderer.renderMode = ParticleSystemRenderMode.Mesh;
                     var mesh = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3Dmodel/Item_Fish_v001/Item_Fish_v001.fbx").GetComponentInChildren<MeshFilter>().sharedMesh;
