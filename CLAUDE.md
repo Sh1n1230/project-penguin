@@ -31,7 +31,7 @@
 | `scripts/` | CI とローカル共用の検査スクリプト |
 | `tests/hooks/` | `.claude/hooks/` と `scripts/` の判定のテスト (pytest、標準ライブラリのみ) |
 | `docs/` | 設計メモ (`ui-structure.md` 画面構成、`design-system.md` 見た目の決まりごと) と参考画像 |
-| `docs/production-island/` | 生産の島 (チームメイトの試作。MVP のホームには未組み込み) の素材・確認手順・テスト記録 |
+| `docs/production-island/` | 生産の島 (主軸にする予定のインクリメンタル型の遊び。ホームには未組み込み) の素材・確認手順・テスト記録 |
 | `docs/game-logic.md` | ゲームロジックの仕様 (氷・盾・おかえり・段・来訪・スタンプ)。値と規則はこれを正とする |
 | `tools/game_sim/` | ゲームロジックの Python 参照実装。C# の期待値 (`GameSimGolden.cs`) を生成する |
 | `docs/decisions.md` | チームの決定事項 (Discord・JPHACKS の Notion と Slack から抽出)。仕様や前提を確かめるときに読む |
