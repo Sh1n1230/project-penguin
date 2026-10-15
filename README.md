@@ -132,46 +132,64 @@ MCP for Unity ウィンドウの Configure ボタンは、個人設定 (`~/.clau
 
 ## ビルド
 
-レシート撮影が中核のため、配布対象は Android と iOS です。ビルドスクリプトは `Assets/Editor/Build/` にあり、Editor メニューと CLI が同じ経路を通ります。成果物は `Builds/` (git 管理外) に出ます。
+**MVP の配布対象は iOS のみです** (チーム全員の実機が iOS で、Android の実機確認ができないため。`docs/decisions.md` の 2026-10-13 の決定)。Android のビルド経路も残してありますが、MVP では動作確認の対象外です。
 
-| メニュー (`Build/`) | 出力 |
-|---|---|
-| Android APK (Development) | `Builds/Android/<product>-<version>-dev.apk` |
-| Android APK | `Builds/Android/<product>-<version>.apk` |
-| Android AAB (配布用) | `Builds/Android/<product>-<version>.aab` |
-| iOS Xcode プロジェクト | `Builds/iOS/` |
+ビルドスクリプトは `Assets/Editor/Build/` にあり、Editor メニューと CLI が同じ経路を通ります。成果物は `Builds/` (git 管理外) に出ます。
 
-Unity Hub の 6000.6.0f1 に **Android Build Support (OpenJDK / SDK & NDK 込み)** と **iOS Build Support** を追加しておいてください。iOS は Xcode プロジェクトを出力するところまでで、実機ビルドは macOS 上の Xcode で行います。
+| メニュー (`Build/`) | 出力 | MVP |
+|---|---|---|
+| iOS Xcode プロジェクト | `Builds/iOS/` | 対象 |
+| Android APK (Development) | `Builds/Android/<product>-<version>-dev.apk` | 対象外 |
+| Android APK | `Builds/Android/<product>-<version>.apk` | 対象外 |
+| Android AAB (配布用) | `Builds/Android/<product>-<version>.aab` | 対象外 |
+
+Unity Hub の 6000.6.0f1 に **iOS Build Support** を追加しておいてください。iOS は Xcode プロジェクトを出力するところまでで、実機へのインストールと配布は macOS 上の Xcode で行います。Android を試すときだけ **Android Build Support (OpenJDK / SDK & NDK 込み)** を追加します。
 
 CLI から回す場合は Editor でプロジェクトを閉じてから実行します。`-quit` は付けません (終了コードはビルドスクリプト側が返します)。
 
 ```bash
-# Windows
-"C:/Program Files/Unity/Hub/Editor/6000.6.0f1/Editor/Unity.exe" \
-  -batchmode -nographics -projectPath . -logFile - \
-  -executeMethod ProjectPenguin.Editor.Build.BuildEntry.AndroidApk -- --dev
-
-# macOS
+# iOS の Xcode プロジェクト (macOS)
 /Applications/Unity/Hub/Editor/6000.6.0f1/Unity.app/Contents/MacOS/Unity \
+  -batchmode -nographics -projectPath . -logFile - \
+  -executeMethod ProjectPenguin.Editor.Build.BuildEntry.IosXcode -- --dev
+
+# Android の APK (MVP 後に Android を再開するとき用。Windows の例)
+"C:/Program Files/Unity/Hub/Editor/6000.6.0f1/Editor/Unity.exe" \
   -batchmode -nographics -projectPath . -logFile - \
   -executeMethod ProjectPenguin.Editor.Build.BuildEntry.AndroidApk -- --dev
 ```
 
+`--` の後ろに渡せるオプション:
+
+| オプション | 内容 |
+|---|---|
+| `--dev` | Development Build にする |
+| `--output <dir>` | 出力先のルート (既定は `Builds/`) |
+| `--bundle-version <x.y.z>` | 表示用のバージョン (iOS の `CFBundleShortVersionString`、Android の versionName) |
+| `--version-code <n>` | Android の versionCode |
+
 ### 署名
 
-**キーストアもパスワードもリポジトリには置きません。** 環境変数からのみ読み込み、ビルド後は `PlayerSettings` を元の値へ戻すため `ProjectSettings.asset` に残りません。
+**証明書・キーストア・パスワードはリポジトリに置きません。** 環境変数からのみ読み込み、ビルド後は `PlayerSettings` を元の値へ戻すため `ProjectSettings.asset` に残りません。
+
+iOS は Xcode 側で署名します。`PENGUIN_IOS_TEAM_ID` を設定すると、出力した Xcode プロジェクトに Team ID が入ります (任意)。
 
 | 環境変数 | 内容 |
 |---|---|
-| `PENGUIN_ANDROID_KEYSTORE` | `.keystore` / `.jks` へのパス |
+| `PENGUIN_IOS_TEAM_ID` | Apple Developer Team ID (任意) |
+
+Android (MVP 後に再開するとき用):
+
+| 環境変数 | 内容 |
+|---|---|
+| `PENGUIN_ANDROID_KEYSTORE` | キーストアのファイルへのパス |
 | `PENGUIN_ANDROID_KEYSTORE_PASS` | キーストアのパスワード |
 | `PENGUIN_ANDROID_KEYALIAS` | エイリアス名 |
 | `PENGUIN_ANDROID_KEYALIAS_PASS` | エイリアスのパスワード |
-| `PENGUIN_IOS_TEAM_ID` | Apple Developer Team ID (任意) |
 
 未設定の場合、APK は debug 鍵でビルドされ (配布不可)、AAB は明示的に失敗します。
 
-なお `companyName` と `applicationIdentifier` は URP テンプレートの既定値のままです。配布前に Unity Editor の Project Settings で自前の値に変更してください。
+なお `companyName` と `applicationIdentifier` は URP テンプレートの既定値のままです (#22)。配布前に Unity Editor の Project Settings で自前の値に変更してください。
 
 ## 現状
 
