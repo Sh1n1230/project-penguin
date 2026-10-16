@@ -39,11 +39,32 @@ namespace ProjectPenguin.Domain.Game
         public int WhitePerDay { get; set; } = 1;
         public int WhitePerWeek { get; set; } = 5;
 
-        /// <summary>15d の推奨値。</summary>
+        // ---- v4 (調査 17a。docs/game-logic.md) ----
+
+        /// <summary>おかえりは「盾で守れず氷が溶けた日が 1 日以上あった後の最初の記録」で出す。false なら v3 の「記録のない日が <see cref="ComebackMinGap"/> 日以上」。</summary>
+        public bool ComebackRequiresMelt { get; set; } = true;
+
+        /// <summary>時計が最後に見た日より前に戻ったとき、操作を最後に見た日のものとして扱う。false なら v3 の「何もしない」。</summary>
+        public bool RollbackClamp { get; set; } = true;
+
+        /// <summary>
+        /// 信頼できない時計 (<see cref="Clock.ITrustedClock"/> でない、または IsTrusted が false) で、最後に見た日よりこの日数を超えて進んだら
+        /// 確定させずに保留する。null なら制限なし。調査は 14 を勧めるが、サーバーの時計 (backend の Date ヘッダー) が無いうちに 14 にすると、
+        /// 2 週間以上あけて戻った人が「保留」で止まるので、サーバーができるまでは null にしておく。
+        /// </summary>
+        public int? MaxCatchUpDays { get; set; }
+
+        /// <summary>v4 の推奨値 (15d の値 + 17a の修正)。</summary>
         public static GameParameters Default => new GameParameters();
 
-        /// <summary>2026-10-15 に決めたままの値 (段の幅 4、初回のアデリーも週の枠に数える)。</summary>
-        public static GameParameters Decided => new GameParameters { TierHysteresis = 4.0, OnboardingExemptFromCap = false };
+        /// <summary>15d (v3) のままの値。おかえりは空白 3 日以上、巻き戻しは無視、先送りの制限なし。</summary>
+        public static GameParameters V3 => new GameParameters { ComebackRequiresMelt = false, RollbackClamp = false, MaxCatchUpDays = null };
+
+        /// <summary>2026-10-15 に決めたままの値 (段の幅 4、初回のアデリーも週の枠に数える。v4 の修正も入れない)。</summary>
+        public static GameParameters Decided => new GameParameters
+        {
+            TierHysteresis = 4.0, OnboardingExemptFromCap = false, ComebackRequiresMelt = false, RollbackClamp = false, MaxCatchUpDays = null,
+        };
     }
 
     /// <summary>氷の見た目の段 (15c §1.2)。</summary>

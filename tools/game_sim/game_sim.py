@@ -1,26 +1,44 @@
-"""Project Penguin integrated game logic + 8-week persona simulator (15d).
+"""Project Penguin integrated game logic + 8-week persona simulator (15d, v4 fixes of 17a).
+
+v4 (2026-10-16, 17a-logic-fixes.md) changes on top of the 15d rules:
+  * clock rollback: an action whose app day is before the last seen day is treated
+    as happening on the last seen day (high-water mark) instead of being ignored
+  * large forward jump: more than max_catch_up_days ahead of the last seen day is
+    held (not settled, actions rejected) until the clock is trusted / confirmed
+  * comeback ("おかえり") fires on the first record after >= 1 day that melted
+    (unshielded and gap_melted > 0), instead of after >= 3 non-record days
+  * state export / restore as versioned JSON (STATE_VERSION)
+  * weekly choice bonus B: bonus_grace_days (0 = Monday, as in the spec; 2 =
+    settle on Wednesday 03:00 so receipts scanned late still count)
+
+19 (2026-10-16, 19-game-logic-spec-v4.md §5): penguin species are keyed by the
+`id` column of 17b-zukan.csv ("adelie", "little", ...) in code and in saved
+state; NAME_JA holds the 17b display names. Restore rejects unknown species ids.
+No rule or value changed, so every number is the same as 17a.
 
 Implements the integrated rules decided on 2026-10-15 (see 15d-simulation.md):
   * app day boundary 03:00 JST; record day = app day the user acted
   * record = receipt scan OR evening mission check-in (any answer); 1/day
   * +2 ice (+4 when ice < 60); non-record day -2 unless a shield absorbs it
   * shields start 2, refill to 2 every Monday 03:00, max 2
-  * comeback: first record after >= 3 non-record days gets
+  * comeback: first record after a gap in which ice melted (v4; 15d: >= 3 non-record days) gets
     min(10, round_half_up(0.5 * ice melted during the gap))
   * floor 40, cap 150; any gain above the cap -> shards 1:1 (no cap)
   * weekly choice bonus B (0..4, receipts only) applied at Monday start
   * mission stamps: receipt-verified gold 2pt; self/photo "done" white 1pt
     (counted max 1/day, 5/week); missions never add ice
-  * visual tiers with hysteresis 6 (15d; DECIDED keeps the original 4)
+  * visual tiers with hysteresis 4
   * penguin arrivals: weekly (prev week >= 3 record days) + milestones,
     max 1 arrival per week overall, milestone first, weekly queues
 
-Pure Python, no dependencies.  The C# port in Assets/Scripts/Domain/Game
-mirrors this file; tools/game_sim/gen_game_golden.py freezes this file's output
-for the C# parity tests (Assets/Tests/EditMode/Domain/GameSimGolden.cs).
+Pure Python, no dependencies.  The C# port in csharp/Assets/Scripts/Domain/Game
+mirrors this file; tools/gen_game_golden.py freezes this file's output for the
+C# parity tests.
 """
 from __future__ import annotations
 
+import dataclasses
+import json
 import math
 import random
 from dataclasses import dataclass, field
@@ -80,6 +98,7 @@ class Params:
     tier_bounds: Tuple[float, ...] = (60.0, 80.0, 100.0, 125.0)
     tier_hysteresis: float = 6.0              # 15d change: decided 4 flickers for 週2 (md §4)
     weekly_arrival_min_days: int = 3
+    weekly_bonus_max: float = 4.0
     max_arrivals_per_week: int = 1
     onboarding_exempt_from_cap: bool = True   # 15d change (see md §4); False = rule as first decided
     selections_per_day: int = 2
@@ -87,33 +106,58 @@ class Params:
     white_points: int = 1
     white_per_day: int = 1
     white_per_week: int = 5
+    # ---- v4 (17a) ----
+    comeback_requires_melt: bool = True       # 16a §4.1: fire after >= 1 day that actually melted
+    rollback_clamp: bool = True               # clock behind the last seen day -> act on the last seen day
+    max_catch_up_days: Optional[int] = 14     # bigger untrusted forward jumps are held (None = no limit)
+    bonus_grace_days: int = 0                 # B for week W settles on Monday(W+1) + this many days
 
 
 DEFAULT = Params()
-# the rules exactly as decided on 2026-10-15, before the two 15d changes
-DECIDED = Params(tier_hysteresis=4.0, onboarding_exempt_from_cap=False)
+# the 15d rules (v3) exactly as shipped on 2026-10-15: old comeback trigger, rollback ignored, no jump limit
+V3 = Params(comeback_requires_melt=False, rollback_clamp=False, max_catch_up_days=None)
+# the rules exactly as decided on 2026-10-15, before the two 15d changes (and before v4)
+DECIDED = dataclasses.replace(V3, tier_hysteresis=4.0, onboarding_exempt_from_cap=False)
+# 16d §5.2-3 option (a): B settles on Wednesday 03:00 so late-scanned receipts still count
+DEFERRED_B = Params(bonus_grace_days=2)
 
-# 15c §3.2 / §3.3
+STATE_VERSION = 1
+CLOCK_OK, CLOCK_BEHIND, CLOCK_AHEAD_PENDING = "ok", "behind", "ahead_pending"
+INT_MIN = -2 ** 31                          # "no arrival yet" week sentinel (same as C# int.MinValue)
+
+# 15c §3.2 / §3.3. Species keys are the `id` column of 17b-zukan.csv (19 §5, 18a C26 / D18).
+# Japanese names are for display only and never go into code paths or saved state.
 SPECIES = [
-    "コウテイペンギン", "オウサマペンギン", "アデリーペンギン", "ヒゲペンギン", "ジェンツーペンギン",
-    "コガタペンギン", "ガラパゴスペンギン", "フンボルトペンギン", "マゼランペンギン", "ケープペンギン",
-    "キガシラペンギン", "マカロニペンギン", "ロイヤルペンギン", "キタイワトビペンギン", "ミナミイワトビペンギン",
-    "ヒガシイワトビペンギン", "フィヨルドランドペンギン", "スネアーズペンギン", "シュレーターペンギン",
+    "emperor", "king", "adelie", "chinstrap", "gentoo",
+    "little", "galapagos", "humboldt", "magellanic", "african",
+    "yellow_eyed", "macaroni", "royal", "northern_rockhopper", "western_rockhopper",
+    "eastern_rockhopper", "fiordland", "snares", "erect_crested",
 ]
-M_ONBOARDING = "アデリーペンギン"
-M_FIRST_RECORD = "コガタペンギン"
-M_ALL_KINDS = "マゼランペンギン"
-M_FIRST_COMEBACK = "ガラパゴスペンギン"
-M_FIVE_MISSIONS = "ヒゲペンギン"
-M_TOTAL_14 = "オウサマペンギン"
-M_TOTAL_30 = "コウテイペンギン"
-M_FOUR_WEEKS = "キガシラペンギン"
+# Display names (17b-zukan.csv `name_ja`, IOC 15.2 Japanese column). Not used by the logic.
+NAME_JA = {
+    "emperor": "コウテイペンギン", "king": "オウサマペンギン", "adelie": "アデリーペンギン",
+    "chinstrap": "ヒゲペンギン", "gentoo": "ジェンツーペンギン", "little": "コビトペンギン",
+    "galapagos": "ガラパゴスペンギン", "humboldt": "フンボルトペンギン", "magellanic": "マゼランペンギン",
+    "african": "ケープペンギン", "yellow_eyed": "キンメペンギン", "macaroni": "マカロニペンギン",
+    "royal": "ロイヤルペンギン", "northern_rockhopper": "キタイワトビペンギン",
+    "western_rockhopper": "ミナミイワトビペンギン", "eastern_rockhopper": "ヒガシイワトビペンギン（仮称）",
+    "fiordland": "キマユペンギン", "snares": "ハシブトペンギン", "erect_crested": "マユダチペンギン",
+}
+M_ONBOARDING = "adelie"
+M_FIRST_RECORD = "little"
+M_ALL_KINDS = "magellanic"
+M_FIRST_COMEBACK = "galapagos"
+M_FIVE_MISSIONS = "chinstrap"
+M_TOTAL_14 = "king"
+M_TOTAL_30 = "emperor"
+M_FOUR_WEEKS = "yellow_eyed"
 MILESTONE_ORDER = [M_ONBOARDING, M_FIRST_RECORD, M_ALL_KINDS, M_FIRST_COMEBACK,
                    M_FIVE_MISSIONS, M_TOTAL_14, M_TOTAL_30, M_FOUR_WEEKS]
-WEEKLY_ORDER = ["ジェンツーペンギン", "フンボルトペンギン", "マカロニペンギン", "ロイヤルペンギン", "ケープペンギン",
-                "フィヨルドランドペンギン", "スネアーズペンギン", "キタイワトビペンギン", "ミナミイワトビペンギン",
-                "ヒガシイワトビペンギン", "シュレーターペンギン"]
-assert len(set(MILESTONE_ORDER + WEEKLY_ORDER)) == 19 == len(SPECIES)
+WEEKLY_ORDER = ["gentoo", "humboldt", "macaroni", "royal", "african",
+                "fiordland", "snares", "northern_rockhopper", "western_rockhopper",
+                "eastern_rockhopper", "erect_crested"]
+assert len(set(MILESTONE_ORDER + WEEKLY_ORDER)) == 19 == len(SPECIES) == len(NAME_JA)
+assert set(MILESTONE_ORDER + WEEKLY_ORDER) == set(SPECIES) == set(NAME_JA)
 
 KIND_RECEIPT, KIND_MISSION, KIND_NO_SHOPPING = "receipt", "mission", "no_shopping_mission"
 VERIF_RECEIPT, VERIF_SELF, VERIF_PHOTO = "receipt", "self", "photo"
@@ -185,7 +229,9 @@ class GameState:
     milestone_queue: List[str] = field(default_factory=list)
     weekly_pending: int = 0
     weekly_index: int = 0
-    last_arrival_week: int = -10 ** 9
+    last_arrival_week: int = -2 ** 31
+    clock_rollbacks: int = 0
+    late_bonus_receipts: int = 0
 
     @property
     def shards(self) -> int:
@@ -201,6 +247,7 @@ class Receipt:
     receipt_id: str
     print_day: int
     verifies: Tuple[str, ...] = ()   # mission ids whose receipt_rule this receipt satisfies
+    scan_day: Optional[int] = None   # app day it was scanned (set by the session)
 
 
 BonusFn = Callable[[int, List[Receipt]], float]
@@ -209,18 +256,19 @@ BonusFn = Callable[[int, List[Receipt]], float]
 class Session:
     """Clock-driven game session (mirror of C# GameSession)."""
 
-    def __init__(self, now: datetime, bonus_fn: BonusFn, p: Params = DEFAULT,
-                 on_day_settled: Optional[Callable[["Session", int], None]] = None):
+    def __init__(self, now: Optional[datetime], bonus_fn: BonusFn, p: Params = DEFAULT,
+                 on_day_settled: Optional[Callable[["Session", int], None]] = None,
+                 clock_trusted: bool = True, _restoring: bool = False):
         self.p = p
         self.bonus_fn = bonus_fn
         self.on_day_settled = on_day_settled
+        # True: the instants passed in are trusted (server-anchored clock, tests, simulation)
+        self.clock_trusted = clock_trusted
+        self.clock_status = CLOCK_OK          # transient: result of the last advance()
+        self.pending_ahead_day: Optional[int] = None
         self.s = GameState(ice=p.initial, shields=p.shields_start, tier=tier_of(p.initial, p))
-        self.first_day = app_day(now)
-        self.last_started = self.first_day - 1
-        self.last_settled = self.first_day - 1
         self.recorded_days: set = set()
         self.receipts: Dict[str, Receipt] = {}
-        self.receipt_scan_day: Dict[str, int] = {}
         self.selected: Dict[int, List[Tuple[str, str]]] = {}
         self.checked: set = set()
         self.verified: set = set()
@@ -228,17 +276,38 @@ class Session:
         self.white_by_week: Dict[int, int] = {}
         self.tier_log: List[Tuple[int, int, int]] = []   # (day, from, to)
         self.comeback_log: List[Tuple[int, int]] = []    # (day, extra)
+        if _restoring:
+            return
+        self.first_day = app_day(now)
+        self.last_started = self.first_day - 1
+        self.last_settled = self.first_day - 1
         self._start_day(self.first_day, first=True)
 
     # ----- time -----
-    def _today(self, now: datetime) -> Optional[int]:
+    def _today(self, now: datetime, force: bool = False) -> Optional[int]:
         d = app_day(now)
         if d < self.last_started:
-            return None          # clock went backwards: ignore the action entirely
+            self.s.clock_rollbacks += 1
+            self.pending_ahead_day = None
+            self.clock_status = CLOCK_BEHIND
+            if not self.p.rollback_clamp:
+                return None      # v3: ignore the action entirely
+            return self.last_started   # v4: the last seen day (high-water mark); old days are never refilled
+        lim = self.p.max_catch_up_days
+        if lim is not None and d - self.last_started > lim and not (self.clock_trusted or force):
+            self.pending_ahead_day = d  # v4: hold the jump; nothing settles, the action does nothing
+            self.clock_status = CLOCK_AHEAD_PENDING
+            return None
+        self.pending_ahead_day = None
+        self.clock_status = CLOCK_OK
         return d
 
-    def advance(self, now: datetime) -> Optional[int]:
-        today = self._today(now)
+    def confirm_clock(self, now: datetime) -> Optional[int]:
+        """Settle a held forward jump once the caller has confirmed the time (e.g. server Date header)."""
+        return self.advance(now, force=True)
+
+    def advance(self, now: datetime, force: bool = False) -> Optional[int]:
+        today = self._today(now, force)
         if today is None:
             return None
         for d in range(self.last_settled + 1, today):
@@ -276,16 +345,17 @@ class Session:
             else:
                 self._enqueue(M_ONBOARDING)
                 self._try_deliver(d)
-        if not is_monday(d) or first:
+        if first:
             return
-        s.shields = p.shields_max
+        monday = is_monday(d)
+        if monday:
+            s.shields = p.shields_max
+        if is_monday(d - p.bonus_grace_days):
+            self._apply_bonus(d, week_of(d - p.bonus_grace_days) - 1)
+        if not monday:
+            return
         prev = week_of(d) - 1
         if prev >= week_of(self.first_day):
-            rs = [r for r in self.receipts.values() if week_of(r.print_day) == prev]
-            b = max(0.0, min(4.0, self.bonus_fn(prev, rs))) if rs else 0.0
-            if b > 0:
-                self._add_ice(b)
-                self._set_tier(d)
             if s.week_record_days.get(prev, 0) >= p.weekly_arrival_min_days:
                 s.weekly_pending += 1
                 s.consecutive_weeks += 1
@@ -294,6 +364,20 @@ class Session:
             else:
                 s.consecutive_weeks = 0
         self._try_deliver(d)
+
+    def _apply_bonus(self, d: int, week: int) -> None:
+        """Weekly choice bonus B for a closed week, from receipts printed in it and scanned so far."""
+        if week < week_of(self.first_day):
+            return
+        rs = [r for r in self.receipts.values() if week_of(r.print_day) == week]
+        b = max(0.0, min(self.p.weekly_bonus_max, self.bonus_fn(week, rs))) if rs else 0.0
+        if b > 0:
+            self._add_ice(b)
+            self._set_tier(d)
+
+    def bonus_settle_day(self, week: int) -> int:
+        """App day on whose start B for `week` is added (Monday of the next week + grace)."""
+        return (week + 1) * 7 - 3 + self.p.bonus_grace_days
 
     def _non_record(self, d: int) -> None:
         s, p = self.s, self.p
@@ -319,7 +403,8 @@ class Session:
             return False
         self.recorded_days.add(d)
         gain = p.record_gain * (p.rescue_mult if s.ice < p.rescue_below else 1.0)
-        if s.gap_days >= p.comeback_min_gap:
+        fires = s.gap_melted > 0 if p.comeback_requires_melt else s.gap_days >= p.comeback_min_gap
+        if fires:
             extra = min(p.comeback_max, round_half_up(p.comeback_ratio * s.gap_melted))
             gain += extra
             s.comebacks += 1
@@ -391,8 +476,10 @@ class Session:
         d = self.advance(now)
         if d is None or r.receipt_id in self.receipts:
             return False
+        r = dataclasses.replace(r, scan_day=d)
         self.receipts[r.receipt_id] = r
-        self.receipt_scan_day[r.receipt_id] = d
+        if self.bonus_settle_day(week_of(r.print_day)) <= d:
+            self.s.late_bonus_receipts += 1     # its week's B is already settled: counts as a record only
         for sd in sorted(self.selected):
             for mid, verif in self.selected[sd]:
                 if verif != VERIF_RECEIPT or (sd, mid) in self.verified:
@@ -440,6 +527,116 @@ class Session:
                         len(s.arrivals), s.gold, s.white_counted,
                         s.gold * self.p.gold_points + s.white_counted * self.p.white_points,
                         s.shields_used, d in self.recorded_days)
+
+
+    # ----- save / restore (v4, 17a §3) -----
+    def export_state(self) -> dict:
+        """Everything needed to continue the session, as JSON-ready primitives (schema STATE_VERSION).
+
+        Parameters, the bonus function and the clock are not saved: the caller passes them again on restore.
+        Lists that come from sets are sorted so that the same state always gives the same JSON.
+        """
+        s = self.s
+
+        def kv(m: Dict[int, int]) -> list:
+            return [{"key": k, "value": m[k]} for k in sorted(m)]
+
+        return {
+            "version": STATE_VERSION,
+            "firstDay": self.first_day,
+            "lastStartedDay": self.last_started,
+            "lastSettledDay": self.last_settled,
+            "ice": s.ice,
+            "shields": s.shields,
+            "tier": s.tier,
+            "shardsExact": s.shards_exact,
+            "totalRecordDays": s.total_record_days,
+            "streak": s.streak,
+            "gapDays": s.gap_days,
+            "gapMelted": s.gap_melted,
+            "comebacks": s.comebacks,
+            "shieldsUsed": s.shields_used,
+            "gold": s.gold,
+            "whitePressed": s.white_pressed,
+            "whiteCounted": s.white_counted,
+            "consecutiveWeeks": s.consecutive_weeks,
+            "weeklyPending": s.weekly_pending,
+            "weeklyIndex": s.weekly_index,
+            "lastArrivalWeek": s.last_arrival_week,
+            "clockRollbacks": s.clock_rollbacks,
+            "lateBonusReceipts": s.late_bonus_receipts,
+            "kindsUsed": sorted(s.kinds_used),
+            "doneMissions": sorted(s.done_missions),
+            "recordedDays": sorted(self.recorded_days),
+            "weekRecordDays": kv(s.week_record_days),
+            "whiteByDay": kv(self.white_by_day),
+            "whiteByWeek": kv(self.white_by_week),
+            "arrivals": [{"species": a.species, "day": a.day, "reason": a.reason} for a in s.arrivals],
+            "milestoneQueue": list(s.milestone_queue),
+            "receipts": [{"receiptId": r.receipt_id, "printDay": r.print_day,
+                          "scanDay": r.scan_day if r.scan_day is not None else r.print_day,
+                          "verifies": list(r.verifies)} for r in self.receipts.values()],
+            "selected": [{"day": d, "missionId": m, "verification": v}
+                         for d in sorted(self.selected) for m, v in self.selected[d]],
+            "checked": [{"day": d, "missionId": m} for d, m in sorted(self.checked)],
+            "verified": [{"day": d, "missionId": m} for d, m in sorted(self.verified)],
+            "tierLog": [{"day": d, "fromTier": a, "toTier": b} for d, a, b in self.tier_log],
+            "comebackLog": [{"day": d, "amount": x} for d, x in self.comeback_log],
+        }
+
+    def export_json(self) -> str:
+        return json.dumps(self.export_state(), ensure_ascii=False, sort_keys=True)
+
+    @classmethod
+    def restore(cls, state, bonus_fn: BonusFn, p: Params = DEFAULT,
+                on_day_settled: Optional[Callable[["Session", int], None]] = None,
+                clock_trusted: bool = True) -> "Session":
+        """Rebuild a session from export_state() / export_json(). Does not re-run onboarding."""
+        if isinstance(state, str):
+            state = json.loads(state)
+        if state.get("version") != STATE_VERSION:
+            raise ValueError(f"unsupported state version {state.get('version')!r} (expected {STATE_VERSION})")
+        x = cls(None, bonus_fn, p, on_day_settled, clock_trusted, _restoring=True)
+        s = x.s
+        x.first_day = int(state["firstDay"])
+        x.last_started = int(state["lastStartedDay"])
+        x.last_settled = int(state["lastSettledDay"])
+        s.ice = float(state["ice"])
+        s.shields = int(state["shields"])
+        s.tier = int(state["tier"])
+        s.shards_exact = float(state["shardsExact"])
+        for k in ("totalRecordDays", "streak", "gapDays", "comebacks", "shieldsUsed", "gold", "whitePressed",
+                  "whiteCounted", "consecutiveWeeks", "weeklyPending", "weeklyIndex", "lastArrivalWeek",
+                  "clockRollbacks", "lateBonusReceipts"):
+            setattr(s, _snake(k), int(state[k]))
+        s.gap_melted = float(state["gapMelted"])
+        s.kinds_used = set(state["kindsUsed"])
+        s.done_missions = set(state["doneMissions"])
+        x.recorded_days = set(int(d) for d in state["recordedDays"])
+        s.week_record_days = {int(e["key"]): int(e["value"]) for e in state["weekRecordDays"]}
+        x.white_by_day = {int(e["key"]): int(e["value"]) for e in state["whiteByDay"]}
+        x.white_by_week = {int(e["key"]): int(e["value"]) for e in state["whiteByWeek"]}
+        unknown = sorted(({a["species"] for a in state["arrivals"]} | set(state["milestoneQueue"])) - set(SPECIES))
+        if unknown:   # e.g. a Japanese name from a pre-id build; the caller decides whether to start over
+            raise ValueError(f"unknown species id(s) in state: {unknown}")
+        s.arrivals = [Arrival(a["species"], int(a["day"]), a["reason"]) for a in state["arrivals"]]
+        s.milestone_queue = list(state["milestoneQueue"])
+        x.receipts = {}
+        for r in state["receipts"]:
+            x.receipts[r["receiptId"]] = Receipt(r["receiptId"], int(r["printDay"]), tuple(r["verifies"]),
+                                                 int(r["scanDay"]))
+        x.selected = {}
+        for e in state["selected"]:
+            x.selected.setdefault(int(e["day"]), []).append((e["missionId"], e["verification"]))
+        x.checked = {(int(e["day"]), e["missionId"]) for e in state["checked"]}
+        x.verified = {(int(e["day"]), e["missionId"]) for e in state["verified"]}
+        x.tier_log = [(int(e["day"]), int(e["fromTier"]), int(e["toTier"])) for e in state["tierLog"]]
+        x.comeback_log = [(int(e["day"]), int(e["amount"])) for e in state["comebackLog"]]
+        return x
+
+
+def _snake(name: str) -> str:
+    return "".join("_" + c.lower() if c.isupper() else c for c in name)
 
 
 # ---------------------------------------------------------------------------
@@ -723,7 +920,7 @@ if __name__ == "__main__":
     import dataclasses
     import json
     import sys
-    for label, p in (("decided", DECIDED), ("15d", DEFAULT)):
+    for label, p in (("decided", DECIDED), ("v3 (15d)", V3), ("v4 default (17a)", DEFAULT), ("v4 deferred B", DEFERRED_B)):
         res = run_all(p)
         print("==", label)
         for n, r in res.items():

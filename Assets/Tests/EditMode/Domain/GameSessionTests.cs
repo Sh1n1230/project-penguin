@@ -168,9 +168,10 @@ namespace ProjectPenguin.Tests.EditMode.Domain
         }
 
         [Test]
-        public void ClockRollbackIsIgnored()
+        public void ClockRollbackIsIgnoredInV3()
         {
-            var s = New(T(2026, 10, 27, 9));
+            // v3 の規則。v4 では最後に見た日の操作として受け付ける (GameSessionV4Tests.ClockRollbackClampsToLastSeenDay)。
+            var s = New(T(2026, 10, 27, 9), GameParameters.V3);
             At(T(2026, 10, 29, 12));
             s.Advance();
             Assert.That(Scan(s, T(2026, 10, 28, 12), "a"), Is.False);
