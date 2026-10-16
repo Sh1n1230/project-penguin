@@ -7,6 +7,7 @@
 | [game-design.md](game-design.md) | **ゲームの規則と数値・画面の流れ・写真判定の API** (まずこれ) |
 | [facilities.md](facilities.md) | 施設 15 種の建てる条件・作るもの・強化 (Lv1〜5) の効果とコストの一覧 |
 | [resources.md](resources.md) | 資源が増える条件・量・倍率・使い道の一覧 (開発者向け。ゲーム内では資源の帯をタップ) |
+| [reality-links.md](reality-links.md) | 現実の行動を島の資源につなぐ原則と、これから足す候補 (センサー・外部データ) の優先順位 |
 | [production-island-review-user-guide.md](production-island-review-user-guide.md) | Unity で施設の見た目を確認する手順 |
 | [production-island-asset-pack.md](production-island-asset-pack.md) | 素材パック v001 (地形・建物・小物・接続・VFX) と使い方 |
 | [production-island-facilities-v002.md](production-island-facilities-v002.md) | 施設 v002 の仕様 |
