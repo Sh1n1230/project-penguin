@@ -31,7 +31,12 @@ namespace ProjectPenguin.Domain.Island
             Facility = facility;
         }
 
+        /// <summary>種のキー (17b の id。<c>"adelie"</c> など)。コードと保存データにはこれだけを使う。</summary>
         public string Species { get; }
+
+        /// <summary>画面に出す和名 (IOC 15.2 の日本語名)。</summary>
+        public string Name => PenguinCatalog.DisplayNameJa[Species];
+
         public string Fact { get; }
         public BonusKind Bonus { get; }
         public double Multiplier { get; }
@@ -60,41 +65,41 @@ namespace ProjectPenguin.Domain.Island
     {
         public static readonly IReadOnlyList<PenguinEntry> Entries = new[]
         {
-            new PenguinEntry("アデリーペンギン", "南極大陸の沿岸で暮らし、小石を集めて巣を作る。", BonusKind.FacilitySpeed, 1.1,
+            new PenguinEntry("adelie", "南極大陸の沿岸で暮らし、小石を集めて巣を作る。", BonusKind.FacilitySpeed, 1.1,
                 facility: FacilityKind.Fishery),
-            new PenguinEntry("コガタペンギン", "ペンギンの中でいちばん小さく、背丈は 30cm ほど。", BonusKind.FacilitySpeed, 1.1,
+            new PenguinEntry("little", "ペンギンの中でいちばん小さく、背丈は 30cm ほど。", BonusKind.FacilitySpeed, 1.1,
                 facility: FacilityKind.Preparation),
-            new PenguinEntry("マゼランペンギン", "南米の海岸で、地面に掘った穴を巣にする。", BonusKind.ResourceGain, 1.1,
+            new PenguinEntry("magellanic", "南米の海岸で、地面に掘った穴を巣にする。", BonusKind.ResourceGain, 1.1,
                 Resource.Water),
-            new PenguinEntry("ガラパゴスペンギン", "赤道近くのガラパゴス諸島に住む、いちばん北のペンギン。", BonusKind.FacilitySpeed, 1.15,
+            new PenguinEntry("galapagos", "赤道近くのガラパゴス諸島に住む、いちばん北のペンギン。", BonusKind.FacilitySpeed, 1.15,
                 facility: FacilityKind.Saltworks),
-            new PenguinEntry("ヒゲペンギン", "あごの下の黒い線がひげのように見えることから名付けられた。", BonusKind.FacilitySpeed, 1.15,
+            new PenguinEntry("chinstrap", "あごの下の黒い線がひげのように見えることから名付けられた。", BonusKind.FacilitySpeed, 1.15,
                 facility: FacilityKind.KelpFarm),
-            new PenguinEntry("オウサマペンギン", "2 番目に大きいペンギン。ひなは茶色い綿毛で 1 年近く育つ。", BonusKind.ResourceGain, 1.1,
+            new PenguinEntry("king", "2 番目に大きいペンギン。ひなは茶色い綿毛で 1 年近く育つ。", BonusKind.ResourceGain, 1.1,
                 Resource.Electricity),
-            new PenguinEntry("コウテイペンギン", "いちばん大きいペンギン。真冬の南極で、オスが卵を足の上で温める。", BonusKind.ResourceGain, 1.2,
+            new PenguinEntry("emperor", "いちばん大きいペンギン。真冬の南極で、オスが卵を足の上で温める。", BonusKind.ResourceGain, 1.2,
                 Resource.Gas),
-            new PenguinEntry("キガシラペンギン", "ニュージーランドに住み、目のまわりの黄色い帯が目印。数が少ない。", BonusKind.OrderReward, 1.1),
-            new PenguinEntry("ジェンツーペンギン", "泳ぐのがとても速く、時速 30km をこえることもある。", BonusKind.FacilitySpeed, 1.15,
+            new PenguinEntry("yellow_eyed", "ニュージーランドに住み、目のまわりの黄色い帯が目印。数が少ない。", BonusKind.OrderReward, 1.1),
+            new PenguinEntry("gentoo", "泳ぐのがとても速く、時速 30km をこえることもある。", BonusKind.FacilitySpeed, 1.15,
                 facility: FacilityKind.Fishery),
-            new PenguinEntry("フンボルトペンギン", "ペルーやチリの冷たい海流が流れる海岸に住む。", BonusKind.FacilitySpeed, 1.1,
+            new PenguinEntry("humboldt", "ペルーやチリの冷たい海流が流れる海岸に住む。", BonusKind.FacilitySpeed, 1.1,
                 facility: FacilityKind.Drying),
-            new PenguinEntry("マカロニペンギン", "頭のオレンジ色の飾り羽が目印。", BonusKind.FacilitySpeed, 1.1,
+            new PenguinEntry("macaroni", "頭のオレンジ色の飾り羽が目印。", BonusKind.FacilitySpeed, 1.1,
                 facility: FacilityKind.Kamaboko),
-            new PenguinEntry("ロイヤルペンギン", "マッコーリー島だけで子育てをする。顔が白っぽい。", BonusKind.FacilitySpeed, 1.1,
+            new PenguinEntry("royal", "マッコーリー島だけで子育てをする。顔が白っぽい。", BonusKind.FacilitySpeed, 1.1,
                 facility: FacilityKind.Chikuwa),
-            new PenguinEntry("ケープペンギン", "アフリカに住む唯一のペンギン。ロバのような声で鳴く。", BonusKind.ResourceGain, 1.1,
+            new PenguinEntry("african", "アフリカに住む唯一のペンギン。ロバのような声で鳴く。", BonusKind.ResourceGain, 1.1,
                 Resource.Water),
-            new PenguinEntry("フィヨルドランドペンギン", "ニュージーランドの雨の多い森の中で子育てをする。", BonusKind.FacilitySpeed, 1.1,
+            new PenguinEntry("fiordland", "ニュージーランドの雨の多い森の中で子育てをする。", BonusKind.FacilitySpeed, 1.1,
                 facility: FacilityKind.Research),
-            new PenguinEntry("スネアーズペンギン", "ニュージーランド南のスネアーズ諸島だけで子育てをする。", BonusKind.OrderReward, 1.1),
-            new PenguinEntry("キタイワトビペンギン", "岩場を両足でぴょんぴょん跳ねて移動する。", BonusKind.ResourceGain, 1.1,
+            new PenguinEntry("snares", "ニュージーランド南のスネアーズ諸島だけで子育てをする。", BonusKind.OrderReward, 1.1),
+            new PenguinEntry("northern_rockhopper", "岩場を両足でぴょんぴょん跳ねて移動する。", BonusKind.ResourceGain, 1.1,
                 Resource.Electricity),
-            new PenguinEntry("ミナミイワトビペンギン", "フォークランド諸島などに住み、黄色い眉のような飾り羽がある。", BonusKind.ResourceGain, 1.1,
+            new PenguinEntry("western_rockhopper", "フォークランド諸島などに住み、黄色い眉のような飾り羽がある。", BonusKind.ResourceGain, 1.1,
                 Resource.Gas),
-            new PenguinEntry("ヒガシイワトビペンギン", "ニュージーランドの南の島々に住むイワトビペンギンの仲間。", BonusKind.FacilitySpeed, 1.1,
+            new PenguinEntry("eastern_rockhopper", "ニュージーランドの南の島々に住むイワトビペンギンの仲間。", BonusKind.FacilitySpeed, 1.1,
                 facility: FacilityKind.Oden),
-            new PenguinEntry("シュレーターペンギン", "頭の飾り羽がブラシのように上向きに立つ。", BonusKind.OrderReward, 1.15),
+            new PenguinEntry("erect_crested", "頭の飾り羽がブラシのように上向きに立つ。", BonusKind.OrderReward, 1.15),
         };
 
         private static readonly Dictionary<string, PenguinEntry> BySpecies = Entries.ToDictionary(e => e.Species);

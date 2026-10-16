@@ -78,7 +78,7 @@ namespace ProjectPenguin.Presentation.UI
             var image = IslandUi.Icon(UiClasses.Icon.Penguin, arrived ? UiClasses.Tint.Original : null);
             image.AddToClassList(UiClasses.DexCard.Image);
             card.Add(image);
-            card.Add(IslandUi.Text(arrived ? entry.Species : "？？？", UiClasses.DexCard.Name));
+            card.Add(IslandUi.Text(arrived ? entry.Name : "？？？", UiClasses.DexCard.Name));
             card.Add(IslandUi.Text(arrived ? entry.Fact : "記録を続けると会えるかも", UiClasses.DexCard.Fact));
             if (arrived)
             {

@@ -405,7 +405,7 @@ namespace ProjectPenguin.Presentation.UI
             var amps = island.Facilities.Count(f => f.Def.Amplifies == r && f.Status == FacilityStatus.Running);
             var penguins = PenguinDex.Entries
                 .Where(e => e.Bonus == BonusKind.ResourceGain && e.Resource == r && island.Species.Contains(e.Species))
-                .Select(e => e.Species)
+                .Select(e => e.Name)
                 .ToList();
             var parts = new List<string>();
             if (amps > 0 && amp != null)

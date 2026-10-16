@@ -347,7 +347,7 @@ namespace ProjectPenguin.Tests.EditMode.Domain
             var g = Rich();
             g.DevSetLevel(3);
             Assert.That(g.Build(FacilityKind.ElectricAmplifier, Inland), Is.EqualTo(IslandActionResult.Ok));
-            g.SyncWorld(100, 0, new[] { "オウサマペンギン" });
+            g.SyncWorld(100, 0, new[] { PenguinCatalog.Total14 });
 
             Assert.That(g.GainMultiplier(Resource.Electricity), Is.EqualTo(1.25 * 1.1).Within(1e-9));
             Assert.That(g.GainMultiplier(Resource.Water), Is.EqualTo(1.0));
