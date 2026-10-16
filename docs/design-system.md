@@ -173,6 +173,24 @@ UI Toolkit は、角丸が短辺の半分を超えると角が楕円に潰れる
 - 修飾クラスを `"pp-pill--" + variant` のように組み立てない。`UiClasses.Pill.Primary` のように完全な名前を渡す (組み立てるとテストで確かめられない)。
 - 3D 側も同じ考え方で、Animator のステートは `PenguinAnimatorStates` (`PenguinActivity` から引くハッシュ)、シェーダーのプロパティは `ShaderIds`、FBX の部品名は `ModelParts` を使う。
 
+## ゲームの画面 (`Game.uss`)
+
+建てる・建物の説明・施設・港・生産量は、ゲームらしく画面全体を切り替え、文字を減らして絵・アイコン・数字で見せる (2026-10-16 の決定。手本は「ねこレストラン」の「棚 → 大きなカード → 材料 … 2 → 丸いボタン」)。部品は `Assets/UI/DesignSystem/Game.uss` にある。
+
+| 部品 | クラス | 使い方 |
+|---|---|---|
+| 画面の名前・閉じる | `.pp-title-chip`・`.pp-round-close` | 左上に名前の札、右上に大きな丸い ✕ (戻るは左上の ‹) |
+| 棚 | `.pp-shelf`・`.pp-shelf-card` | 3 列。絵 (`__thumb`) と名前だけ。数・NEW・鍵は角に重ねる |
+| 大きな写真のカード | `.pp-photo-card` (`--side`・`--prev`・`--next`) | 選んだものを少し傾けて大きく。隣は小さく薄く |
+| 説明の札 | `.pp-info-panel` | 名前・一行・作るもの・コスト。右下に丸いボタンを重ねる |
+| 数 | `.pp-count` (`--short`) | 「アイコン … 30」。足りないものは赤 |
+| 丸いボタン | `.pp-round-button` (`--small`・`--primary`・`--cancel`) | 決める操作は 1 画面に 1 つ。押すと縮む |
+| 横長のカード | `.pp-tile` | 港の注文など。左に丸い絵、右に丸いボタン |
+| 品物のカード | `.pp-item-card` | 生産量。手もちと 1 時間の増減 |
+
+- 建物の絵は `.pp-thumb` と `UiClasses.Thumb.Of(kind)`。PNG と `Thumbnails.uss` は **Production Island > Render Facility Thumbnails** が 3D モデルから描き出す (カードの下地と同じ背景色)。施設を足したら `UiClasses.Thumb` に足してから描き直す。
+- 画面は表示した直後に `.pp-screen--entering` を外して、下からふわっと入る (`ScreenNavigator`)。
+
 ## アイコンを追加する
 
 1. `viewBox="0 0 24 24"` で、塗りと線を `#FFFFFF` にした SVG を `Icons/` に置く (色は USS の tint で付ける)
