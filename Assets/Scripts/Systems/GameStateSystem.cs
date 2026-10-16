@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections;
 using ProjectPenguin.Backend;
 using ProjectPenguin.Data;
+using ProjectPenguin.Data.Persistence;
 using ProjectPenguin.Domain.Clock;
 using ProjectPenguin.Domain.Game;
 using ProjectPenguin.Domain.Island;
@@ -191,7 +192,11 @@ namespace ProjectPenguin.Systems
             _steps = steps ?? new FakeStepSource();
             _clock = new SessionClock(deviceClock ?? new SystemClock());
             LoadOrCreate(_store.Load());
+            LoadStatus = _store.LastLoadStatus;
         }
+
+        /// <summary>起動時に保存をどう読めたか。バックアップから戻した・読めなかった・新しい版の保存、を画面で知らせるのに使う。</summary>
+        public SaveLoadStatus LoadStatus { get; private set; } = SaveLoadStatus.NotFound;
 
         private void LoadOrCreate(GameSave save)
         {
