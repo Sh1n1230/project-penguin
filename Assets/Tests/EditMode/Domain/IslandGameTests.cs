@@ -624,5 +624,118 @@ namespace ProjectPenguin.Tests.EditMode.Domain
             Assert.That(sunkOnReturn, Is.LessThan(sunkLastRestDay), "戻った日の記録とおかえりで、すぐに少し浮かぶ");
             Assert.That(g.Board.SunkCount(g.Ice), Is.EqualTo(0), "戻って 12 日記録すれば浮かぶ");
         }
+
+        // ------------------------------------------------------------------
+        // 施設の強化
+        // ------------------------------------------------------------------
+
+        [Test]
+        public void 施設は島のレベルより上には強化できない()
+        {
+            var g = Rich();
+            g.Build(FacilityKind.Warehouse, Inland);
+            var id = g.Facilities.Single().Id;
+
+            Assert.That(g.CanUpgrade(id), Is.EqualTo(IslandActionResult.Locked), "島が Lv1 なら施設も Lv1 まで");
+            g.DevSetLevel(2);
+            Assert.That(g.Upgrade(id), Is.EqualTo(IslandActionResult.Ok));
+            Assert.That(g.Find(id).Level, Is.EqualTo(2));
+            Assert.That(g.CanUpgrade(id), Is.EqualTo(IslandActionResult.Locked), "島が Lv2 なら施設も Lv2 まで");
+        }
+
+        [Test]
+        public void 強化は電気とお魚を使い上限で止まる()
+        {
+            var g = Rich();
+            g.DevSetLevel(10);
+            g.Build(FacilityKind.Warehouse, Inland);
+            var f = g.Facilities.Single();
+            var def = f.Def;
+            var p = g.Parameters;
+
+            var electricity = g.Get(Resource.Electricity);
+            var fish = g.Fish;
+            Assert.That(g.Upgrade(f.Id), Is.EqualTo(IslandActionResult.Ok));
+            Assert.That(g.Get(Resource.Electricity), Is.EqualTo(electricity - p.UpgradeElectricityCost(def, 1)));
+            Assert.That(g.Fish, Is.EqualTo(fish - (long)p.UpgradeFishCost(def, 1)));
+
+            while (g.CanUpgrade(f.Id) == IslandActionResult.Ok)
+            {
+                g.Upgrade(f.Id);
+            }
+
+            Assert.That(f.Level, Is.EqualTo(p.FacilityMaxLevel));
+            Assert.That(g.CanUpgrade(f.Id), Is.EqualTo(IslandActionResult.MaxLevel));
+        }
+
+        [Test]
+        public void 強化にお魚が足りなければ上げられない()
+        {
+            var p = IslandParameters.Default;
+            p.StartElectricity = 10000;
+            p.StartFish = 30;
+            var g = New(p);
+            g.DevSetLevel(3);
+            g.Build(FacilityKind.Warehouse, Inland);
+            var id = g.Facilities.Single().Id;
+
+            Assert.That(g.CanUpgrade(id), Is.EqualTo(IslandActionResult.NotEnoughFish));
+            Assert.That(g.Upgrade(id), Is.EqualTo(IslandActionResult.NotEnoughFish));
+            Assert.That(g.Find(id).Level, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void 強化すると作る速さ置き場定員増幅が上がる()
+        {
+            var g = Rich();
+            g.DevSetLevel(10);
+            var p = g.Parameters;
+            Assert.That(g.Build(FacilityKind.Fishery, CoastCorner), Is.EqualTo(IslandActionResult.Ok));
+            Assert.That(g.Build(FacilityKind.Warehouse, new Cell(6, 5)), Is.EqualTo(IslandActionResult.Ok));
+            Assert.That(g.Build(FacilityKind.Dormitory, new Cell(5, 3)), Is.EqualTo(IslandActionResult.Ok));
+            var fishery = g.Facilities.First(f => f.Kind == FacilityKind.Fishery);
+            var warehouse = g.Facilities.First(f => f.Kind == FacilityKind.Warehouse);
+            var dorm = g.Facilities.First(f => f.Kind == FacilityKind.Dormitory);
+
+            var speed = g.SpeedOf(fishery);
+            var storage = g.StorageLimit;
+            var housing = g.Housing;
+            g.Upgrade(fishery.Id);
+            g.Upgrade(warehouse.Id);
+            g.Upgrade(dorm.Id);
+
+            Assert.That(g.SpeedOf(fishery), Is.EqualTo(speed * (1 + p.UpgradeSpeedPerLevel)).Within(1e-9));
+            Assert.That(g.StorageLimit, Is.EqualTo(storage + p.StoragePerWarehouse));
+            Assert.That(g.Housing, Is.EqualTo(housing + p.UpgradeHousingPerLevel));
+        }
+
+        [Test]
+        public void 施設のレベルは保存して戻せる()
+        {
+            var g = Rich();
+            g.DevSetLevel(5);
+            g.Build(FacilityKind.Warehouse, Inland);
+            var id = g.Facilities.Single().Id;
+            g.Upgrade(id);
+            g.Upgrade(id);
+
+            var loaded = IslandGame.FromSave(g.ToSave(), g.Parameters, Start);
+            Assert.That(loaded.Find(id).Level, Is.EqualTo(3));
+        }
+
+        [Test]
+        public void 強化を入れる前の保存はレベル1として読む()
+        {
+            var g = Rich();
+            g.Build(FacilityKind.Warehouse, Inland);
+            var save = g.ToSave();
+            foreach (var f in save.facilities)
+            {
+                f.level = 0;
+            }
+
+            var loaded = IslandGame.FromSave(save, g.Parameters, Start);
+            Assert.That(loaded.Facilities.Single().Level, Is.EqualTo(1));
+        }
     }
 }

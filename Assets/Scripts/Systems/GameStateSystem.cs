@@ -441,6 +441,7 @@ namespace ProjectPenguin.Systems
         public IslandActionResult SetWorkers(int id, int workers) => IslandAction(g => g.SetWorkers(id, workers));
         public IslandActionResult SetRecipe(int id, int recipe) => IslandAction(g => g.SetRecipe(id, recipe));
         public IslandActionResult AddPearl(int id) => IslandAction(g => g.AddPearl(id));
+        public IslandActionResult Upgrade(int id) => IslandAction(g => g.Upgrade(id));
         public IslandActionResult Expand(Cell cell) => IslandAction(g => g.Expand(cell));
         public IslandActionResult Deliver(int slot) => IslandAction(g => g.Deliver(slot));
 

@@ -99,6 +99,26 @@ namespace ProjectPenguin.Domain.Island
 
         public int StoragePerWarehouse { get; set; } = 30;
 
+        // ---- 施設の強化 (docs/production-island/facilities.md) ----
+
+        /// <summary>施設のレベルの上限。島のレベルより上には強化できない。</summary>
+        public int FacilityMaxLevel { get; set; } = 5;
+
+        /// <summary>作る施設の速さの上乗せ (1 レベルごと)。ガスの消費は変えないので、強化するほど効率が上がる。</summary>
+        public double UpgradeSpeedPerLevel { get; set; } = 0.25;
+
+        /// <summary>宿舎の定員の上乗せ (1 レベルごと)。倉庫は置き場 × レベルになる。</summary>
+        public int UpgradeHousingPerLevel { get; set; } = 2;
+
+        /// <summary>増幅所 1 棟の上乗せの増え方 (1 レベルごと)。</summary>
+        public double UpgradeAmplifierPerLevel { get; set; } = 0.05;
+
+        /// <summary>仕分け所 1 レベルごとに、次の舟が来るまでを縮める秒数。</summary>
+        public double UpgradeOrderCooldownPerLevel { get; set; } = 5.0;
+
+        /// <summary>強化のお魚 = (建てるお魚 + これ) × 2^今のレベル。電気 = 建てる電気 × 今のレベル。</summary>
+        public double UpgradeFishBase { get; set; } = 10.0;
+
         // ---- 時間 ----
 
         /// <summary>閉じていた間の生産をまとめて計算する上限 (秒)。</summary>
@@ -144,6 +164,12 @@ namespace ProjectPenguin.Domain.Island
         public double ExpandFishCost(int expanded) => Math.Ceiling(ExpandFishBase * Math.Pow(ExpandFishGrowth, expanded));
 
         public int ExpandLimit(int level) => ExpandLimitBase + (Math.Max(1, level) - 1) * ExpandLimitPerLevel;
+
+        /// <summary>レベル <paramref name="level"/> から 1 つ上げる電気。</summary>
+        public double UpgradeElectricityCost(FacilityDef def, int level) => Math.Ceiling(def.ElectricityCost * Math.Max(1, level));
+
+        /// <summary>レベル <paramref name="level"/> から 1 つ上げるお魚。</summary>
+        public double UpgradeFishCost(FacilityDef def, int level) => Math.Ceiling((def.FishCost + UpgradeFishBase) * Math.Pow(2, Math.Max(1, level)));
 
         public int ExpToNext(int level) => (int)Math.Ceiling(LevelExpBase * Math.Pow(Math.Max(1, level), LevelExpExponent));
     }

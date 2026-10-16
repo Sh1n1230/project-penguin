@@ -47,6 +47,7 @@ namespace ProjectPenguin.Domain.Island
         AlreadyReceived,
         NotFound,
         NotArrived,
+        MaxLevel,
     }
 
     /// <summary>画面の演出のための出来事。</summary>
@@ -64,6 +65,7 @@ namespace ProjectPenguin.Domain.Island
         Surfaced,
         ResourcesGained,
         HarborStageUp,
+        Upgraded,
     }
 
     public readonly struct IslandEvent
@@ -109,6 +111,9 @@ namespace ProjectPenguin.Domain.Island
         public int RecipeIndex { get; internal set; }
         public int Workers { get; internal set; }
         public int Pearls { get; internal set; }
+
+        /// <summary>施設のレベル (1〜<see cref="IslandParameters.FacilityMaxLevel"/>)。</summary>
+        public int Level { get; internal set; } = 1;
 
         /// <summary>今の 1 回の進み (秒)。</summary>
         public double Progress { get; internal set; }
@@ -271,8 +276,25 @@ namespace ProjectPenguin.Domain.Island
         public long StockOf(Item item) => _stock[(int)item];
         public long Fish => _stock[(int)Item.Fish];
 
-        public int StorageLimit => _p.BaseStorage + ActiveCount(FacilityRole.Storage) * _p.StoragePerWarehouse;
-        public int Housing => _p.BaseHousing + ActiveCount(FacilityRole.Housing) * _p.HousingPerDormitory;
+        public int StorageLimit => _p.BaseStorage + Active(FacilityRole.Storage).Sum(f => _p.StoragePerWarehouse * f.Level);
+        public int Housing => _p.BaseHousing + Active(FacilityRole.Housing).Sum(HousingOf);
+
+        /// <summary>宿舎 1 棟の定員 (レベル込み)。</summary>
+        public int HousingOf(Facility f) => _p.HousingPerDormitory + (f.Level - 1) * _p.UpgradeHousingPerLevel;
+
+        /// <summary>増幅所 1 棟の上乗せ (レベル込み)。</summary>
+        public double AmplifierBonusOf(Facility f) => _p.AmplifierBonus + (f.Level - 1) * _p.UpgradeAmplifierPerLevel;
+
+        /// <summary>納品してから次の舟が来るまで (動いている仕分け所のレベルで縮む)。</summary>
+        public double OrderCooldown
+        {
+            get
+            {
+                var sorter = _facilities.Where(f => f.Def.Role == FacilityRole.AutoDeliver && f.Status == FacilityStatus.Running)
+                    .Select(f => f.Level).DefaultIfEmpty(0).Max();
+                return Math.Max(5.0, _p.OrderCooldownSeconds - sorter * _p.UpgradeOrderCooldownPerLevel);
+            }
+        }
         public int Population => Math.Min(Housing, _p.StartWorkers + RecordDays * _p.WorkersPerRecordDay);
 
         /// <summary>まだ記録が足りず、宿舎があっても住めないペンギン (宿舎が足りないぶんは含まない)。</summary>
@@ -405,8 +427,8 @@ namespace ProjectPenguin.Domain.Island
                 return 1.0;
             }
 
-            var amps = _facilities.Count(f => f.Def.Amplifies == r && f.Status == FacilityStatus.Running);
-            return (1.0 + amps * _p.AmplifierBonus) * PenguinDex.ResourceMultiplier(_species, r);
+            var amps = _facilities.Where(f => f.Def.Amplifies == r && f.Status == FacilityStatus.Running).Sum(AmplifierBonusOf);
+            return (1.0 + amps) * PenguinDex.ResourceMultiplier(_species, r);
         }
 
         // ------------------------------------------------------------------
@@ -564,6 +586,56 @@ namespace ProjectPenguin.Domain.Island
             return IslandActionResult.Ok;
         }
 
+        /// <summary>強化できるか。島のレベルより上と、<see cref="IslandParameters.FacilityMaxLevel"/> より上には上げられない。</summary>
+        public IslandActionResult CanUpgrade(int id)
+        {
+            var f = Find(id);
+            if (f == null)
+            {
+                return IslandActionResult.NotFound;
+            }
+
+            if (f.Level >= _p.FacilityMaxLevel)
+            {
+                return IslandActionResult.MaxLevel;
+            }
+
+            if (f.Level >= Level)
+            {
+                return IslandActionResult.Locked;
+            }
+
+            if (!CanAfford(Resource.Electricity, UpgradeElectricityCost(f)))
+            {
+                return IslandActionResult.NotEnoughElectricity;
+            }
+
+            return Fish < UpgradeFishCost(f) ? IslandActionResult.NotEnoughFish : IslandActionResult.Ok;
+        }
+
+        public double UpgradeElectricityCost(Facility f) => _p.UpgradeElectricityCost(f.Def, f.Level);
+
+        public double UpgradeFishCost(Facility f) => _p.UpgradeFishCost(f.Def, f.Level);
+
+        /// <summary>施設を 1 レベル上げる。</summary>
+        public IslandActionResult Upgrade(int id)
+        {
+            var can = CanUpgrade(id);
+            if (can != IslandActionResult.Ok)
+            {
+                return can;
+            }
+
+            var f = Find(id);
+            Spend(Resource.Electricity, UpgradeElectricityCost(f));
+            _stock[(int)Item.Fish] -= (long)UpgradeFishCost(f);
+            f.Level++;
+            AddExp(3 + f.Level * 2);
+            RefreshStatuses();
+            Emit(new IslandEvent(IslandEventKind.Upgraded, f.Id, value: f.Level));
+            return IslandActionResult.Ok;
+        }
+
         public IslandActionResult AddPearl(int id)
         {
             var f = Find(id);
@@ -656,7 +728,7 @@ namespace ProjectPenguin.Domain.Island
             _stock[(int)Item.Fish] += o.Reward;
             Delivered++;
             AddExp(o.Exp);
-            _orders[slot] = NewOrder(PlayTime + _p.OrderCooldownSeconds);
+            _orders[slot] = NewOrder(PlayTime + OrderCooldown);
             if (_offline != null)
             {
                 _offline.Delivered++;
@@ -770,6 +842,7 @@ namespace ProjectPenguin.Domain.Island
             }
 
             s *= 1.0 + f.Pearls * _p.PearlSpeed;
+            s *= 1.0 + (f.Level - 1) * _p.UpgradeSpeedPerLevel;
             s *= PenguinDex.FacilityMultiplier(_species, f.Kind);
             return s;
         }
@@ -843,6 +916,7 @@ namespace ProjectPenguin.Domain.Island
                     recipe = f.RecipeIndex,
                     workers = f.Workers,
                     pearls = f.Pearls,
+                    level = f.Level,
                     progress = f.Progress,
                     cycling = f.Cycling,
                 }).ToArray(),
@@ -902,6 +976,7 @@ namespace ProjectPenguin.Domain.Island
                         RecipeIndex = fs.recipe,
                         Workers = fs.workers,
                         Pearls = fs.pearls,
+                        Level = Math.Max(1, fs.level),
                         Progress = fs.progress,
                         Cycling = fs.cycling,
                     };
@@ -1116,8 +1191,8 @@ namespace ProjectPenguin.Domain.Island
             return null;
         }
 
-        private int ActiveCount(FacilityRole role) =>
-            _facilities.Count(f => f.Def.Role == role && !f.Footprint().Any(c => Board.IsSunk(c, Ice)));
+        private IEnumerable<Facility> Active(FacilityRole role) =>
+            _facilities.Where(f => f.Def.Role == role && !f.Footprint().Any(c => Board.IsSunk(c, Ice)));
 
         /// <summary>働き手が減ったら、後から建てた施設から外す。</summary>
         private void TrimWorkers()
@@ -1237,6 +1312,10 @@ namespace ProjectPenguin.Domain.Island
         public int recipe;
         public int workers;
         public int pearls;
+
+        /// <summary>施設のレベル。強化を入れる前の保存では 0 なので 1 として読む。</summary>
+        public int level;
+
         public double progress;
         public bool cycling;
     }
