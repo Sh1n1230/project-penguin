@@ -12,6 +12,7 @@
 | TextMesh Pro の素材 | `Assets/TextMesh Pro/` | Unity Companion License |
 | Liberation Sans (TextMesh Pro に同梱) | `Assets/TextMesh Pro/Fonts/` | SIL Open Font License 1.1 (`LiberationSans - OFL.txt` 同梱) |
 | Unity のパッケージ | `Packages/manifest.json` で参照 (リポジトリには含まない) | 各パッケージのライセンス (多くは Unity Companion License) |
+| SQLite-net for Unity (`com.gilzoide.sqlite-net` 1.3.3) | `Packages/manifest.json` で参照 (リポジトリには含まない)。端末の保存 (`Assets/Scripts/Data/`) に使う | MIT。同梱の SQLite-net は MIT、SQLite3 Multiple Ciphers は MIT、その元の SQLite はパブリックドメイン |
 | エージェント用の外部スキル | `.agents/skills/`・`.claude/skills/` のうち `skills-lock.json` にあるもの | 提供元のライセンス (Unity-Technologies/skills は Unity Companion License、mattpocock/skills は MIT) |
 
 ## 値や記述を参照している外部データ
