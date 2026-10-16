@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
+using ProjectPenguin.Backend;
 using ProjectPenguin.Data;
+using ProjectPenguin.Domain.Clock;
 using ProjectPenguin.Domain.Game;
 using ProjectPenguin.Domain.Island;
 using ProjectPenguin.Domain.World;
+using ProjectPenguin.Systems.Timekeeping;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace ProjectPenguin.Systems
 {
@@ -76,10 +81,19 @@ namespace ProjectPenguin.Systems
         /// <summary>記録画面に残す受け取りの記録の数。</summary>
         private const int ActivityLimit = 200;
 
+        /// <summary>時刻合わせの通信の待ち時間 (秒)。UnityWebRequest の既定 0 は無制限なので必ず付ける。</summary>
+        private const int TimeSyncTimeoutSeconds = 25;
+
         [Tooltip("保存しない (確認用のシーン・テスト)")]
         [SerializeField] private bool _inMemoryOnly;
 
+        [Tooltip("時刻合わせに使う backend の URL (GET。応答の Date ヘッダーだけを見る)。空なら通信しない。")]
+        [SerializeField] private string _timeSyncUrl = "";
+
         private SessionClock _clock;
+        private ServerTrustedClock _serverClock;
+        private IMonotonicClock _monotonic;
+        private bool _syncing;
         private GameSession _session;
         private IslandGame _island;
         private IGameStore _store;
@@ -161,7 +175,10 @@ namespace ProjectPenguin.Systems
                 return;
             }
 
-            Initialize(_inMemoryOnly ? new MemoryGameStore() : new JsonGameStore(), new SystemClock(), StepSources.Create());
+            // 端末の時計をサーバーの Date ヘッダーで確かめる時計で包む。基準を受け取るまでは端末の時計のまま (IsTrusted = false)。
+            _monotonic = MonotonicClocks.CreateDefault();
+            _serverClock = new ServerTrustedClock(new SystemClock(), _monotonic);
+            Initialize(_inMemoryOnly ? new MemoryGameStore() : new JsonGameStore(), _serverClock, StepSources.Create());
         }
 
         /// <summary>
@@ -243,6 +260,35 @@ namespace ProjectPenguin.Systems
 
         private void Awake() => EnsureCreated();
 
+        private void Start() => StartTimeSync();
+
+        private void StartTimeSync()
+        {
+            if (_serverClock != null && !_syncing && !string.IsNullOrEmpty(_timeSyncUrl))
+            {
+                StartCoroutine(SyncServerTime());
+            }
+        }
+
+        /// <summary>backend に GET を 1 本送り、応答の Date ヘッダーを時計に渡す。失敗しても遊びは止めない。</summary>
+        private IEnumerator SyncServerTime()
+        {
+            _syncing = true;
+            using (var request = UnityWebRequest.Get(_timeSyncUrl))
+            {
+                request.timeout = TimeSyncTimeoutSeconds;
+                var sent = _monotonic.Seconds;
+                yield return request.SendWebRequest();
+                if (ServerDateHeaders.Report(request, _serverClock, sent, _monotonic.Seconds) == ServerTimeSample.Accepted)
+                {
+                    // 信頼できる時刻が手に入ったので、保留していた日があれば確定し直す。
+                    Refresh();
+                }
+            }
+
+            _syncing = false;
+        }
+
         private void Update()
         {
             if (_island == null)
@@ -279,6 +325,7 @@ namespace ProjectPenguin.Systems
             {
                 // 閉じている間の進行 (氷の融解・島の生産) は、復帰時に経過時間からまとめて計算する。
                 Refresh();
+                StartTimeSync();
             }
         }
 
