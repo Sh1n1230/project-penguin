@@ -18,7 +18,7 @@
 | 週の選び方の氷 B (レシートの採点) | — | 使わない。写真では CO₂ を採点しないので、`GameSession` には常に 0 を返す関数を渡す |
 | ミッションの一覧・朝の 3 件の選び方 | `Assets/Scripts/Domain/Island/EcoActions.cs` (`MissionCatalog`) | 実装済み。出典の要らないアプリ独自の 16 件から、日付を種にした乱数で 3 件。`missions_catalog.csv` (デコ活由来) は使っていない |
 | 写真 = 記録 | `GameStateSystem.RecordEcoPhoto` | 実装済み。`GameSession.ScanReceipt` に写真用の ID を渡す |
-| 保存 | `GameStateSystem` (操作の記録を再生)・`Assets/Scripts/Data/JsonGameStore.cs` | 実装済み (JSON)。Hack Day に SQLite へ差し替える |
+| 保存 | `GameStateSystem` (操作の記録を再生)・`Assets/Scripts/Data/SqliteGameStore.cs` | 実装済み (SQLite) |
 
 ## 0. 設計の芯
 

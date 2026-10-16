@@ -29,7 +29,7 @@
 │  └─ PenguinDex (図鑑)          │
 │                                │
 │  Local Data                    │
-│  └─ JSON → SQLite (Hack Day)   │
+│  └─ SQLite                     │
 └───────────────┬────────────────┘
                 │
              REST API
@@ -56,7 +56,7 @@
 本プロジェクトはユーザーの日常を写した写真 (と、以前の設計ではレシート、すなわち購買履歴) を扱います。これは実装が始まる前に決めておくべき設計制約であり、後から思い出すものではありません。以下を前提として実装します。
 
 1. **写真は端末にもサーバにも保存しない。** クライアントはカメラ映像の 1 フレームをメモリ上で JPEG にして判定に渡し、結果を受け取ったら捨てる。FastAPI 側も画像をメモリ上で Gemini に渡し、レスポンスを得た時点で破棄する。ディスクへの永続化やログへの出力を行わない。
-2. **ローカルのデータはリポジトリにコミットしない。** 端末上の保存 (今は JSON、Hack Day に SQLite) には行動の記録が入るため、`.gitignore` で `*.db` / `*.sqlite*` を除外している。
+2. **ローカルのデータはリポジトリにコミットしない。** 端末上の保存 (SQLite) には行動の記録が入るため、`.gitignore` で `*.db` / `*.sqlite*` を除外している。
 3. **端末外に出すのは判定に要る写真 1 枚と、その分類結果だけ。** 記録に残すのは分類・写っていたものの名前・受け取った資源の量で、写真そのものは残さない。
 4. **API キーを Unity クライアントに埋め込まない。** Gemini / OpenRouter のキーは FastAPI 側でのみ保持し、クライアントはバックエンドを経由する。ビルド成果物を展開してもキーが取り出せないようにするため。
 
@@ -197,7 +197,7 @@ Android (MVP 後に再開するとき用):
 - ゲームロジック v3 の状態機械 (`Assets/Scripts/Domain/Game/`)。氷・盾・おかえり・氷のかけら・見た目の段・ペンギンの来訪・スタンプ。仕様は [`docs/game-logic.md`](docs/game-logic.md)、Python の参照実装は `tools/game_sim/`
 - ホームの 3D の島 (`Assets/Scenes/ProductionIslandHome.unity`。`HomeWorld.unity` を複製したシーンで、元の `HomeWorld.unity` は氷山と小屋のまま残してある。`Assets/Scripts/Presentation/World/`)。施設が動き、ペンギンが働き、沈む・浮かぶ・建てる・作ったの演出が出る。ドラッグで移動、ピンチで寄り引き、タップで選ぶ・建てる・広げる
 - UI Toolkit の画面 (`Assets/UI/`、`Assets/Scripts/Presentation/UI/`): ホームの資源と道具・下から出るシート (建てる・施設・港・生産量)、エコ写真の撮影 → 解析中 → 結果、ミッション (選ぶ・夜の振り返り)、記録、図鑑、メニュー、はじめての案内
-- 保存 (`Assets/Scripts/Data/`、`GameStateSystem`)。氷は操作の記録を再生して戻し、島は状態を保存する。今は JSON
+- 保存 (`Assets/Scripts/Data/`、`GameStateSystem`)。氷は操作の記録を再生して戻し、島は状態を保存する。SQLite (`penguin.db`)
 - 写真の判定の口 (`IEcoPhotoJudge`) とモック。歩数 (iOS は CMPedometer、Editor は開発用の操作)
 - 上記の EditMode テスト (`Assets/Tests/EditMode/`)。開発ビルドと Editor ではホームに早送りなどの操作が出る
 

@@ -10,7 +10,8 @@
         "ProjectPenguin.Presentation",
         "ProjectPenguin.Editor",
         "Unity.InputSystem",
-        "ProjectPenguin.Systems"
+        "ProjectPenguin.Systems",
+        "Gilzoide.SqliteNet"
     ],
     "includePlatforms": [
         "Editor"

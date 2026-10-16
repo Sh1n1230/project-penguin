@@ -80,7 +80,7 @@ namespace ProjectPenguin.Systems
         private const float AutosaveInterval = 20f;
 
         /// <summary>記録画面に残す受け取りの記録の数。</summary>
-        private const int ActivityLimit = 200;
+        private const int ActivityLimit = GameSave.ActivityWindow;
 
         /// <summary>時刻合わせの通信の待ち時間 (秒)。UnityWebRequest の既定 0 は無制限なので必ず付ける。</summary>
         private const int TimeSyncTimeoutSeconds = 25;
@@ -179,7 +179,7 @@ namespace ProjectPenguin.Systems
             // 端末の時計をサーバーの Date ヘッダーで確かめる時計で包む。基準を受け取るまでは端末の時計のまま (IsTrusted = false)。
             _monotonic = MonotonicClocks.CreateDefault();
             _serverClock = new ServerTrustedClock(new SystemClock(), _monotonic);
-            Initialize(_inMemoryOnly ? new MemoryGameStore() : new JsonGameStore(), _serverClock, StepSources.Create());
+            Initialize(_inMemoryOnly ? new MemoryGameStore() : new SqliteGameStore(), _serverClock, StepSources.Create());
         }
 
         /// <summary>
@@ -625,7 +625,9 @@ namespace ProjectPenguin.Systems
             });
             if (_activity.Count > ActivityLimit)
             {
-                _activity.RemoveRange(0, _activity.Count - ActivityLimit);
+                var drop = _activity.Count - ActivityLimit;
+                _activity.RemoveRange(0, drop);
+                _save.activityTrimmed += drop;
             }
 
             Save();

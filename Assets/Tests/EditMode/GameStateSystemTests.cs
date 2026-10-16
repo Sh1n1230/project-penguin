@@ -142,5 +142,39 @@ namespace ProjectPenguin.Tests.EditMode
                 System.IO.Directory.Delete(dir, true);
             }
         }
+
+        [Test]
+        public void SQLiteの置き場でも保存した状態に戻る()
+        {
+            var dir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "penguin-test-" + Guid.NewGuid().ToString("N"));
+            System.IO.Directory.CreateDirectory(dir);
+            try
+            {
+                var clock = new ManualClock(Start);
+                var a = New(new SqliteGameStore(dir), clock);
+                a.CompleteOnboarding("ペン");
+                a.RecordEcoPhoto(new EcoPhotoVerdict(EcoCategory.SaveWater, "節水", "", 0.9));
+                Assert.That(a.Build(FacilityKind.Fishery, new Cell(3, 2)), Is.EqualTo(IslandActionResult.Ok));
+                clock.Advance(TimeSpan.FromDays(2));
+                a.Refresh();
+                a.RecordEcoPhoto(new EcoPhotoVerdict(EcoCategory.Goods, "マイボトル", "", 0.9));
+                var ice = a.Session.Ice;
+                var activity = a.Activity.Count;
+                Assert.That(activity, Is.GreaterThan(0));
+
+                // 別のシステムが、同じフォルダの DB から始める。
+                var b = New(new SqliteGameStore(dir), clock);
+                Assert.That(b.PlayerName, Is.EqualTo("ペン"));
+                Assert.That(b.Onboarded, Is.True);
+                Assert.That(b.Session.Ice, Is.EqualTo(ice).Within(1e-9));
+                Assert.That(b.Activity.Count, Is.EqualTo(activity));
+                Assert.That(b.Island.Facilities.Count, Is.EqualTo(1));
+                Assert.That(b.LoadStatus, Is.EqualTo(ProjectPenguin.Data.Persistence.SaveLoadStatus.Loaded));
+            }
+            finally
+            {
+                System.IO.Directory.Delete(dir, true);
+            }
+        }
     }
 }

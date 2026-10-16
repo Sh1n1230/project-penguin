@@ -133,7 +133,7 @@ scope は `unity` / `backend` / `docs` / `ci`。プロジェクト全体にま�
 
 ## 現状
 
-- **実装済み**: ビルド・CI の土台。生産の島の規則 (`Assets/Scripts/Domain/Island/`、仕様は `docs/production-island/game-design.md`) と氷の状態機械 (`Assets/Scripts/Domain/Game/`、仕様は `docs/game-logic.md`)。ホームの 3D の島 (`ProductionIslandHome.unity`、`Assets/Scripts/Presentation/World/`。`HomeWorld.unity` を複製したシーンで、組み込みは **Production Island > Setup Home Island**。`HomeWorld.unity` は元の氷山と小屋のまま変えない)。UI Toolkit の全画面 (ホーム・建物の棚と説明・施設・港・生産量・エコ写真の撮影〜結果・ミッション・記録・図鑑・メニュー・はじめての案内)。施設の強化 (Lv5 まで、一覧は `docs/production-island/facilities.md`) と写真の表 (写っているもの → 資源)。建物の絵は **Production Island > Render Facility Thumbnails** で 3D モデルから描き出す。保存 (JSON、`Assets/Scripts/Data/`)。写真判定の口 (`IEcoPhotoJudge`) とモック。iOS の歩数。EditMode テスト。開発ビルドと Editor ではホームに早送りなどのデモ用の操作が出る。
-- **未実装 (Hack Day に作る)**: FastAPI の写真判定と Unity 側の HTTP クライアント、SQLite (`IGameStore` の差し替え)、スポンサー賞に向けた連携 (未決)。
+- **実装済み**: ビルド・CI の土台。生産の島の規則 (`Assets/Scripts/Domain/Island/`、仕様は `docs/production-island/game-design.md`) と氷の状態機械 (`Assets/Scripts/Domain/Game/`、仕様は `docs/game-logic.md`)。ホームの 3D の島 (`ProductionIslandHome.unity`、`Assets/Scripts/Presentation/World/`。`HomeWorld.unity` を複製したシーンで、組み込みは **Production Island > Setup Home Island**。`HomeWorld.unity` は元の氷山と小屋のまま変えない)。UI Toolkit の全画面 (ホーム・建物の棚と説明・施設・港・生産量・エコ写真の撮影〜結果・ミッション・記録・図鑑・メニュー・はじめての案内)。施設の強化 (Lv5 まで、一覧は `docs/production-island/facilities.md`) と写真の表 (写っているもの → 資源)。建物の絵は **Production Island > Render Facility Thumbnails** で 3D モデルから描き出す。保存 (SQLite、`Assets/Scripts/Data/`。初期の JSON は最初の起動で取り込む)。写真判定の口 (`IEcoPhotoJudge`) とモック。iOS の歩数。EditMode テスト。開発ビルドと Editor ではホームに早送りなどのデモ用の操作が出る。
+- **未実装 (Hack Day に作る)**: FastAPI の写真判定と Unity 側の HTTP クライアント、スポンサー賞に向けた連携 (未決)。
 
 UI や画面遷移を触る前に、既存の Presenter と `docs/ui-structure.md` を読むこと。未実装の領域で実装を探して見つからない場合は「まだ存在しない」が正しい答えであり、既存実装を推測で仮定しないこと。

@@ -23,7 +23,7 @@
 | 範囲 | 場所 |
 |---|---|
 | 規則と数値 (純粋な C#) | `Assets/Scripts/Domain/Island/` (`IslandGame`・`IslandBoard`・`IslandCatalog`・`IslandParameters`・`PenguinDex`・`EcoActions`) |
-| 状態の保持・保存・時計・歩数 | `Assets/Scripts/Systems/` (`GameStateSystem`・`SessionClock`・`StepSource`)、`Assets/Scripts/Data/` (`GameSave`・`JsonGameStore`) |
+| 状態の保持・保存・時計・歩数 | `Assets/Scripts/Systems/` (`GameStateSystem`・`SessionClock`・`StepSource`)、`Assets/Scripts/Data/` (`GameSave`・`SqliteGameStore`) |
 | 写真の判定の口 | `Assets/Scripts/Backend/EcoPhotoJudge.cs` (`IEcoPhotoJudge`、今は `MockEcoPhotoJudge`) |
 | 3D の島 | `Assets/Scripts/Presentation/World/` (`IslandBoardView`・`IslandInteraction`・`IslandCameraRig`) |
 | 画面 | `Assets/Scripts/Presentation/UI/` (`IslandHudPresenter`・`IslandSheetPresenter`・`EcoPhotoFlowPresenter`・`MissionScreenPresenter`・`RecordScreenPresenter`・`DexScreenPresenter`・`MenuScreenPresenter`・`OnboardingPresenter`) |
@@ -114,7 +114,7 @@
 
 ## 10. 保存
 
-- 端末の `Application.persistentDataPath/penguin-save.json` (`JsonGameStore`)。一時ファイルに書いてから置き換える。Hack Day に SQLite (`IGameStore` の別の実装) へ差し替える。
+- 端末の `Application.persistentDataPath/penguin.db` (SQLite、`SqliteGameStore`)。meta・ops (氷への操作、追記だけ)・island (島の JSON)・activity (受け取りの記録、追記だけ。全件を残し、画面には新しい 200 件) の 4 表。1 トランザクション (WAL) で書くので、途中で落ちても前の状態が残る。初期の `penguin-save.json` があれば最初の起動で取り込み、`.imported` に改名して残す (`JsonGameStore`・`SaveStore` はその読み取りに使う)。写真と購買の明細は入れない。
 - 氷の状態機械は **操作の記録 (時刻・種類・引数) を保存し、起動時に時計を止めて再生する** (`GameStateSystem.Replay`)。計算が決定的なので同じ状態に戻る。`GameSession` は変えていない (Python の参照実装と一致させているため)。
 - 島は状態をそのまま保存する (`IslandSave`)。
 - 写真そのものは保存しない。記録画面に残すのは分類・写っていたものの名前・受け取った資源の量だけ。
