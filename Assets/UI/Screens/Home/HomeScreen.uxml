@@ -73,14 +73,23 @@
                 <ui:Button name="demoHourButton" text="島 +1 時間" class="pp-chip home__demo-button home__demo-island pp-hidden" />
                 <ui:Button name="demoGrantButton" text="資源 +100" class="pp-chip home__demo-button home__demo-island pp-hidden" />
                 <ui:Button name="demoStepsButton" text="+1000 歩" class="pp-chip home__demo-button home__demo-island pp-hidden" />
+                <ui:Button name="demoResetButton" text="最初から" class="pp-chip home__demo-button home__demo-island pp-hidden" />
             </ui:VisualElement>
 
             <ui:VisualElement name="worldViewport" class="home__world" picking-mode="Ignore">
-                <ui:VisualElement name="placementBanner" class="pp-banner home__banner pp-hidden">
-                    <ui:VisualElement name="bannerIcon" class="pp-icon pp-icon--build pp-icon--primary" />
-                    <ui:Label name="bannerText" text="建てる場所をタップしてね" class="pp-banner__text" />
-                    <ui:Button name="bannerCancel" text="やめる" class="pp-pill" />
-                    <ui:Button name="bannerConfirm" text="ここに建てる" class="pp-pill pp-pill--primary" />
+                <!-- 置き場所を選ぶ間だけ出す。✕・建物の絵・✓ の丸いボタンと、置けないときだけ理由を出す (IslandSheetPresenter) -->
+                <ui:VisualElement name="placementBanner" class="home__banner pp-hidden" picking-mode="Ignore">
+                    <ui:VisualElement name="bannerCosts" class="pp-counts home__banner-costs pp-hidden" picking-mode="Ignore" />
+                    <ui:VisualElement class="pp-place-bar" picking-mode="Ignore">
+                        <ui:Button name="bannerCancel" class="pp-round-button pp-round-button--small pp-round-button--cancel">
+                            <ui:VisualElement class="pp-round-button__icon pp-icon pp-icon--close" picking-mode="Ignore" />
+                        </ui:Button>
+                        <ui:VisualElement name="bannerIcon" class="pp-place-bar__thumb pp-thumb" picking-mode="Ignore" />
+                        <ui:Button name="bannerConfirm" class="pp-round-button pp-round-button--small">
+                            <ui:VisualElement class="pp-round-button__icon pp-icon pp-icon--check" picking-mode="Ignore" />
+                        </ui:Button>
+                    </ui:VisualElement>
+                    <ui:Label name="bannerText" text="そこには置けないよ" class="pp-place-bar__hint pp-hidden" />
                 </ui:VisualElement>
                 <!-- 生産の島のシーンだけで出す。設定ボタンと同じ丸いボタンを右下に縦に並べる -->
                 <ui:VisualElement name="tools" class="home__tools pp-hidden" picking-mode="Ignore">

@@ -539,12 +539,19 @@ namespace ProjectPenguin.Presentation.World
                 return;
             }
 
-            _ghost = Instantiate(prefab, _overlayRoot);
+            // 動きの部品 (FacilityProductionCycle など) は、参照を設定する前に OnEnable が走るとエラーを出す。
+            // 無効な入れ物の中で生成し、部品を止めてから表に出す。
+            var holder = new GameObject("GhostHolder");
+            holder.SetActive(false);
+            _ghost = Instantiate(prefab, holder.transform);
             _ghost.name = "Ghost";
-            foreach (var behaviour in _ghost.GetComponentsInChildren<MonoBehaviour>())
+            foreach (var behaviour in _ghost.GetComponentsInChildren<MonoBehaviour>(true))
             {
                 behaviour.enabled = false;
             }
+
+            _ghost.transform.SetParent(_overlayRoot, false);
+            Destroy(holder);
 
             _ghost.transform.localPosition = IslandGrid.FootprintCenter(GhostOrigin, s, Size) + Vector3.up * 0.15f;
             if (Mode == IslandMode.Move)

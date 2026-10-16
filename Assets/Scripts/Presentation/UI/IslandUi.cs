@@ -126,6 +126,7 @@ namespace ProjectPenguin.Presentation.UI
             IslandActionResult.NoFreeWorker => "手のあいているペンギンがいないよ",
             IslandActionResult.AlreadyReceived => "今日はもう受け取ったよ",
             IslandActionResult.NotArrived => "舟がまだ着いていないよ",
+            IslandActionResult.MaxLevel => "もう最大のレベルだよ",
             _ => "うまくいかなかったよ",
         };
 
@@ -262,5 +263,89 @@ namespace ProjectPenguin.Presentation.UI
         }
 
         public static void SetVisible(VisualElement e, bool visible) => e?.EnableInClassList(UiClasses.Hidden, !visible);
+
+        // ------------------------------------------------------------------
+        // ゲームの画面 (Game.uss)
+        // ------------------------------------------------------------------
+
+        /// <summary>「アイコン … 30」。足りないときは数字を赤くする。</summary>
+        public static VisualElement Count(string iconClass, string tintClass, string value, bool short_ = false)
+        {
+            var e = new VisualElement { pickingMode = PickingMode.Ignore };
+            e.AddToClassList(UiClasses.Count.Root);
+            e.EnableInClassList(UiClasses.Count.Short, short_);
+            var icon = Icon(iconClass, tintClass);
+            icon.AddToClassList(UiClasses.Count.Icon);
+            e.Add(icon);
+            e.Add(Text(value, UiClasses.Count.Value));
+            return e;
+        }
+
+        public static VisualElement Count(string iconClass, string tintClass, double amount, bool short_ = false) =>
+            Count(iconClass, tintClass, "… " + Number(Math.Ceiling(amount)), short_);
+
+        /// <summary>要素の建物の絵を差し替える (前の絵のクラスは外す)。</summary>
+        public static void SetThumb(VisualElement e, string thumbClass)
+        {
+            if (e == null)
+            {
+                return;
+            }
+
+            if (e.userData is string previous && previous != thumbClass)
+            {
+                e.RemoveFromClassList(previous);
+            }
+
+            e.AddToClassList(UiClasses.Thumb.Root);
+            if (thumbClass != null)
+            {
+                e.AddToClassList(thumbClass);
+            }
+
+            e.userData = thumbClass;
+        }
+
+        /// <summary>作り方を「材料 … 3 → できるもの」のアイコンで並べる。材料の無いものは「→ できるもの」だけ。</summary>
+        public static void FillRecipe(VisualElement container, FacilityKind kind, Recipe recipe, Func<Item, bool> isShort = null)
+        {
+            container.Clear();
+            if (recipe == null)
+            {
+                return;
+            }
+
+            foreach (var input in recipe.Inputs)
+            {
+                container.Add(Count(IconClass(input.Item), UiClasses.Tint.Fish, $"… {input.Count}", isShort?.Invoke(input.Item) ?? false));
+            }
+
+            var arrow = Icon(UiClasses.Icon.ArrowRight, UiClasses.Tint.Primary, UiClasses.Icon.Large);
+            arrow.AddToClassList(UiClasses.Recipe.Arrow);
+            container.Add(arrow);
+            container.Add(IslandCatalog.ProducesPearl(kind)
+                ? Count(UiClasses.Icon.Pearl, UiClasses.Tint.Pearl, "")
+                : Count(IconClass(recipe.Output.Item), UiClasses.Tint.Fish, recipe.Output.Count > 1 ? $"× {recipe.Output.Count}" : ""));
+        }
+
+        /// <summary>作らない施設の効果のアイコン。</summary>
+        public static string EffectIcon(FacilityDef def) => def.Role switch
+        {
+            FacilityRole.Storage => UiClasses.Icon.StorageFull,
+            FacilityRole.Housing => UiClasses.Icon.Penguin,
+            FacilityRole.Amplifier => IconClass(def.Amplifies.GetValueOrDefault()),
+            FacilityRole.AutoDeliver => UiClasses.Icon.Deliver,
+            _ => IconClass(def),
+        };
+
+        /// <summary>作らない施設の効果を短く (建てる前の説明用。レベル 1 の値)。</summary>
+        public static string EffectShort(FacilityDef def, IslandParameters p) => def.Role switch
+        {
+            FacilityRole.Storage => $"置き場 +{p.StoragePerWarehouse}",
+            FacilityRole.Housing => $"住める数 +{p.HousingPerDormitory}",
+            FacilityRole.Amplifier => $"{IslandCatalog.NameOf(def.Amplifies.GetValueOrDefault())} +{p.AmplifierBonus * 100:0}%",
+            FacilityRole.AutoDeliver => "自動でとどける",
+            _ => "",
+        };
     }
 }

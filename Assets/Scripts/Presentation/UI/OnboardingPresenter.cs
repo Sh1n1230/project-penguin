@@ -23,6 +23,7 @@ namespace ProjectPenguin.Presentation.UI
         [SerializeField] private ScreenNavigator _navigator;
 
         private VisualElement _overlay;
+        private VisualElement _home;
         private VisualElement[] _pages;
         private VisualElement[] _dots;
         private Button _next;
@@ -39,7 +40,9 @@ namespace ProjectPenguin.Presentation.UI
                 return;
             }
 
-            _overlay = GetComponent<UIDocument>().rootVisualElement.Q(UiNames.App.Onboarding);
+            var root = GetComponent<UIDocument>().rootVisualElement;
+            _overlay = root.Q(UiNames.App.Onboarding);
+            _home = root.Q(ScreenNavigator.ElementNameOf(AppScreen.Home));
             _pages = new VisualElement[PageCount];
             _dots = new VisualElement[PageCount];
             for (var i = 0; i < PageCount; i++)
@@ -70,13 +73,13 @@ namespace ProjectPenguin.Presentation.UI
         {
             if (_overlay == null || _game.Onboarded)
             {
-                IslandUi.SetVisible(_overlay, false);
+                SetOverlay(false);
                 return;
             }
 
             _name.value = "";
             Show(0);
-            IslandUi.SetVisible(_overlay, true);
+            SetOverlay(true);
         }
 
         private void Show(int page)
@@ -114,7 +117,15 @@ namespace ProjectPenguin.Presentation.UI
         private void Finish()
         {
             _game.CompleteOnboarding(_name.value);
-            IslandUi.SetVisible(_overlay, false);
+            SetOverlay(false);
+        }
+
+        /// <summary>案内を出している間は、ホームの HUD を隠して後ろの 3D の島だけを見せる。</summary>
+        private void SetOverlay(bool visible)
+        {
+            IslandUi.SetVisible(_overlay, visible);
+            _home?.EnableInClassList(UiClasses.Home.Onboarding, visible);
+            _navigator.SetTabBarSuppressed(visible);
         }
     }
 }

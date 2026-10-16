@@ -16,6 +16,13 @@ namespace ProjectPenguin.Presentation.UI
         Result,
         Menu,
         Dex,
+
+        // 生産の島の画面 (ホームの道具と島の施設から開く)
+        Build,
+        BuildDetail,
+        Harbor,
+        Facility,
+        Production,
     }
 
     /// <summary>
@@ -65,6 +72,12 @@ namespace ProjectPenguin.Presentation.UI
             new Route(ElementNameOf(AppScreen.Menu), UiNames.Menu.MenuMission, AppScreen.Mission),
             new Route(ElementNameOf(AppScreen.Menu), UiNames.Menu.MenuPokedex, AppScreen.Dex),
             new Route(ElementNameOf(AppScreen.Dex), UiNames.Dex.BackButton, null),
+            new Route(ElementNameOf(AppScreen.Build), UiNames.Build.CloseButton, AppScreen.Home),
+            new Route(ElementNameOf(AppScreen.BuildDetail), UiNames.BuildDetail.BackButton, AppScreen.Build),
+            new Route(ElementNameOf(AppScreen.BuildDetail), UiNames.BuildDetail.CloseButton, AppScreen.Home),
+            new Route(ElementNameOf(AppScreen.Harbor), UiNames.Harbor.CloseButton, AppScreen.Home),
+            new Route(ElementNameOf(AppScreen.Facility), UiNames.Facility.CloseButton, AppScreen.Home),
+            new Route(ElementNameOf(AppScreen.Production), UiNames.Production.CloseButton, AppScreen.Home),
         };
 
         /// <summary>端末の設定アプリを開くボタン。アプリ内の設定画面ができるまでの暫定。</summary>
@@ -85,6 +98,7 @@ namespace ProjectPenguin.Presentation.UI
         private readonly Dictionary<AppScreen, Button> _tabButtons = new();
         private readonly List<(Button Button, Action Handler)> _bindings = new();
         private VisualElement _tabBar;
+        private bool _tabBarSuppressed;
         private AppScreen _lastTab = AppScreen.Home;
 
         public AppScreen Current { get; private set; }
@@ -102,6 +116,11 @@ namespace ProjectPenguin.Presentation.UI
             AppScreen.Result => UiNames.App.ResultScreen,
             AppScreen.Menu => UiNames.App.MenuScreen,
             AppScreen.Dex => UiNames.App.DexScreen,
+            AppScreen.Build => UiNames.App.BuildScreen,
+            AppScreen.BuildDetail => UiNames.App.BuildDetailScreen,
+            AppScreen.Harbor => UiNames.App.HarborScreen,
+            AppScreen.Facility => UiNames.App.FacilityScreen,
+            AppScreen.Production => UiNames.App.ProductionScreen,
             _ => throw new ArgumentOutOfRangeException(nameof(screen), screen, null),
         };
 
@@ -183,8 +202,15 @@ namespace ProjectPenguin.Presentation.UI
                 element.EnableInClassList(UiClasses.Screen.Hidden, key != screen);
             }
 
+            // 画面が変わったときだけ、下からふわっと入れる (ホームは 3D の島が見えるのでそのまま出す)。
+            if (screen != previous && screen != AppScreen.Home && _screens.TryGetValue(screen, out var shown))
+            {
+                shown.AddToClassList(UiClasses.Screen.Entering);
+                shown.schedule.Execute(() => shown.RemoveFromClassList(UiClasses.Screen.Entering)).StartingIn(16);
+            }
+
             var isTab = TabButtonOf(screen) != null;
-            _tabBar.EnableInClassList(UiClasses.Screen.Hidden, !isTab);
+            _tabBar.EnableInClassList(UiClasses.Screen.Hidden, !isTab || _tabBarSuppressed);
             if (isTab)
             {
                 _lastTab = screen;
@@ -224,7 +250,19 @@ namespace ProjectPenguin.Presentation.UI
             ScreenShown?.Invoke(screen, previous);
         }
 
-        /// <summary>戻るキー。フローの途中とタブ画面はホームへ、メニューは開く前のタブへ戻る。</summary>
+        /// <summary>
+        /// タブバーを一時的に隠す (島の上で置き場所を選んでいる間など)。タブ画面でなければもともと出ていない。
+        /// </summary>
+        public void SetTabBarSuppressed(bool suppressed)
+        {
+            _tabBarSuppressed = suppressed;
+            if (_tabBar != null)
+            {
+                _tabBar.EnableInClassList(UiClasses.Screen.Hidden, suppressed || TabButtonOf(Current) == null);
+            }
+        }
+
+        /// <summary>戻るキー。フローの途中とタブ画面はホームへ、メニューは開く前のタブへ、建物の説明は一覧へ戻る。</summary>
         public void Back()
         {
             switch (Current)
@@ -233,6 +271,9 @@ namespace ProjectPenguin.Presentation.UI
                     return;
                 case AppScreen.Menu:
                     Show(_lastTab);
+                    return;
+                case AppScreen.BuildDetail:
+                    Show(AppScreen.Build);
                     return;
                 default:
                     Show(AppScreen.Home);

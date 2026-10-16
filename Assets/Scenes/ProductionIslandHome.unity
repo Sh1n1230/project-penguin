@@ -209,6 +209,39 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6213459}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &83076382
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 83076383}
+  m_Layer: 0
+  m_Name: HomeIceberg
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &83076383
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83076382}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.9, y: -0.35, z: 7.9}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1425862501}
+  - {fileID: 867622143}
+  m_Father: {fileID: 746322540}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &138377758
 GameObject:
   m_ObjectHideFlags: 0
@@ -237,8 +270,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.7692308, y: 0.7692308, z: 0.7692308}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 263104760}
+  m_Children: []
   m_Father: {fileID: 829288853}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &151795158
@@ -790,26 +822,6 @@ MonoBehaviour:
   _gridLine: {fileID: 2100000, guid: 554c7b9f6dc634d5c979dec589e91e97, type: 2}
   _decor:
   - Piece:
-      Mesh: {fileID: 592301176029009878, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
-      Materials:
-      - {fileID: 1726100846287725777, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
-      - {fileID: -3337238316525097896, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
-      - {fileID: -4495129766516090832, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
-      - {fileID: 1426577434327418518, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
-    Position: {x: -3.9, y: -0.2, z: 5.3}
-    Scale: 0.32
-    Yaw: 15
-  - Piece:
-      Mesh: {fileID: 1109261824050223439, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
-      Materials:
-      - {fileID: -3337238316525097896, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
-      - {fileID: -4495129766516090832, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
-      - {fileID: 1726100846287725777, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
-      - {fileID: 1426577434327418518, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
-    Position: {x: -2.4, y: -0.2, z: 6.2}
-    Scale: 0.22
-    Yaw: -20
-  - Piece:
       Mesh: {fileID: 3065099492964030642, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
       Materials:
       - {fileID: -3337238316525097896, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
@@ -875,19 +887,31 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 138377759}
+    m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 2938f6b57e02597479e2ac11bfd32a16, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3.5661073
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2938f6b57e02597479e2ac11bfd32a16, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.5661068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2938f6b57e02597479e2ac11bfd32a16, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3.5661068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2938f6b57e02597479e2ac11bfd32a16, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2938f6b57e02597479e2ac11bfd32a16, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.26877347
+      value: 0.27
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2938f6b57e02597479e2ac11bfd32a16, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.09745516
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2938f6b57e02597479e2ac11bfd32a16, type: 3}
       propertyPath: m_LocalRotation.w
@@ -899,7 +923,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2938f6b57e02597479e2ac11bfd32a16, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2938f6b57e02597479e2ac11bfd32a16, type: 3}
       propertyPath: m_LocalRotation.z
@@ -945,6 +969,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Penguin_Waddle_1p3m
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2938f6b57e02597479e2ac11bfd32a16, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -953,11 +981,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 263104762}
   m_SourcePrefab: {fileID: 100100000, guid: 2938f6b57e02597479e2ac11bfd32a16, type: 3}
---- !u!4 &263104760 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2938f6b57e02597479e2ac11bfd32a16, type: 3}
-  m_PrefabInstance: {fileID: 263104759}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &263104761 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2938f6b57e02597479e2ac11bfd32a16, type: 3}
@@ -1197,6 +1220,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 529027301}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &653428910 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -8895783978209188374, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
+  m_PrefabInstance: {fileID: 1425862500}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &696534303
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1358,6 +1386,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 746322540}
+  - component: {fileID: 746322541}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -1382,10 +1411,35 @@ Transform:
   - {fileID: 1754367505}
   - {fileID: 1950481629}
   - {fileID: 215501216}
-  - {fileID: 867622143}
-  - {fileID: 1425862501}
+  - {fileID: 83076383}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &746322541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 746322539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c6a74e142aba4d02ba0d12bd6bffa2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ProjectPenguin.Presentation::ProjectPenguin.Presentation.World.IceWorldView
+  _game: {fileID: 2047777372}
+  _iceberg: {fileID: 1425862501}
+  _cabin: {fileID: 1161873890}
+  _penguins:
+  - {fileID: 829288853}
+  - {fileID: 213174817}
+  - {fileID: 985876257}
+  - {fileID: 2070263941}
+  - {fileID: 1530131732}
+  _cracks:
+  - {fileID: 1186003698}
+  - {fileID: 653428910}
+  - {fileID: 1124702878}
+  - {fileID: 1226450110}
 --- !u!1 &829288852
 GameObject:
   m_ObjectHideFlags: 0
@@ -1449,7 +1503,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &867622143
 Transform:
   m_ObjectHideFlags: 0
@@ -1468,7 +1522,7 @@ Transform:
   - {fileID: 985876257}
   - {fileID: 2070263941}
   - {fileID: 1530131732}
-  m_Father: {fileID: 746322540}
+  m_Father: {fileID: 83076383}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &902032543
 GameObject:
@@ -1979,6 +2033,16 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 73899e0bfb2c86c4ba839401621c89eb, type: 3}
   m_PrefabInstance: {fileID: 1116180855}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1124702878 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7321664353123841922, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
+  m_PrefabInstance: {fileID: 1425862500}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1161873890 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 621510110935238052, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
+  m_PrefabInstance: {fileID: 1425862500}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1168128766
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2055,11 +2119,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: Penguin_Waddle_1p3m
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2938f6b57e02597479e2ac11bfd32a16, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2938f6b57e02597479e2ac11bfd32a16, type: 3}
+--- !u!1 &1186003698 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -772374269855728457, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
+  m_PrefabInstance: {fileID: 1425862500}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1226450110 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -1732329442081715659, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
+  m_PrefabInstance: {fileID: 1425862500}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1278900963
 GameObject:
   m_ObjectHideFlags: 0
@@ -2083,6 +2161,10 @@ GameObject:
   - component: {fileID: 1278900974}
   - component: {fileID: 1278900973}
   - component: {fileID: 1278900972}
+  - component: {fileID: 1278900982}
+  - component: {fileID: 1278900981}
+  - component: {fileID: 1278900980}
+  - component: {fileID: 1278900979}
   m_Layer: 0
   m_Name: AppUI
   m_TagString: Untagged
@@ -2298,6 +2380,10 @@ MonoBehaviour:
   _interaction: {fileID: 262633543}
   _navigator: {fileID: 1278900967}
   _hud: {fileID: 1278900978}
+  _build: {fileID: 1278900982}
+  _harbor: {fileID: 1278900981}
+  _facility: {fileID: 1278900980}
+  _production: {fileID: 1278900979}
 --- !u!114 &1278900978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2313,6 +2399,71 @@ MonoBehaviour:
   _game: {fileID: 2047777372}
   _navigator: {fileID: 1278900967}
   _sheets: {fileID: 1278900977}
+  _build: {fileID: 1278900982}
+  _harbor: {fileID: 1278900981}
+  _onboarding: {fileID: 1278900973}
+--- !u!114 &1278900979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1278900963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a64f53c044d074a69b765e657549e73b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ProjectPenguin.Presentation::ProjectPenguin.Presentation.UI.ProductionScreenPresenter
+  _game: {fileID: 2047777372}
+  _navigator: {fileID: 1278900967}
+--- !u!114 &1278900980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1278900963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd9e651d769fb4cc589b22c4b118326b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ProjectPenguin.Presentation::ProjectPenguin.Presentation.UI.FacilityScreenPresenter
+  _game: {fileID: 2047777372}
+  _navigator: {fileID: 1278900967}
+  _interaction: {fileID: 262633543}
+  _hud: {fileID: 1278900978}
+--- !u!114 &1278900981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1278900963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1db4dd7f495214789a7a1e571a8b9787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ProjectPenguin.Presentation::ProjectPenguin.Presentation.UI.HarborScreenPresenter
+  _game: {fileID: 2047777372}
+  _navigator: {fileID: 1278900967}
+  _hud: {fileID: 1278900978}
+--- !u!114 &1278900982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1278900963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a15d7097b7af4ccea3b5bc310b29e43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ProjectPenguin.Presentation::ProjectPenguin.Presentation.UI.BuildScreenPresenter
+  _game: {fileID: 2047777372}
+  _navigator: {fileID: 1278900967}
+  _interaction: {fileID: 262633543}
+  _sheets: {fileID: 1278900977}
+  _hud: {fileID: 1278900978}
 --- !u!1 &1382544150
 GameObject:
   m_ObjectHideFlags: 0
@@ -2409,7 +2560,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 746322540}
+    m_TransformParent: {fileID: 83076383}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2457,7 +2608,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6128761011537515434, guid: 4915131fe8e63f44e8c3c520258d6f38, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -3118,3 +3269,4 @@ SceneRoots:
   - {fileID: 2047777373}
   - {fileID: 262633545}
   - {fileID: 1168128766}
+  - {fileID: 263104759}

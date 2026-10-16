@@ -1,3 +1,6 @@
+using System;
+using ProjectPenguin.Domain.Island;
+
 namespace ProjectPenguin.Presentation.UI
 {
     /// <summary>
@@ -14,6 +17,9 @@ namespace ProjectPenguin.Presentation.UI
         public const string Card = "pp-card";
         public const string Elevated = "pp-elevated";
         public const string SectionTitle = "pp-section-title";
+
+        /// <summary>アイコンと数の横並び (Game.uss)。</summary>
+        public const string Counts = "pp-counts";
 
         /// <summary>文字の大きさ・太さ・色。</summary>
         public static class Text
@@ -69,6 +75,17 @@ namespace ProjectPenguin.Presentation.UI
             public const string GasEmpty = "pp-icon--gas-empty";
             public const string MaterialWait = "pp-icon--material-wait";
             public const string StorageFull = "pp-icon--storage-full";
+
+            // ゲームの画面 (Game.uss)
+            public const string Close = "pp-icon--close";
+            public const string Lock = "pp-icon--lock";
+            public const string Clock = "pp-icon--clock";
+            public const string Boat = "pp-icon--boat";
+            public const string ArrowRight = "pp-icon--arrow-right";
+            public const string Upgrade = "pp-icon--upgrade";
+
+            public const string Large = "pp-icon--lg";
+            public const string ExtraLarge = "pp-icon--xl";
         }
 
         /// <summary>アイコンの色。</summary>
@@ -200,6 +217,15 @@ namespace ProjectPenguin.Presentation.UI
         public static class Screen
         {
             public const string Hidden = "pp-screen--hidden";
+
+            /// <summary>表示した直後だけ付け、外すと下からふわっと入る。</summary>
+            public const string Entering = "pp-screen--entering";
+        }
+
+        /// <summary>ホームの右下の丸い道具。</summary>
+        public static class Tool
+        {
+            public const string Active = "pp-tool--active";
         }
 
         public static class Tab
@@ -241,6 +267,12 @@ namespace ProjectPenguin.Presentation.UI
             public const string DemoIsland = "home__demo-island";
 
             public const string StatNoteDanger = "home__stat-note--danger";
+
+            /// <summary>置き場所を選んでいる間 (吹き出しと道具を隠す)。</summary>
+            public const string Placing = "home--placing";
+
+            /// <summary>はじめての案内を出している間 (HUD を隠して島だけを見せる)。</summary>
+            public const string Onboarding = "home--onboarding";
         }
 
         /// <summary>HomeScreen.uss の「資源の集め方」シート。</summary>
@@ -273,6 +305,156 @@ namespace ProjectPenguin.Presentation.UI
             public const string Panel = "review-panel";
             public const string Choice = "facility-choice";
             public const string ChoiceSelected = "selected";
+        }
+
+        // ---- ゲームの画面の部品 (Game.uss) ----
+
+        /// <summary>建物の一覧の棚のカード。</summary>
+        public static class ShelfCard
+        {
+            public const string Root = "pp-shelf-card";
+            public const string Thumb = "pp-shelf-card__thumb";
+            public const string Name = "pp-shelf-card__name";
+            public const string Badge = "pp-shelf-card__badge";
+            public const string New = "pp-shelf-card__new";
+            public const string Locked = "pp-shelf-card--locked";
+        }
+
+        /// <summary>鍵とレベル (まだ建てられない)。</summary>
+        public static class Lock
+        {
+            public const string Root = "pp-lock";
+            public const string Label = "pp-lock__label";
+        }
+
+        /// <summary>大きな写真のカード。</summary>
+        public static class PhotoCard
+        {
+            public const string Locked = "pp-photo-card--locked";
+            public const string Swap = "pp-photo-card--swap";
+        }
+
+        /// <summary>「アイコン … 30」。</summary>
+        public static class Count
+        {
+            public const string Root = "pp-count";
+            public const string Icon = "pp-count__icon";
+            public const string Value = "pp-count__value";
+            public const string Short = "pp-count--short";
+        }
+
+        public static class Recipe
+        {
+            public const string Arrow = "pp-recipe__arrow";
+        }
+
+        /// <summary>大きな丸いボタン。</summary>
+        public static class RoundButton
+        {
+            public const string Root = "pp-round-button";
+            public const string Icon = "pp-round-button__icon";
+            public const string Label = "pp-round-button__label";
+            public const string Small = "pp-round-button--small";
+            public const string Primary = "pp-round-button--primary";
+        }
+
+        /// <summary>小さな丸い道具。</summary>
+        public static class MiniButton
+        {
+            public const string Root = "pp-mini-button";
+        }
+
+        /// <summary>注文などの横長のカード。</summary>
+        public static class Tile
+        {
+            public const string Root = "pp-tile";
+            public const string Art = "pp-tile__art";
+            public const string Body = "pp-tile__body";
+            public const string Big = "pp-tile__big";
+            public const string Small = "pp-tile__small";
+            public const string Waiting = "pp-tile--waiting";
+        }
+
+        /// <summary>品物の一覧のカード。</summary>
+        public static class ItemCard
+        {
+            public const string Root = "pp-item-card";
+            public const string Value = "pp-item-card__value";
+            public const string Rate = "pp-item-card__rate";
+            public const string Short = "pp-item-card--short";
+            public const string Idle = "pp-item-card--idle";
+        }
+
+        public static class Worker
+        {
+            public const string Root = "pp-worker";
+            public const string Empty = "pp-worker--empty";
+        }
+
+        public static class LevelPip
+        {
+            public const string Root = "pp-level-pip";
+            public const string On = "pp-level-pip--on";
+        }
+
+        /// <summary>
+        /// 建物の絵 (Thumbnails.uss)。PNG と USS は Production Island &gt; Render Facility Thumbnails が描き出す。
+        /// 描き出しもここの定数を使うので、施設を足したらここに足してから描き直す。
+        /// </summary>
+        public static class Thumb
+        {
+            public const string Root = "pp-thumb";
+
+            public const string Fishery = "pp-thumb--fishery";
+            public const string Preparation = "pp-thumb--preparation";
+            public const string Saltworks = "pp-thumb--saltworks";
+            public const string KelpFarm = "pp-thumb--kelp-farm";
+            public const string Kamaboko = "pp-thumb--kamaboko";
+            public const string Chikuwa = "pp-thumb--chikuwa";
+            public const string Drying = "pp-thumb--drying";
+            public const string Oden = "pp-thumb--oden";
+            public const string Warehouse = "pp-thumb--warehouse";
+            public const string Dormitory = "pp-thumb--dormitory";
+            public const string Research = "pp-thumb--research";
+            public const string Sorter = "pp-thumb--sorter";
+            public const string ElectricAmplifier = "pp-thumb--electric-amplifier";
+            public const string WaterAmplifier = "pp-thumb--water-amplifier";
+            public const string GasAmplifier = "pp-thumb--gas-amplifier";
+
+            public const string Harbor0 = "pp-thumb--harbor-0";
+            public const string Harbor1 = "pp-thumb--harbor-1";
+            public const string Harbor2 = "pp-thumb--harbor-2";
+            public const string Harbor3 = "pp-thumb--harbor-3";
+            public const string Harbor4 = "pp-thumb--harbor-4";
+            public const string Harbor5 = "pp-thumb--harbor-5";
+
+            /// <summary>島を広げる (凍らせた海のマス)。</summary>
+            public const string Expand = "pp-thumb--expand";
+
+            public static string Of(FacilityKind kind) => kind switch
+            {
+                FacilityKind.Fishery => Fishery,
+                FacilityKind.Preparation => Preparation,
+                FacilityKind.Saltworks => Saltworks,
+                FacilityKind.KelpFarm => KelpFarm,
+                FacilityKind.Kamaboko => Kamaboko,
+                FacilityKind.Chikuwa => Chikuwa,
+                FacilityKind.Drying => Drying,
+                FacilityKind.Oden => Oden,
+                FacilityKind.Warehouse => Warehouse,
+                FacilityKind.Dormitory => Dormitory,
+                FacilityKind.Research => Research,
+                FacilityKind.Sorter => Sorter,
+                FacilityKind.ElectricAmplifier => ElectricAmplifier,
+                FacilityKind.WaterAmplifier => WaterAmplifier,
+                FacilityKind.GasAmplifier => GasAmplifier,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null),
+            };
+
+            public static readonly string[] Harbors = { Harbor0, Harbor1, Harbor2, Harbor3, Harbor4, Harbor5 };
+
+            /// <summary>港の段階 (0〜5) の絵。</summary>
+            public static string OfHarbor(int stage) => Harbors[Math.Max(0, Math.Min(Harbors.Length - 1, stage))];
         }
     }
 }

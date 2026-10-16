@@ -31,6 +31,11 @@ namespace ProjectPenguin.Presentation.UI
             public const string ResultScreen = "resultScreen";
             public const string MenuScreen = "menuScreen";
             public const string DexScreen = "dexScreen";
+            public const string BuildScreen = "buildScreen";
+            public const string BuildDetailScreen = "buildDetailScreen";
+            public const string HarborScreen = "harborScreen";
+            public const string FacilityScreen = "facilityScreen";
+            public const string ProductionScreen = "productionScreen";
             public const string TabBar = "tabBar";
             public const string Onboarding = "onboarding";
         }
@@ -86,12 +91,14 @@ namespace ProjectPenguin.Presentation.UI
             public const string DemoHourButton = "demoHourButton";
             public const string DemoGrantButton = "demoGrantButton";
             public const string DemoStepsButton = "demoStepsButton";
+            public const string DemoResetButton = "demoResetButton";
             public const string WorldViewport = "worldViewport";
             public const string PlacementBanner = "placementBanner";
-            public const string BannerIcon = "bannerIcon";
-            public const string BannerText = "bannerText";
+            public const string BannerCosts = "bannerCosts";
             public const string BannerCancel = "bannerCancel";
+            public const string BannerIcon = "bannerIcon";
             public const string BannerConfirm = "bannerConfirm";
+            public const string BannerText = "bannerText";
             public const string Tools = "tools";
             public const string ToolBuild = "toolBuild";
             public const string ToolHarbor = "toolHarbor";
@@ -240,6 +247,106 @@ namespace ProjectPenguin.Presentation.UI
             public const string Page3 = "page3";
             public const string OnboardingNext = "onboardingNext";
             public const string OnboardingLater = "onboardingLater";
+        }
+
+        /// <summary>建物の一覧。<c>Assets/UI/Screens/Build/BuildScreen.uxml</c></summary>
+        [UxmlFile("Assets/UI/Screens/Build/BuildScreen.uxml")]
+        public static class Build
+        {
+            public const string Root = "root";
+            public const string CloseButton = "closeButton";
+            public const string BuildScroll = "buildScroll";
+            public const string BuildShelf = "buildShelf";
+        }
+
+        /// <summary>建物の説明。<c>Assets/UI/Screens/BuildDetail/BuildDetailScreen.uxml</c></summary>
+        [UxmlFile("Assets/UI/Screens/BuildDetail/BuildDetailScreen.uxml")]
+        public static class BuildDetail
+        {
+            public const string Root = "root";
+            public const string BackButton = "backButton";
+            public const string CloseButton = "closeButton";
+            public const string DetailStage = "detailStage";
+            public const string PrevCard = "prevCard";
+            public const string PrevImage = "prevImage";
+            public const string NextCard = "nextCard";
+            public const string NextImage = "nextImage";
+            public const string MainCard = "mainCard";
+            public const string MainImage = "mainImage";
+            public const string MainLock = "mainLock";
+            public const string MainLockLabel = "mainLockLabel";
+            public const string DetailPanel = "detailPanel";
+            public const string DetailName = "detailName";
+            public const string DetailTime = "detailTime";
+            public const string DetailTimeValue = "detailTimeValue";
+            public const string DetailLead = "detailLead";
+            public const string DetailRecipe = "detailRecipe";
+            public const string DetailCosts = "detailCosts";
+            public const string DetailOwned = "detailOwned";
+            public const string BuildButton = "buildButton";
+            public const string BuildButtonLabel = "buildButtonLabel";
+        }
+
+        /// <summary>港。<c>Assets/UI/Screens/Harbor/HarborScreen.uxml</c></summary>
+        [UxmlFile("Assets/UI/Screens/Harbor/HarborScreen.uxml")]
+        public static class Harbor
+        {
+            public const string Root = "root";
+            public const string CloseButton = "closeButton";
+            public const string HarborArt = "harborArt";
+            public const string HarborStage = "harborStage";
+            public const string HarborProgress = "harborProgress";
+            public const string HarborNext = "harborNext";
+            public const string OrderList = "orderList";
+        }
+
+        /// <summary>島の施設。<c>Assets/UI/Screens/Facility/FacilityScreen.uxml</c></summary>
+        [UxmlFile("Assets/UI/Screens/Facility/FacilityScreen.uxml")]
+        public static class Facility
+        {
+            public const string Root = "root";
+            public const string FacilityTitle = "facilityTitle";
+            public const string CloseButton = "closeButton";
+            public const string FacilityImage = "facilityImage";
+            public const string FacilityLevel = "facilityLevel";
+            public const string FacilityStatus = "facilityStatus";
+            public const string FacilityProduce = "facilityProduce";
+            public const string FacilityRecipe = "facilityRecipe";
+            public const string FacilitySpeed = "facilitySpeed";
+            public const string FacilityProgress = "facilityProgress";
+            public const string FacilityModes = "facilityModes";
+            public const string FacilityEffectPanel = "facilityEffectPanel";
+            public const string FacilityEffectIcon = "facilityEffectIcon";
+            public const string FacilityEffect = "facilityEffect";
+            public const string FacilityWorkersPanel = "facilityWorkersPanel";
+            public const string FacilityWorkers = "facilityWorkers";
+            public const string WorkerMinus = "workerMinus";
+            public const string WorkerPlus = "workerPlus";
+            public const string FacilityPearlPanel = "facilityPearlPanel";
+            public const string PearlValue = "pearlValue";
+            public const string PearlAdd = "pearlAdd";
+            public const string FacilityUpgradePanel = "facilityUpgradePanel";
+            public const string FacilityPips = "facilityPips";
+            public const string UpgradeCosts = "upgradeCosts";
+            public const string UpgradeNote = "upgradeNote";
+            public const string UpgradeButton = "upgradeButton";
+            public const string MoveButton = "moveButton";
+            public const string DemolishButton = "demolishButton";
+        }
+
+        /// <summary>生産量。<c>Assets/UI/Screens/Production/ProductionScreen.uxml</c></summary>
+        [UxmlFile("Assets/UI/Screens/Production/ProductionScreen.uxml")]
+        public static class Production
+        {
+            public const string Root = "root";
+            public const string CloseButton = "closeButton";
+            public const string GasValue = "gasValue";
+            public const string GasRate = "gasRate";
+            public const string WorkersValue = "workersValue";
+            public const string WorkersRate = "workersRate";
+            public const string StorageValue = "storageValue";
+            public const string StorageRate = "storageRate";
+            public const string ItemGrid = "itemGrid";
         }
 
         /// <summary>施設のデザイン確認用の画面 (開発用)。<c>Assets/UI/ProductionIslandReview/FacilityReview.uxml</c></summary>

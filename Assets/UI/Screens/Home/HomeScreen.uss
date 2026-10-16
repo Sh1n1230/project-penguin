@@ -52,8 +52,32 @@
     padding: var(--space-2) var(--space-4) 0 var(--space-4);
 }
 
+/* 置き場所を選ぶ間の ✕ / ✓。島が見えるよう画面の下に寄せる */
 .home__banner {
-    align-self: stretch;
+    position: absolute;
+    right: 0;
+    bottom: var(--space-2);
+    left: 0;
+    align-items: center;
+}
+
+.home__banner-costs {
+    margin-bottom: var(--space-2);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface-solid);
+}
+
+/* はじめての案内の間は、後ろの 3D の島だけを見せる */
+.home--onboarding .home__safe {
+    display: none;
+}
+
+/* 置き場所を選ぶ間は、島に集中できるよう吹き出しと道具を隠す */
+.home--placing .home__speech,
+.home--placing .home__tools,
+.home--placing .home__demo {
+    display: none;
 }
 
 .home__tools {

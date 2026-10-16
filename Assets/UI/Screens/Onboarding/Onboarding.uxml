@@ -2,6 +2,11 @@
     <ui:Style src="Onboarding.uss" />
     <ui:VisualElement name="root" class="onboarding">
         <ui:VisualElement class="onboarding__safe pp-safe-area">
+            <!-- 上半分は透かして、後ろの 3D の島 (小屋の氷山とペンギン) を見せる -->
+            <ui:VisualElement class="onboarding__hero" picking-mode="Ignore">
+                <ui:Label text="ペンギンの島" class="pp-title-chip onboarding__logo" />
+            </ui:VisualElement>
+            <ui:VisualElement class="onboarding__card">
             <ui:VisualElement class="onboarding__dots">
                 <ui:VisualElement name="dot0" class="onboarding__dot onboarding__dot--active" />
                 <ui:VisualElement name="dot1" class="onboarding__dot" />
@@ -76,6 +81,7 @@
                 <ui:Button name="onboardingLater" text="あとで撮る" class="pp-btn pp-btn--ghost pp-btn--block onboarding__later pp-hidden" />
             </ui:VisualElement>
             <ui:VisualElement class="pp-safe-area__bottom" picking-mode="Ignore" />
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

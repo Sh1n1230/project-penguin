@@ -27,6 +27,9 @@ namespace ProjectPenguin.Presentation.UI
         [SerializeField] private GameStateSystem _game;
         [SerializeField] private ScreenNavigator _navigator;
         [SerializeField] private IslandSheetPresenter _sheets;
+        [SerializeField] private BuildScreenPresenter _build;
+        [SerializeField] private HarborScreenPresenter _harbor;
+        [SerializeField] private OnboardingPresenter _onboarding;
 
         private VisualElement _home;
         private Label _level;
@@ -38,6 +41,8 @@ namespace ProjectPenguin.Presentation.UI
         private Label _actionLabel;
         private VisualElement _actionIcon;
         private VisualElement _toastLayer;
+        private VisualElement _toolBuild;
+        private Button _demoReset;
         private VisualElement _gainLayer;
         private VisualElement _modal;
         private Label _modalTitle;
@@ -83,6 +88,12 @@ namespace ProjectPenguin.Presentation.UI
             _modalButton = _home.Q<Button>(UiNames.Home.ModalButton);
             _modalCancel = _home.Q<Button>(UiNames.Home.ModalCancel);
             _harborDot = _home.Q(UiNames.Home.HarborDot);
+            _toolBuild = _home.Q(UiNames.Home.ToolBuild);
+            _demoReset = _home.Q<Button>(UiNames.Home.DemoResetButton);
+            if (_demoReset != null && (Application.isEditor || Debug.isDebugBuild))
+            {
+                _demoReset.clicked += ResetForDemo;
+            }
 
             IslandUi.SetVisible(_home.Q(UiNames.Home.IslandBar), true);
             IslandUi.SetVisible(_home.Q(UiNames.Home.Tools), true);
@@ -101,6 +112,11 @@ namespace ProjectPenguin.Presentation.UI
 
         private void OnDisable()
         {
+            if (_demoReset != null)
+            {
+                _demoReset.clicked -= ResetForDemo;
+            }
+
             if (_action != null)
             {
                 _action.clicked -= OnAction;
@@ -261,9 +277,20 @@ namespace ProjectPenguin.Presentation.UI
 
             string key, label, icon;
             Action action;
+            var island = _game.Island;
+            var firstBuild = island.Facilities.Count == 0 && island.CanBuild(FacilityKind.Fishery) == IslandActionResult.Ok;
             if (_game.CanReceivePhotoToday)
             {
                 (key, label, icon, action) = ("photo", "今日のエコ写真を撮る", UiClasses.Icon.Camera, () => _navigator.Show(AppScreen.Scan));
+            }
+            else if (firstBuild && _build != null)
+            {
+                // はじめての人は、写真の次に漁場を建てる。説明の画面へ直接案内する。
+                (key, label, icon, action) = ("build", "漁場を建てて魚をとろう", UiClasses.Icon.Build, () => _build.OpenDetail(FacilityKind.Fishery));
+            }
+            else if (readyOrder && _harbor != null)
+            {
+                (key, label, icon, action) = ("deliver", "港に品物を届ける", UiClasses.Icon.Deliver, () => _harbor.Open());
             }
             else if (selected.Count == 0)
             {
@@ -273,16 +300,15 @@ namespace ProjectPenguin.Presentation.UI
             {
                 (key, label, icon, action) = ("checkin", "夜の振り返りをする", UiClasses.Icon.Flag, () => _navigator.Show(AppScreen.Mission));
             }
-            else if (readyOrder && _sheets != null)
-            {
-                (key, label, icon, action) = ("deliver", "港に品物を届ける", UiClasses.Icon.Deliver, () => _sheets.OpenHarbor());
-            }
             else
             {
                 (key, label, icon, action) = (null, null, null, null);
             }
 
             _nextAction = action;
+
+            // はじめての建てる案内のあいだは、建てるボタンも光らせる。
+            _toolBuild?.EnableInClassList(UiClasses.Tool.Active, key == "build");
             IslandUi.SetVisible(_action, action != null);
             if (key == _nextActionKey)
             {
@@ -293,7 +319,7 @@ namespace ProjectPenguin.Presentation.UI
             if (action != null)
             {
                 _actionLabel.text = label;
-                foreach (var c in new[] { UiClasses.Icon.Camera, UiClasses.Icon.Flag, UiClasses.Icon.Deliver })
+                foreach (var c in new[] { UiClasses.Icon.Camera, UiClasses.Icon.Flag, UiClasses.Icon.Deliver, UiClasses.Icon.Build })
                 {
                     _actionIcon.EnableInClassList(c, c == icon);
                 }
@@ -301,6 +327,15 @@ namespace ProjectPenguin.Presentation.UI
         }
 
         private void OnAction() => _nextAction?.Invoke();
+
+        /// <summary>デモ用: すべて消して、はじめての案内から見せ直す (イベントで何度も最初から見せるため)。</summary>
+        private void ResetForDemo()
+        {
+            _game.ResetAll();
+            _nextActionKey = null;
+            _navigator.Show(AppScreen.Home);
+            _onboarding?.ShowIfNeeded();
+        }
 
         private void Bump(VisualElement box)
         {
