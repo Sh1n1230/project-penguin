@@ -11,7 +11,15 @@
 .home__header {
     flex-direction: row;
     justify-content: flex-end;
+    align-items: center;
     padding: var(--space-3) var(--space-4) 0 var(--space-4);
+}
+
+/* 生産の島のレベルと資源。左に寄せ、設定ボタンは右端のまま */
+.home__island-bar {
+    flex-shrink: 1;
+    margin-right: auto;
+    transition-duration: var(--duration-fast);
 }
 
 .home__stats {
@@ -29,13 +37,68 @@
     margin-right: 0;
 }
 
+.home__stat-note {
+    margin-top: 2px;
+}
+
+.home__stat-note--danger {
+    color: var(--color-danger);
+    -unity-font-definition: var(--font-bold);
+}
+
 /* 3D ワールドが見える領域。タッチはワールド側へ透過させる */
 .home__world {
     flex-grow: 1;
+    padding: var(--space-2) var(--space-4) 0 var(--space-4);
+}
+
+.home__banner {
+    align-self: stretch;
+}
+
+.home__tools {
+    position: absolute;
+    right: var(--space-4);
+    bottom: var(--space-2);
 }
 
 .home__speech {
     margin: 0 var(--space-8) var(--space-4) var(--space-4);
+}
+
+.home__speech-action {
+    flex-direction: row;
+    align-items: center;
+    margin-top: var(--space-2);
+}
+
+.home__speech-action-icon {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+    margin-right: var(--space-1);
+}
+
+.home__speech-action-label {
+    color: var(--color-primary);
+    font-size: var(--font-size-caption);
+    -unity-font-definition: var(--font-bold);
+}
+
+.home__gain-layer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.home__modal-body {
+    align-self: stretch;
+    margin-bottom: var(--space-3);
+}
+
+.home__modal-cancel {
+    margin-top: var(--space-2);
 }
 
 /* デモ用の操作。既定は隠し、開発ビルドだけ HomeStatusPresenter が表示する */
@@ -52,9 +115,30 @@
 }
 
 .home__demo-badge {
-    margin-right: var(--space-2);
+    margin: 0 var(--space-2) var(--space-1) 0;
 }
 
 .home__demo-button {
-    margin-right: var(--space-2);
+    margin: 0 var(--space-2) var(--space-1) 0;
+}
+
+.home__island-bar:active {
+    scale: 0.97 0.97;
+}
+
+/* 資源の集め方のシート */
+.island-guide__lead {
+    white-space: normal;
+    margin-bottom: var(--space-2);
+}
+
+.island-guide__today {
+    margin-top: 2px;
+    color: var(--color-primary);
+}
+
+.island-guide__amount {
+    flex-shrink: 0;
+    white-space: nowrap;
+    margin-left: var(--space-2);
 }

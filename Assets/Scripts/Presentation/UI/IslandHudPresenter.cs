@@ -1,0 +1,423 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using ProjectPenguin.Domain.Game;
+using ProjectPenguin.Domain.Island;
+using ProjectPenguin.Systems;
+using UnityEngine;
+using UnityEngine.UIElements;
+
+namespace ProjectPenguin.Presentation.UI
+{
+    /// <summary>
+    /// ホームの島の部分 (レベルと資源の帯・支えられる土地・道具ボタン) と、吹き出しの中の「次にやること」、
+    /// 一時的な知らせ (トースト)、受け取った資源の演出、留守の間の報告を受け持つ。
+    /// 島の部分は UXML では隠してあり、このコンポーネントがあるシーン (生産の島) でだけ出す。
+    /// 氷と今週の記録のカードは <see cref="HomeStatusPresenter"/> が受け持つ。
+    /// </summary>
+    [RequireComponent(typeof(UIDocument))]
+    public sealed class IslandHudPresenter : MonoBehaviour
+    {
+        private const float ToastSeconds = 2.6f;
+
+        /// <summary>夜の振り返りを始める時刻 (JST、docs/game-logic.md §3)。</summary>
+        private const int EveningHour = 18;
+
+        [SerializeField] private GameStateSystem _game;
+        [SerializeField] private ScreenNavigator _navigator;
+        [SerializeField] private IslandSheetPresenter _sheets;
+
+        private VisualElement _home;
+        private Label _level;
+        private readonly Dictionary<Resource, (VisualElement Box, Label Value)> _resources = new Dictionary<Resource, (VisualElement, Label)>();
+        private VisualElement _fishBox;
+        private Label _fishValue;
+        private Label _land;
+        private Button _action;
+        private Label _actionLabel;
+        private VisualElement _actionIcon;
+        private VisualElement _toastLayer;
+        private VisualElement _gainLayer;
+        private VisualElement _modal;
+        private Label _modalTitle;
+        private Label _modalText;
+        private VisualElement _modalBody;
+        private Button _modalButton;
+        private Button _modalCancel;
+        private Action _modalAction;
+        private VisualElement _harborDot;
+
+        private readonly Dictionary<Resource, double> _shown = new Dictionary<Resource, double>();
+        private long _shownFish = -1;
+        private Action _nextAction;
+        private string _nextActionKey;
+
+        private void OnEnable()
+        {
+            if (_game == null || _navigator == null)
+            {
+                Debug.LogError($"{nameof(IslandHudPresenter)}: 参照が未設定です。", this);
+                enabled = false;
+                return;
+            }
+
+            _home = GetComponent<UIDocument>().rootVisualElement.Q(ScreenNavigator.ElementNameOf(AppScreen.Home));
+            _level = _home.Q<Label>(UiNames.Home.LevelValue);
+            Bind(Resource.Electricity, UiNames.Home.ResElectricity, UiNames.Home.ResElectricityValue);
+            Bind(Resource.Water, UiNames.Home.ResWater, UiNames.Home.ResWaterValue);
+            Bind(Resource.Gas, UiNames.Home.ResGas, UiNames.Home.ResGasValue);
+            Bind(Resource.AllMighty, UiNames.Home.ResAllMighty, UiNames.Home.ResAllMightyValue);
+            _fishBox = _home.Q(UiNames.Home.ResFish);
+            _fishValue = _home.Q<Label>(UiNames.Home.ResFishValue);
+            _land = _home.Q<Label>(UiNames.Home.LandValue);
+            _action = _home.Q<Button>(UiNames.Home.NextActionButton);
+            _actionLabel = _home.Q<Label>(UiNames.Home.NextActionLabel);
+            _actionIcon = _home.Q(UiNames.Home.NextActionIcon);
+            _toastLayer = _home.Q(UiNames.Home.ToastLayer);
+            _gainLayer = _home.Q(UiNames.Home.GainLayer);
+            _modal = _home.Q(UiNames.Home.Modal);
+            _modalTitle = _home.Q<Label>(UiNames.Home.ModalTitle);
+            _modalText = _home.Q<Label>(UiNames.Home.ModalText);
+            _modalBody = _home.Q(UiNames.Home.ModalBody);
+            _modalButton = _home.Q<Button>(UiNames.Home.ModalButton);
+            _modalCancel = _home.Q<Button>(UiNames.Home.ModalCancel);
+            _harborDot = _home.Q(UiNames.Home.HarborDot);
+
+            IslandUi.SetVisible(_home.Q(UiNames.Home.IslandBar), true);
+            IslandUi.SetVisible(_home.Q(UiNames.Home.Tools), true);
+            IslandUi.SetVisible(_land, true);
+            _home.Query(className: UiClasses.Home.DemoIsland).ForEach(e => IslandUi.SetVisible(e, true));
+
+            _action.clicked += OnAction;
+            _modalButton.clicked += CloseModal;
+            _modalCancel.clicked += CancelModal;
+            _game.IslandChanged += Refresh;
+            _game.Changed += OnGameChanged;
+            _game.ResourcesReceived += OnResourcesReceived;
+            _game.IslandEvents += OnIslandEvents;
+            Refresh();
+        }
+
+        private void OnDisable()
+        {
+            if (_action != null)
+            {
+                _action.clicked -= OnAction;
+                _modalButton.clicked -= CloseModal;
+                _modalCancel.clicked -= CancelModal;
+            }
+
+            if (_game != null)
+            {
+                _game.IslandChanged -= Refresh;
+                _game.Changed -= OnGameChanged;
+                _game.ResourcesReceived -= OnResourcesReceived;
+                _game.IslandEvents -= OnIslandEvents;
+            }
+        }
+
+        private void Bind(Resource r, string box, string value)
+        {
+            _resources[r] = (_home.Q(box), _home.Q<Label>(value));
+        }
+
+        // ------------------------------------------------------------------
+        // 公開: ほかの画面からの知らせ
+        // ------------------------------------------------------------------
+
+        /// <summary>画面の上の方に短い知らせを出す。</summary>
+        public void ShowToast(string message)
+        {
+            if (string.IsNullOrEmpty(message) || _toastLayer == null)
+            {
+                return;
+            }
+
+            // 同じ知らせが表示中なら重ねない。
+            if (_toastLayer.Children().OfType<Label>().Any(l => l.text == message))
+            {
+                return;
+            }
+
+            var toast = IslandUi.Text(message, UiClasses.Toast.Root, UiClasses.Toast.Hidden);
+            _toastLayer.Add(toast);
+            while (_toastLayer.childCount > 3)
+            {
+                _toastLayer.RemoveAt(0);
+            }
+
+            StartCoroutine(ToastRoutine(toast));
+        }
+
+        /// <summary>
+        /// 真ん中に知らせを出す。ボタンを押すと閉じて <paramref name="onClose"/> を呼ぶ。
+        /// <paramref name="cancellable"/> なら「やめる」も出し、押したときは何も呼ばずに閉じる。
+        /// </summary>
+        public void ShowModal(string title, string text, VisualElement body, string button, Action onClose = null, bool cancellable = false)
+        {
+            IslandUi.SetVisible(_modalCancel, cancellable);
+            _modalTitle.text = title;
+            _modalText.text = text;
+            IslandUi.SetVisible(_modalText, !string.IsNullOrEmpty(text));
+            _modalBody.Clear();
+            if (body != null)
+            {
+                _modalBody.Add(body);
+            }
+
+            _modalButton.text = button;
+            _modalAction = onClose;
+            IslandUi.SetVisible(_modal, true);
+        }
+
+        private void CloseModal()
+        {
+            IslandUi.SetVisible(_modal, false);
+            var a = _modalAction;
+            _modalAction = null;
+            a?.Invoke();
+        }
+
+        private void CancelModal()
+        {
+            _modalAction = null;
+            IslandUi.SetVisible(_modal, false);
+        }
+
+        private IEnumerator ToastRoutine(Label toast)
+        {
+            yield return null;
+            toast.RemoveFromClassList(UiClasses.Toast.Hidden);
+            yield return new WaitForSecondsRealtime(ToastSeconds);
+            toast.AddToClassList(UiClasses.Toast.Hidden);
+            yield return new WaitForSecondsRealtime(0.3f);
+            toast.RemoveFromHierarchy();
+        }
+
+        // ------------------------------------------------------------------
+        // 表示
+        // ------------------------------------------------------------------
+
+        private void OnGameChanged(GameStateChange change)
+        {
+            Refresh();
+            ShowOfflineReport();
+        }
+
+        private void Refresh()
+        {
+            if (_home == null)
+            {
+                return;
+            }
+
+            var island = _game.Island;
+            _level.text = island.Level.ToString();
+            foreach (var kv in _resources)
+            {
+                var v = island.Get(kv.Key);
+                kv.Value.Value.text = IslandUi.Number(v);
+                kv.Value.Box.EnableInClassList(UiClasses.Resource.Empty, kv.Key == Resource.Gas && v + island.Get(Resource.AllMighty) < 1 && island.GasPerHour > 0);
+                if (_shown.TryGetValue(kv.Key, out var before) && v > before + 0.5)
+                {
+                    Bump(kv.Value.Box);
+                }
+
+                _shown[kv.Key] = v;
+            }
+
+            var fish = island.Fish;
+            _fishValue.text = IslandUi.Number(fish);
+            if (_shownFish >= 0 && fish >= _shownFish + 10)
+            {
+                Bump(_fishBox);
+            }
+
+            if (_shownFish < 0 || fish >= _shownFish + 10 || fish < _shownFish)
+            {
+                _shownFish = fish;
+            }
+
+            var board = island.Board;
+            var sunk = board.SunkCount(island.Ice);
+            _land.text = sunk > 0 ? $"島の端が {sunk} マス沈んでいる" : $"支えられる土地 {board.Expansions.Count} / {board.Capacity(island.Ice)}";
+            _land.EnableInClassList(UiClasses.Home.StatNoteDanger, sunk > 0);
+
+            var readyOrder = Enumerable.Range(0, island.Orders.Count)
+                .Any(i => island.IsOrderReady(i) && island.StockOf(island.Orders[i].Item) >= island.Orders[i].Count);
+            IslandUi.SetVisible(_harborDot, readyOrder);
+
+            RefreshNextAction(readyOrder);
+        }
+
+        private void RefreshNextAction(bool readyOrder)
+        {
+            var session = _game.Session;
+            var today = session.Today;
+            var selected = session.SelectedOn(today);
+            var hour = _game.Now.ToOffset(TimeSpan.FromHours(9)).Hour;
+            var evening = hour >= EveningHour || hour < 3;
+
+            string key, label, icon;
+            Action action;
+            if (_game.CanReceivePhotoToday)
+            {
+                (key, label, icon, action) = ("photo", "今日のエコ写真を撮る", UiClasses.Icon.Camera, () => _navigator.Show(AppScreen.Scan));
+            }
+            else if (selected.Count == 0)
+            {
+                (key, label, icon, action) = ("select", "今日のミッションを選ぶ", UiClasses.Icon.Flag, () => _navigator.Show(AppScreen.Mission));
+            }
+            else if (evening && selected.Any(id => !session.IsCheckedIn(today, id)))
+            {
+                (key, label, icon, action) = ("checkin", "夜の振り返りをする", UiClasses.Icon.Flag, () => _navigator.Show(AppScreen.Mission));
+            }
+            else if (readyOrder && _sheets != null)
+            {
+                (key, label, icon, action) = ("deliver", "港に品物を届ける", UiClasses.Icon.Deliver, () => _sheets.OpenHarbor());
+            }
+            else
+            {
+                (key, label, icon, action) = (null, null, null, null);
+            }
+
+            _nextAction = action;
+            IslandUi.SetVisible(_action, action != null);
+            if (key == _nextActionKey)
+            {
+                return;
+            }
+
+            _nextActionKey = key;
+            if (action != null)
+            {
+                _actionLabel.text = label;
+                foreach (var c in new[] { UiClasses.Icon.Camera, UiClasses.Icon.Flag, UiClasses.Icon.Deliver })
+                {
+                    _actionIcon.EnableInClassList(c, c == icon);
+                }
+            }
+        }
+
+        private void OnAction() => _nextAction?.Invoke();
+
+        private void Bump(VisualElement box)
+        {
+            box.AddToClassList(UiClasses.Resource.Bump);
+            box.schedule.Execute(() => box.RemoveFromClassList(UiClasses.Resource.Bump)).StartingIn(180);
+        }
+
+        private void OnResourcesReceived(ResourceBundle bundle, string source)
+        {
+            var i = 0;
+            foreach (var kv in bundle.NonZero())
+            {
+                SpawnGain(kv.Key, kv.Value, i++);
+            }
+        }
+
+        private void SpawnGain(Resource r, double amount, int index)
+        {
+            if (_gainLayer == null || !_resources.TryGetValue(r, out var target))
+            {
+                return;
+            }
+
+            var gain = new VisualElement { pickingMode = PickingMode.Ignore };
+            gain.AddToClassList(UiClasses.Gain.Root);
+            gain.Add(IslandUi.Icon(IslandUi.IconClass(r), IslandUi.TintClass(r)));
+            gain.Add(IslandUi.Text("+" + IslandUi.Number(amount), UiClasses.Gain.Value));
+            _gainLayer.Add(gain);
+
+            // 資源の表示の少し下から浮かび上がらせる。
+            var anchor = target.Box.worldBound;
+            var origin = _gainLayer.WorldToLocal(new Vector2(anchor.xMin, anchor.yMax));
+            gain.style.left = origin.x;
+            gain.style.top = origin.y + 240 + index * 90;
+            gain.schedule.Execute(() => gain.AddToClassList(UiClasses.Gain.Gone)).StartingIn(60 + index * 120);
+            gain.schedule.Execute(gain.RemoveFromHierarchy).StartingIn(1500 + index * 120);
+        }
+
+        private void OnIslandEvents(IReadOnlyList<IslandEvent> events)
+        {
+            // 同じ種類の出来事は 1 回の知らせにまとめる (沈んだマスが 4 つでも知らせは 1 つ)。
+            var sunk = events.Count(e => e.Kind == IslandEventKind.Sunk);
+            var surfaced = events.Count(e => e.Kind == IslandEventKind.Surfaced);
+            if (sunk > 0)
+            {
+                ShowToast($"氷が溶けて、島の端が {sunk} マス沈んじゃった…記録すると戻るよ");
+            }
+
+            if (surfaced > 0)
+            {
+                ShowToast($"氷が戻って、沈んでいた土地が {surfaced} マス浮かんだよ！");
+            }
+
+            if (events.Any(e => e.Kind == IslandEventKind.OrderArrived))
+            {
+                ShowToast("港に舟が着いたよ");
+            }
+
+            foreach (var e in events)
+            {
+                switch (e.Kind)
+                {
+                    case IslandEventKind.LevelUp:
+                        ShowLevelUp(e.Value);
+                        break;
+                    case IslandEventKind.HarborStageUp:
+                        ShowToast(e.Value >= 5 ? "港が完成！おでん祭りだ！" : "港が少し立派になったよ");
+                        break;
+                }
+            }
+        }
+
+        private void ShowLevelUp(int level)
+        {
+            var unlocked = IslandCatalog.Facilities.Where(f => f.UnlockLevel == level).Select(f => f.Name).ToList();
+            var text = unlocked.Count > 0 ? $"{string.Join("・", unlocked)} が建てられるようになったよ" : "島を広げられる数が増えたよ";
+            ShowModal($"レベル {level}！", text, null, "やったね");
+        }
+
+        private void ShowOfflineReport()
+        {
+            var report = _game.TakeOfflineReport();
+            if (report == null || report.Seconds < 60)
+            {
+                return;
+            }
+
+            var list = new VisualElement();
+            foreach (var item in IslandCatalog.Items)
+            {
+                if (report[item] > 0)
+                {
+                    list.Add(IslandUi.Row(IslandUi.IconBadge(IslandUi.IconClass(item), UiClasses.Tint.Fish), IslandCatalog.NameOf(item),
+                        null, IslandUi.Text("+" + IslandUi.Number(report[item]), UiClasses.Text.Label, UiClasses.Text.Heavy)));
+                }
+            }
+
+            if (report.Pearls > 0)
+            {
+                list.Add(IslandUi.Row(IslandUi.IconBadge(UiClasses.Icon.Pearl, UiClasses.Tint.Pearl), "真珠", null,
+                    IslandUi.Text("+" + report.Pearls, UiClasses.Text.Label, UiClasses.Text.Heavy)));
+            }
+
+            if (report.Delivered > 0)
+            {
+                list.Add(IslandUi.Row(IslandUi.IconBadge(UiClasses.Icon.Deliver, UiClasses.Tint.Point), "港への納品", null,
+                    IslandUi.Text(report.Delivered + " 回", UiClasses.Text.Label, UiClasses.Text.Heavy)));
+            }
+
+            if (list.childCount == 0)
+            {
+                return;
+            }
+
+            var hours = report.Seconds / 3600.0;
+            var span = hours >= 1 ? $"{Math.Floor(hours)} 時間" : $"{Math.Max(1, Math.Floor(report.Seconds / 60))} 分";
+            ShowModal("おかえり！", $"留守の {span}の間に、みんなが働いてくれたよ", list, "受け取る");
+        }
+    }
+}

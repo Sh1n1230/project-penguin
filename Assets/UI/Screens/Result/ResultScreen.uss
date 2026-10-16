@@ -59,5 +59,14 @@
 }
 
 .result__footer {
+    flex-shrink: 0;
     padding: var(--space-3) var(--space-4) var(--space-4) var(--space-4);
+}
+
+.result__speech {
+    margin: var(--space-3) var(--space-6) 0 0;
+}
+
+.result__tip {
+    white-space: normal;
 }

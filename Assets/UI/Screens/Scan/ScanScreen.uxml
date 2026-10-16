@@ -12,7 +12,7 @@
                 </ui:Button>
             </ui:VisualElement>
 
-            <ui:Label text="レシートを枠に合わせてください" class="scan__guide pp-text-label pp-text-bold pp-text-inverse pp-text-center" />
+            <ui:Label name="scanGuide" text="今日のエコな行動を撮ってね&#10;マイボトル・消した電気・食べきったお皿…なんでもOK" class="scan__guide pp-text-label pp-text-bold pp-text-inverse pp-text-center" />
 
             <ui:VisualElement name="scanFrame" class="pp-scan-frame scan__frame" picking-mode="Ignore">
                 <ui:VisualElement class="pp-scan-frame__corner pp-scan-frame__corner--top-left" picking-mode="Ignore" />

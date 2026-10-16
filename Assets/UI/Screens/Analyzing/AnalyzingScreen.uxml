@@ -11,10 +11,10 @@
             <ui:VisualElement class="analyzing__body">
                 <ui:VisualElement class="pp-card pp-elevated analyzing__receipt">
                     <ui:VisualElement class="pp-icon-badge">
-                        <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--receipt pp-icon--primary" />
+                        <ui:VisualElement class="pp-icon pp-icon--lg pp-icon--camera pp-icon--primary" />
                     </ui:VisualElement>
                     <ui:Label text="解析中…" class="pp-badge analyzing__badge" />
-                    <ui:Label text="レシート画像を解析しています" class="pp-text-sub pp-text-center analyzing__caption" />
+                    <ui:Label name="analyzingCaption" text="写真を見ています" class="pp-text-sub pp-text-center analyzing__caption" />
                 </ui:VisualElement>
 
                 <ui:VisualElement name="steps" class="pp-card pp-elevated analyzing__steps">
@@ -22,21 +22,21 @@
                         <ui:VisualElement class="pp-step__index">
                             <ui:Label text="1" class="pp-step__number" />
                         </ui:VisualElement>
-                        <ui:Label text="文字を読み取り中" class="pp-step__label" />
+                        <ui:Label text="写真を受け取り中" class="pp-step__label" />
                         <ui:VisualElement class="pp-step__check pp-icon pp-icon--check pp-icon--eco" />
                     </ui:VisualElement>
                     <ui:VisualElement name="stepClassify" class="pp-step">
                         <ui:VisualElement class="pp-step__index">
                             <ui:Label text="2" class="pp-step__number" />
                         </ui:VisualElement>
-                        <ui:Label text="商品を分類中" class="pp-step__label" />
+                        <ui:Label text="エコ活動を見分け中" class="pp-step__label" />
                         <ui:VisualElement class="pp-step__check pp-icon pp-icon--check pp-icon--eco" />
                     </ui:VisualElement>
                     <ui:VisualElement name="stepCalculate" class="pp-step">
                         <ui:VisualElement class="pp-step__index">
                             <ui:Label text="3" class="pp-step__number" />
                         </ui:VisualElement>
-                        <ui:Label text="CO₂を計算中" class="pp-step__label" />
+                        <ui:Label text="島の資源に変えています" class="pp-step__label" />
                         <ui:VisualElement class="pp-step__check pp-icon pp-icon--check pp-icon--eco" />
                     </ui:VisualElement>
                 </ui:VisualElement>

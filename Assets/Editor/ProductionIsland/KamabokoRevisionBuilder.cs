@@ -76,7 +76,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
                 _report.samples.Add(new Sample { stage = _cycle.Stage.ToString(), image = image, frame = Time.frameCount, time = _cycle.CycleTime,
                     fishVisible = _fish.gameObject.activeSelf, productVisible = _product.gameObject.activeSelf, steamVisible = _steam.Any(t => t.gameObject.activeSelf),
                     fish = _fish.position, product = _product.position, lid = _lid.position,
-                    worker = _worker.transform.position, workerActivity = _worker.Activity,
+                    worker = _worker.transform.position, workerActivity = PenguinAnimatorStates.NameOf(_worker.Activity),
                     handToItem = Vector3.Distance(_worker.CarrySocket.position, _captureIndex == 0 ? _fish.position : _product.position) });
                 _captureIndex++;
                 return;
@@ -102,9 +102,9 @@ namespace ProjectPenguin.Editor.ProductionIsland
                 && _report.samples.Skip(3).All(s => s.productVisible) && _report.samples.Count(s => s.steamVisible) == 1 && _report.samples[2].steamVisible;
             _report.worldMotionInBounds = _report.samples.All(s => s.lid.y > .65f && s.lid.y < 1.12f && s.fish.y > .4f && s.fish.y < .9f && Mathf.Abs(s.product.x) < .8f && Mathf.Abs(s.product.z) < .8f)
                 && Vector3.Distance(_report.samples[5].product, new Vector3(.65f, .55f, -.4f)) < .01f;
-            _report.workerInvolved = _report.samples[0].workerActivity == "CarryWalk" && _report.samples[0].handToItem < .08f
-                && _report.samples[1].workerActivity == "WorkLoop" && _report.samples[2].workerActivity == "Idle"
-                && _report.samples[3].workerActivity == "WorkLoop" && _report.samples[4].workerActivity == "CarryWalk" && _report.samples[4].handToItem < .08f;
+            _report.workerInvolved = _report.samples[0].workerActivity == nameof(PenguinActivity.CarryWalk) && _report.samples[0].handToItem < .08f
+                && _report.samples[1].workerActivity == nameof(PenguinActivity.WorkLoop) && _report.samples[2].workerActivity == nameof(PenguinActivity.Idle)
+                && _report.samples[3].workerActivity == nameof(PenguinActivity.WorkLoop) && _report.samples[4].workerActivity == nameof(PenguinActivity.CarryWalk) && _report.samples[4].handToItem < .08f;
             SaveReport();
         }
 
@@ -130,7 +130,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
             var mat = AssetDatabase.LoadAssetAtPath<Material>(Folder + "/Running.mat");
             if (mat == null) { mat = new Material(shader); AssetDatabase.CreateAsset(mat, Folder + "/Running.mat"); }
             mat.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(FacilityRevisionBuilder.SharedFolder + "/ProductionIsland_ColorAtlas_v002.png"));
-            mat.SetColor("_BaseColor", Color.white); mat.SetFloat("_Smoothness", .12f); EditorUtility.SetDirty(mat);
+            mat.SetColor(ShaderIds.BaseColor, Color.white); mat.SetFloat(ShaderIds.Smoothness, .12f); EditorUtility.SetDirty(mat);
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
             try
             {
@@ -195,7 +195,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
             var path = Folder + "/" + name + ".mat";
             var material = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (material == null) { material = new Material(Shader.Find("Universal Render Pipeline/Lit")); AssetDatabase.CreateAsset(material, path); }
-            material.SetColor("_BaseColor", color); material.SetFloat("_Smoothness", .1f); EditorUtility.SetDirty(material);
+            material.SetColor(ShaderIds.BaseColor, color); material.SetFloat(ShaderIds.Smoothness, .1f); EditorUtility.SetDirty(material);
             return material;
         }
 

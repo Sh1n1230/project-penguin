@@ -4,7 +4,6 @@ namespace ProjectPenguin.Presentation.World
 {
     public sealed class ProductionIslandPenguinView : MonoBehaviour
     {
-        public enum Activity { CarryWalk, WorkLoop, Idle, Cheer }
         [SerializeField] private Animator _animator;
         [SerializeField] private GameObject _carriedItem;
 
@@ -14,16 +13,16 @@ namespace ProjectPenguin.Presentation.World
             _carriedItem = carriedItem;
         }
 
-        public void SetActivity(Activity activity)
+        public void SetActivity(PenguinActivity activity)
         {
-            if (_animator != null) _animator.Play(activity.ToString(), 0, 0f);
-            if (_carriedItem != null) _carriedItem.SetActive(activity == Activity.CarryWalk);
+            if (_animator != null) _animator.Play(PenguinAnimatorStates.HashOf(activity), 0, 0f);
+            if (_carriedItem != null) _carriedItem.SetActive(activity == PenguinActivity.CarryWalk);
         }
 
         private void Update()
         {
             if (_animator == null || _carriedItem == null) return;
-            var carrying = _animator.GetCurrentAnimatorStateInfo(0).IsName("CarryWalk");
+            var carrying = PenguinAnimatorStates.IsIn(_animator, PenguinActivity.CarryWalk);
             if (_carriedItem.activeSelf != carrying) _carriedItem.SetActive(carrying);
         }
     }

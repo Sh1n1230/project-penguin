@@ -215,7 +215,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
             var material = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (material == null) { material = new Material(shader); AssetDatabase.CreateAsset(material, path); }
             material.shader = shader;
-            material.SetColor("_BaseColor", color);
+            material.SetColor(ShaderIds.BaseColor, color);
             EditorUtility.SetDirty(material);
             return material;
         }
@@ -241,7 +241,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
             var names = new[] { "Fish", "Surimi", "Salt", "Kelp", "Kamaboko", "Chikuwa", "DriedFish", "Oden" };
             for (var i = 0; i < names.Length; i++)
             {
-                var mat = new Material(particle); mat.SetColor("_BaseColor", colors[i]);
+                var mat = new Material(particle); mat.SetColor(ShaderIds.BaseColor, colors[i]);
                 SaveAsset(mat, Pack + "/Materials/FlowParticle_" + names[i] + ".mat");
             }
             for (var state = 0; state < States.Length; state++)
@@ -341,10 +341,10 @@ namespace ProjectPenguin.Editor.ProductionIsland
             importer.importAnimation = true;
             var clips = new[]
             {
-                new ModelImporterClipAnimation { name = "CarryWalk", firstFrame = 0, lastFrame = 48, loopTime = true, loopPose = true },
-                new ModelImporterClipAnimation { name = "WorkLoop", firstFrame = 60, lastFrame = 108, loopTime = true, loopPose = true },
-                new ModelImporterClipAnimation { name = "Idle", firstFrame = 120, lastFrame = 192, loopTime = true, loopPose = true },
-                new ModelImporterClipAnimation { name = "Cheer", firstFrame = 204, lastFrame = 252, loopTime = false }
+                new ModelImporterClipAnimation { name = PenguinAnimatorStates.NameOf(PenguinActivity.CarryWalk), firstFrame = 0, lastFrame = 48, loopTime = true, loopPose = true },
+                new ModelImporterClipAnimation { name = PenguinAnimatorStates.NameOf(PenguinActivity.WorkLoop), firstFrame = 60, lastFrame = 108, loopTime = true, loopPose = true },
+                new ModelImporterClipAnimation { name = PenguinAnimatorStates.NameOf(PenguinActivity.Idle), firstFrame = 120, lastFrame = 192, loopTime = true, loopPose = true },
+                new ModelImporterClipAnimation { name = PenguinAnimatorStates.NameOf(PenguinActivity.Cheer), firstFrame = 204, lastFrame = 252, loopTime = false }
             };
             importer.clipAnimations = clips; importer.SaveAndReimport();
             var animations = AssetDatabase.LoadAllAssetsAtPath(fbx).OfType<AnimationClip>().Where(c => !c.name.StartsWith("__preview__", StringComparison.Ordinal)).ToArray();
@@ -354,7 +354,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
             if (controller == null) controller = AnimatorController.CreateAnimatorControllerAtPath(path);
             var machine = controller.layers[0].stateMachine;
             foreach (var child in machine.states) machine.RemoveState(child.state);
-            foreach (var clip in animations) { var state = machine.AddState(clip.name); state.motion = clip; if (clip.name.Contains("Idle")) machine.defaultState = state; }
+            foreach (var clip in animations) { var state = machine.AddState(clip.name); state.motion = clip; if (clip.name.Contains(PenguinAnimatorStates.NameOf(PenguinActivity.Idle))) machine.defaultState = state; }
             var go = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(fbx));
             go.name = "Penguin_Production_v001";
             var animator = go.GetComponent<Animator>();

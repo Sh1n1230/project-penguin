@@ -121,7 +121,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
                 if (parts.Length > 0 && phase > 0) Add("RESUME:" + go.name, changes.Max() > .00001f, "maxIndividualTransformDelta=" + changes.Max());
                 if (go.name.Contains("Chikuwa"))
                 {
-                    motion.SetHighHeat(false); var low = parts.Where(p => p.name.StartsWith("FlameLow")).ToArray(); var high = parts.Where(p => p.name.StartsWith("FlameHigh")).ToArray();
+                    motion.SetHighHeat(false); var low = parts.Where(p => p.name.StartsWith(ModelParts.FlameLow)).ToArray(); var high = parts.Where(p => p.name.StartsWith(ModelParts.FlameHigh)).ToArray();
                     var lowPass = low.Length > 0 && high.Length > 0 && low.All(p => p.gameObject.activeSelf) && high.All(p => !p.gameObject.activeSelf);
                     motion.SetHighHeat(true); Add("FLAME", lowPass && low.All(p => !p.gameObject.activeSelf) && high.All(p => p.gameObject.activeSelf), "lowParts=" + low.Length + "; highParts=" + high.Length);
                 }
@@ -133,7 +133,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
             var slow = Mathf.Repeat(beads[0].position.x - initial.x,4f);
             link.SetFlow(Color.cyan, 3); initial = beads[0].position; tlink = Tick(link, 20); while (tlink.MoveNext()) yield return null;
             var fast = Mathf.Repeat(beads[0].position.x - initial.x,4f); var block = new MaterialPropertyBlock(); beads[0].GetComponent<Renderer>().GetPropertyBlock(block);
-            Add("LINK_FLOW", slow > 0 && fast > slow && beads.Count(b => b.gameObject.activeSelf) == 6 && block.GetColor("_BaseColor") == Color.cyan, "xDelta@1=" + slow + "; xDelta@3=" + fast + "; count=" + beads.Count(b => b.gameObject.activeSelf) + "; tint=" + block.GetColor("_BaseColor"));
+            Add("LINK_FLOW", slow > 0 && fast > slow && beads.Count(b => b.gameObject.activeSelf) == 6 && block.GetColor(ShaderIds.BaseColor) == Color.cyan, "xDelta@1=" + slow + "; xDelta@3=" + fast + "; count=" + beads.Count(b => b.gameObject.activeSelf) + "; tint=" + block.GetColor(ShaderIds.BaseColor));
             var arrow = Field<Transform>(link, "_arrow"); Add("LINK_DIRECTION", Vector3.Distance(arrow.position, Vector3.right * 4) < .0001f && Vector3.Dot(-arrow.forward, Vector3.right) > .999f, "end=" + arrow.position + "; directionDot=" + Vector3.Dot(-arrow.forward, Vector3.right));
             foreach(var rate in new[] { .5f, 2f, 10f, 0f, -1f })
             {
@@ -151,14 +151,14 @@ namespace ProjectPenguin.Editor.ProductionIsland
             link.SetFlow(Color.white, 0); initial = beads[0].position; tlink = Tick(link, 6); while (tlink.MoveNext()) yield return null;
             Add("LINK_ZERO", beads.All(b => !b.gameObject.activeSelf) && beads[0].position == initial, "Zero flow hides all beads and preserves position."); UnityEngine.Object.DestroyImmediate(linkGo);
             var penguin = Spawn("Assets/3Dmodel/Penguin_Production_v001/Penguin_Production_v001.prefab"); var view = penguin.GetComponent<ProductionIslandPenguinView>(); var animator = Field<Animator>(view, "_animator"); var item = Field<GameObject>(view, "_carriedItem"); animator.cullingMode = AnimatorCullingMode.AlwaysAnimate; animator.Rebind(); if (!_play) animator.Update(0); yield return null;
-            foreach (ProductionIslandPenguinView.Activity activity in Enum.GetValues(typeof(ProductionIslandPenguinView.Activity)))
+            foreach (PenguinActivity activity in Enum.GetValues(typeof(PenguinActivity)))
             {
                 view.SetActivity(activity); if (!_play) animator.Update(.05f); yield return null; Call(view, "Update"); var samples = new List<float> { Pose(penguin) };
                 var animationGuard=0; while(animator.GetCurrentAnimatorStateInfo(0).normalizedTime<1.05f && animationGuard++<300) { if (!_play) animator.Update(.05f); Call(view, "Update"); samples.Add(Pose(penguin)); yield return null; }
-                Add("ANIMATOR:" + activity, animator.GetCurrentAnimatorStateInfo(0).IsName(activity.ToString()) && animator.GetCurrentAnimatorStateInfo(0).normalizedTime>=1 && samples.Max()-samples.Min() > .0001f && item.activeSelf == (activity == ProductionIslandPenguinView.Activity.CarryWalk), "samples="+samples.Count+"; frame=" + Time.frameCount + "; unityTime=" + Time.time + "; poseRange=" + (samples.Max()-samples.Min()) + "; carry=" + item.activeSelf + "; normalized=" + animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
-                if(activity==ProductionIslandPenguinView.Activity.Cheer) { view.SetActivity(activity); if(!_play) animator.Update(.05f); yield return null; Add("CHEER_RESTART",animator.GetCurrentAnimatorStateInfo(0).normalizedTime<.5f,"normalized="+animator.GetCurrentAnimatorStateInfo(0).normalizedTime); }
+                Add("ANIMATOR:" + activity, animator.GetCurrentAnimatorStateInfo(0).IsName(PenguinAnimatorStates.NameOf(activity)) && animator.GetCurrentAnimatorStateInfo(0).normalizedTime>=1 && samples.Max()-samples.Min() > .0001f && item.activeSelf == (activity == PenguinActivity.CarryWalk), "samples="+samples.Count+"; frame=" + Time.frameCount + "; unityTime=" + Time.time + "; poseRange=" + (samples.Max()-samples.Min()) + "; carry=" + item.activeSelf + "; normalized=" + animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+                if(activity==PenguinActivity.Cheer) { view.SetActivity(activity); if(!_play) animator.Update(.05f); yield return null; Add("CHEER_RESTART",animator.GetCurrentAnimatorStateInfo(0).normalizedTime<.5f,"normalized="+animator.GetCurrentAnimatorStateInfo(0).normalizedTime); }
             }
-            view.SetActivity(ProductionIslandPenguinView.Activity.CarryWalk); if(!_play) animator.Update(.05f); yield return null; Call(view,"Update"); Add("CARRY_RETURN",item.activeSelf && animator.GetCurrentAnimatorStateInfo(0).IsName("CarryWalk"),"CarryWalk after Cheer; carry="+item.activeSelf+"; parent="+item.transform.parent.name);
+            view.SetActivity(PenguinActivity.CarryWalk); if(!_play) animator.Update(.05f); yield return null; Call(view,"Update"); Add("CARRY_RETURN",item.activeSelf && animator.GetCurrentAnimatorStateInfo(0).IsName(PenguinAnimatorStates.NameOf(PenguinActivity.CarryWalk)),"CarryWalk after Cheer; carry="+item.activeSelf+"; parent="+item.transform.parent.name);
             UnityEngine.Object.DestroyImmediate(penguin);
             foreach (var name in new[] { "ProductionPlusOne", "IceMelt" })
             {
@@ -181,7 +181,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
             {
             var port = Spawn("Assets/3Dmodel/Link_Port_"+portName+"_Selectable_v001/Link_Port_"+portName+"_Selectable_v001.prefab"); var pulse = port.GetComponent<ProductionIslandPortPulse>(); Call(pulse, "Awake"); var values = new List<float>(); var renderer = port.GetComponentInChildren<Renderer>();
             yield return null;
-            for (var i = 0; i < 30; i++) { Call(pulse, "Update"); renderer.GetPropertyBlock(block); values.Add(block.GetColor("_BaseColor").r); yield return null; }
+            for (var i = 0; i < 30; i++) { Call(pulse, "Update"); renderer.GetPropertyBlock(block); values.Add(block.GetColor(ShaderIds.BaseColor).r); yield return null; }
             if (values.Max()-values.Min() < .001f) Block("PORT_PULSE:"+portName, "Editor Time.time did not advance; brightnessRange=" + (values.Max()-values.Min()));
             else Add("PORT_PULSE:"+portName, values.Min() >= .29f && values.Max() <= 1.01f, "brightnessMin=" + values.Min() + "; max=" + values.Max());
             UnityEngine.Object.DestroyImmediate(port);

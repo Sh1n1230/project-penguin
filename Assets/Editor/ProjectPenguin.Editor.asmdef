@@ -1,8 +1,14 @@
 {
     "name": "ProjectPenguin.Editor",
     "rootNamespace": "ProjectPenguin.Editor",
-    "references": ["ProjectPenguin.Presentation"],
-    "includePlatforms": ["Editor"],
+    "references": [
+        "ProjectPenguin.Presentation",
+        "ProjectPenguin.Systems",
+        "ProjectPenguin.Domain"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

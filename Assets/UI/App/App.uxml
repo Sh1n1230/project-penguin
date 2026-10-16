@@ -7,7 +7,9 @@
     <ui:Template name="AnalyzingScreen" src="../Screens/Analyzing/AnalyzingScreen.uxml" />
     <ui:Template name="ResultScreen" src="../Screens/Result/ResultScreen.uxml" />
     <ui:Template name="MenuScreen" src="../Screens/Menu/MenuScreen.uxml" />
+    <ui:Template name="DexScreen" src="../Screens/Dex/DexScreen.uxml" />
     <ui:Template name="TabBar" src="TabBar.uxml" />
+    <ui:Template name="Onboarding" src="../Screens/Onboarding/Onboarding.uxml" />
     <ui:VisualElement name="app" class="pp-screen" picking-mode="Ignore">
         <ui:Instance template="HomeScreen" name="homeScreen" class="pp-screen" picking-mode="Ignore" />
         <ui:Instance template="RecordScreen" name="recordScreen" class="pp-screen pp-screen--hidden" />
@@ -16,6 +18,8 @@
         <ui:Instance template="AnalyzingScreen" name="analyzingScreen" class="pp-screen pp-screen--hidden" />
         <ui:Instance template="ResultScreen" name="resultScreen" class="pp-screen pp-screen--hidden" />
         <ui:Instance template="MenuScreen" name="menuScreen" class="pp-screen pp-screen--hidden" />
+        <ui:Instance template="DexScreen" name="dexScreen" class="pp-screen pp-screen--hidden" />
         <ui:Instance template="TabBar" name="tabBar" class="app__tab-bar" />
+        <ui:Instance template="Onboarding" name="onboarding" class="app__overlay pp-hidden" />
     </ui:VisualElement>
 </ui:UXML>

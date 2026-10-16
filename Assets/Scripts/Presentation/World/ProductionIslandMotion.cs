@@ -40,7 +40,7 @@ namespace ProjectPenguin.Presentation.World
 
         private void Awake()
         {
-            _parts = Array.FindAll(GetComponentsInChildren<Transform>(true), p => p.name.EndsWith("_Anim", StringComparison.Ordinal));
+            _parts = Array.FindAll(GetComponentsInChildren<Transform>(true), p => p.name.EndsWith(ModelParts.AnimSuffix, StringComparison.Ordinal));
             _positions = new Vector3[_parts.Length];
             _rotations = new Quaternion[_parts.Length];
             _scales = new Vector3[_parts.Length];
@@ -74,8 +74,8 @@ namespace ProjectPenguin.Presentation.World
             }
             foreach (var part in _parts)
             {
-                if (part.name.StartsWith("FlameHigh", StringComparison.Ordinal)) part.gameObject.SetActive(_running && _highHeat);
-                if (part.name.StartsWith("FlameLow", StringComparison.Ordinal)) part.gameObject.SetActive(_running && !_highHeat);
+                if (part.name.StartsWith(ModelParts.FlameHigh, StringComparison.Ordinal)) part.gameObject.SetActive(_running && _highHeat);
+                if (part.name.StartsWith(ModelParts.FlameLow, StringComparison.Ordinal)) part.gameObject.SetActive(_running && !_highHeat);
             }
             foreach (var particle in _particles)
             {
@@ -93,17 +93,17 @@ namespace ProjectPenguin.Presentation.World
                 var part = _parts[i];
                 var name = part.name;
                 var wave = Mathf.Sin(_phase * 3f);
-                if (name.Contains("Rotor"))
+                if (name.Contains(ModelParts.Motion.Rotor))
                     part.localRotation = _rotations[i] * Quaternion.Euler(0f, 0f, _phase * 90f);
-                else if (name.Contains("Waterwheel"))
+                else if (name.Contains(ModelParts.Motion.Waterwheel))
                     part.localRotation = _rotations[i] * Quaternion.Euler(_phase * 90f, 0f, 0f);
-                else if (name.Contains("Grill") || name.Contains("SortingPlate"))
+                else if (name.Contains(ModelParts.Motion.Grill) || name.Contains(ModelParts.Motion.SortingPlate))
                     part.localRotation = _rotations[i] * Quaternion.Euler(0f, _phase * 65f, 0f);
-                else if (name.Contains("Knife") || name.Contains("Net") || name.Contains("Lid"))
+                else if (name.Contains(ModelParts.Motion.Knife) || name.Contains(ModelParts.Motion.Net) || name.Contains(ModelParts.Motion.Lid))
                     part.localPosition = _positions[i] + Vector3.up * (.04f + .04f * wave);
-                else if (name.Contains("Door"))
+                else if (name.Contains(ModelParts.Motion.Door))
                     part.localRotation = _rotations[i] * Quaternion.Euler(0f, 12f * wave, 0f);
-                else if (name.Contains("Flame"))
+                else if (name.Contains(ModelParts.Motion.Flame))
                     part.localScale = _scales[i] * (1f + .08f * wave);
                 else
                     part.localRotation = _rotations[i] * Quaternion.Euler(0f, 0f, 4f * wave);

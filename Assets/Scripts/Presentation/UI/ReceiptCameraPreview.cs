@@ -9,13 +9,12 @@ using UnityEngine.Android;
 namespace ProjectPenguin.Presentation.UI
 {
     /// <summary>
-    /// スキャン画面にカメラ映像を映す。映像はその場で表示するだけで、フレームの保存もログ出力もしない
-    /// (レシートの扱いは .claude/rules/privacy.md に従う)。
+    /// スキャン画面にカメラ映像を映し、シャッターで今のフレームを JPEG にする。
+    /// 写真はメモリ上だけで扱い、ディスクにもログにも残さない (.claude/rules/privacy.md)。
     /// </summary>
     [RequireComponent(typeof(UIDocument))]
     public sealed class ReceiptCameraPreview : MonoBehaviour
     {
-        private const string HiddenClass = "pp-hidden";
         private const int RequestedWidth = 1920;
         private const int RequestedHeight = 1080;
 
@@ -38,9 +37,9 @@ namespace ProjectPenguin.Presentation.UI
         private void OnEnable()
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
-            _viewport = root.Q("previewViewport");
-            _preview = root.Q<Image>("cameraPreview");
-            _status = root.Q<Label>("cameraStatus");
+            _viewport = root.Q(UiNames.Scan.PreviewViewport);
+            _preview = root.Q<Image>(UiNames.Scan.CameraPreview);
+            _status = root.Q<Label>(UiNames.Scan.CameraStatus);
             _preview.scaleMode = ScaleMode.ScaleAndCrop;
         }
 
@@ -88,6 +87,81 @@ namespace ProjectPenguin.Presentation.UI
             ReleaseCamera();
         }
 
+        /// <summary>カメラ映像が映っているか。</summary>
+        public bool IsCapturing => _webcam != null && _webcam.isPlaying && _webcam.width > PlaceholderSize;
+
+        /// <summary>
+        /// 今のフレームを、画面に見えている向きに直して JPEG にする。長い辺は <paramref name="maxSize"/> まで縮める。
+        /// カメラが動いていなければ null。返すバイト列は呼び出し側が判定に渡したら捨てる (保存しない)。
+        /// </summary>
+        public byte[] CaptureJpeg(int maxSize = 1280, int quality = 80)
+        {
+            if (!IsCapturing)
+            {
+                return null;
+            }
+
+            var w = _webcam.width;
+            var h = _webcam.height;
+            var src = _webcam.GetPixels32();
+            var angle = ((_webcam.videoRotationAngle % 360) + 360) % 360;
+            var quarter = angle == 90 || angle == 270;
+            var outW = quarter ? h : w;
+            var outH = quarter ? w : h;
+            var step = Mathf.Max(1, Mathf.CeilToInt(Mathf.Max(outW, outH) / (float)maxSize));
+            var dstW = outW / step;
+            var dstH = outH / step;
+            var dst = new Color32[dstW * dstH];
+            for (var y = 0; y < dstH; y++)
+            {
+                for (var x = 0; x < dstW; x++)
+                {
+                    // 出力の (x, y) が元の映像のどこにあたるかを、回転を戻して求める。
+                    int sx, sy;
+                    var ox = x * step;
+                    var oy = y * step;
+                    switch (angle)
+                    {
+                        case 90:
+                            sx = oy;
+                            sy = h - 1 - ox;
+                            break;
+                        case 180:
+                            sx = w - 1 - ox;
+                            sy = h - 1 - oy;
+                            break;
+                        case 270:
+                            sx = w - 1 - oy;
+                            sy = ox;
+                            break;
+                        default:
+                            sx = ox;
+                            sy = oy;
+                            break;
+                    }
+
+                    if (_webcam.videoVerticallyMirrored)
+                    {
+                        sy = h - 1 - sy;
+                    }
+
+                    dst[y * dstW + x] = src[Mathf.Clamp(sy, 0, h - 1) * w + Mathf.Clamp(sx, 0, w - 1)];
+                }
+            }
+
+            var texture = new Texture2D(dstW, dstH, TextureFormat.RGB24, false);
+            try
+            {
+                texture.SetPixels32(dst);
+                texture.Apply(false);
+                return texture.EncodeToJPG(quality);
+            }
+            finally
+            {
+                Destroy(texture);
+            }
+        }
+
         private IEnumerator StartRoutine()
         {
             SetStatus(null);
@@ -98,7 +172,7 @@ namespace ProjectPenguin.Presentation.UI
             _awaitingPermission = false;
             if (!authorized)
             {
-                SetStatus("カメラの使用が許可されていません。\nホーム右上の設定ボタンから許可してください。");
+                SetStatus("カメラの使用が許可されていません。\nメニューの「カメラの許可」から許可してください。");
                 _startRoutine = null;
                 yield break;
             }
@@ -150,7 +224,7 @@ namespace ProjectPenguin.Presentation.UI
 #endif
         }
 
-        // レシートを撮るので背面カメラを優先する。PC など背面カメラが無い環境では先頭のカメラを使う。
+        // エコ活動を撮るので背面カメラを優先する。PC など背面カメラが無い環境では先頭のカメラを使う。
         private static WebCamDevice SelectBackCamera(WebCamDevice[] devices)
         {
             foreach (var device in devices)
@@ -231,7 +305,7 @@ namespace ProjectPenguin.Presentation.UI
             }
 
             _status.text = message ?? string.Empty;
-            _status.EnableInClassList(HiddenClass, message == null);
+            _status.EnableInClassList(UiClasses.Hidden, message == null);
         }
     }
 }

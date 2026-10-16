@@ -5,15 +5,13 @@ namespace ProjectPenguin.Presentation.UI
 {
     /// <summary>
     /// Screen.safeArea をパネル座標に変換し、ノッチ・ジェスチャーバーを避ける余白を UI Toolkit の要素に反映する。
-    /// 上・左・右は <see cref="SafeAreaClass"/> の padding に、下は <see cref="BottomInsetClass"/> の高さに入れる
+    /// 上・左・右は <see cref="UiClasses.SafeArea.Root"/> の padding に、下は <see cref="UiClasses.SafeArea.Bottom"/> の高さに入れる
     /// (タブバーの背景を画面下端まで伸ばしたまま、ボタンだけをジェスチャーバーの上に置くため)。
     /// 画面ごとに要素を持てるよう、名前ではなくクラスで探して該当する全要素に適用する。
     /// </summary>
     [RequireComponent(typeof(UIDocument))]
     public sealed class SafeAreaApplier : MonoBehaviour
     {
-        public const string SafeAreaClass = "pp-safe-area";
-        public const string BottomInsetClass = "pp-safe-area__bottom";
 
         private UIDocument _document;
         private VisualElement _root;
@@ -60,14 +58,14 @@ namespace ProjectPenguin.Presentation.UI
             var rightBottom = RuntimePanelUtils.ScreenToPanel(panel, new Vector2(Screen.width - safeArea.xMax, safeArea.yMin));
 
             // 端末ごとに変わる実測値なので USS では表せず、インラインスタイルで入れる。
-            _root.Query(className: SafeAreaClass).ForEach(element =>
+            _root.Query(className: UiClasses.SafeArea.Root).ForEach(element =>
             {
                 element.style.paddingTop = leftTop.y;
                 element.style.paddingLeft = leftTop.x;
                 element.style.paddingRight = rightBottom.x;
             });
 
-            _root.Query(className: BottomInsetClass).ForEach(element => element.style.height = rightBottom.y);
+            _root.Query(className: UiClasses.SafeArea.Bottom).ForEach(element => element.style.height = rightBottom.y);
         }
     }
 }

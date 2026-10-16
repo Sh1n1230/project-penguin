@@ -16,7 +16,7 @@ namespace ProjectPenguin.Presentation.World
         private void Update()
         {
             var brightness = .65f + .35f * Mathf.Sin(Time.time * 6f);
-            _block.SetColor("_BaseColor", new Color(brightness,brightness,brightness,1f));
+            _block.SetColor(ShaderIds.BaseColor, new Color(brightness,brightness,brightness,1f));
             foreach (var renderer in _renderers) renderer.SetPropertyBlock(_block);
         }
     }
