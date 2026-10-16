@@ -121,6 +121,28 @@ UI Toolkit は、角丸が短辺の半分を超えると角が楕円に潰れる
 | `.pp-menu-grid__row` / `.pp-menu-card` (`--end`) / `__label` | メニューのカードグリッド | 行の最後のカードに `--end` を付ける |
 | `.pp-close-band` / `__content` | 全画面シートを閉じる下部の帯 | `ui:Button`。最後の子に `.pp-safe-area__bottom` を置く |
 
+### 生産の島の部品 (2026-10-15 に追加)
+
+| クラス | 使う場所 | 備考 |
+|---|---|---|
+| `.pp-resource-bar` / `.pp-resource` (`--bump`, `--empty`) / `__icon` / `__value` | ホーム上部の資源 | 増えたとき `--bump` で一瞬大きくする |
+| `.pp-level` / `__caption` / `__value` | レベルの丸 | |
+| `.pp-tool` (`--active`) / `__circle` / `__label` / `__dot` | ホーム右下の道具ボタン (設定ボタンと同じ丸) | `__dot` は知らせの赤い点 |
+| `.pp-sheet` (`--closed`) / `__scrim` / `__panel` / `__handle` / `__header` / `__title` / `__body` / `__footer` | 下から出るシート | 開け閉めは `IslandSheetPresenter`。背景は `--color-surface-solid` (透けない) |
+| `.pp-row` (`--last`, `--locked`) / `__body` / `__title` / `__sub` | シートの行 | C# から `IslandUi.Row` で組み立てる |
+| `.pp-cost` / `__item` (`--short`) / `__icon` / `__value` | コスト | 足りないものは `--short` で赤 |
+| `.pp-status` (`--warn`, `--bad`) / `__icon` / `__label` | 施設の状態 | |
+| `.pp-stepper` / `__button` / `__value` | 配属の増減 | |
+| `.pp-pill` (`--primary`, `--danger`, `--selected`) | シートの中の小さい操作 | 折り返さない |
+| `.pp-toast-layer` / `.pp-toast` (`--hidden`) | 一時的な知らせ | |
+| `.pp-gain` (`--gone`) / `__value` | 受け取った資源が浮かんで消える | 位置だけ C# が入れる |
+| `.pp-modal` / `__card` / `__title` / `__text` | 真ん中の確認 | |
+| `.pp-banner` / `__text` | 置き場所を選ぶ間の帯 | |
+| `.pp-dex-grid` / `.pp-dex-card` (`--locked`) / `__image` / `__name` / `__fact` / `__bonus` | 図鑑 | |
+| `.pp-text-field` | `ui:TextField` | ラベルは隠す |
+
+資源の色は `--color-res-{electricity,water,gas,allmighty,fish,pearl}` で、アイコンには `.pp-icon--res-*` を付ける。`Icons/icon-*.svg` は `.pp-icon--<icon- を除いた名前>` で使える (`Components.uss` の末尾)。
+
 ### 例: 指標カード
 
 ```xml
@@ -138,11 +160,43 @@ UI Toolkit は、角丸が短辺の半分を超えると角が楕円に潰れる
 </ui:VisualElement>
 ```
 
+## C# から要素名・クラス名を使う
+
+`Q("islandBar")` や `AddToClassList("pp-hidden")` のように文字列で書かず、定数を使う。
+
+| 種類 | 定数 | 例 |
+|---|---|---|
+| UXML の要素名 (name) | `UiNames.<UXML>` (`Assets/Scripts/Presentation/UI/UiNames.cs`) | `_home.Q<Label>(UiNames.Home.LevelValue)` |
+| USS のクラス | `UiClasses.<部品>` (`UiClasses.cs`)。ブロックそのものは `Root` | `row.AddToClassList(UiClasses.Row.Last)` |
+
+- UXML に `name` を足したら、`UiNames` の同じ UXML のクラスに定数を足す。足し忘れ・名前の変え忘れ・USS にないクラスは、EditMode テスト `UiNamesTests` が落ちて知らせる。
+- 修飾クラスを `"pp-pill--" + variant` のように組み立てない。`UiClasses.Pill.Primary` のように完全な名前を渡す (組み立てるとテストで確かめられない)。
+- 3D 側も同じ考え方で、Animator のステートは `PenguinAnimatorStates` (`PenguinActivity` から引くハッシュ)、シェーダーのプロパティは `ShaderIds`、FBX の部品名は `ModelParts` を使う。
+
+## ゲームの画面 (`Game.uss`)
+
+建てる・建物の説明・施設・港・生産量は、ゲームらしく画面全体を切り替え、文字を減らして絵・アイコン・数字で見せる (2026-10-16 の決定。手本は「ねこレストラン」の「棚 → 大きなカード → 材料 … 2 → 丸いボタン」)。部品は `Assets/UI/DesignSystem/Game.uss` にある。
+
+| 部品 | クラス | 使い方 |
+|---|---|---|
+| 画面の名前・閉じる | `.pp-title-chip`・`.pp-round-close` | 左上に名前の札、右上に大きな丸い ✕ (戻るは左上の ‹) |
+| 棚 | `.pp-shelf`・`.pp-shelf-card` | 3 列。絵 (`__thumb`) と名前だけ。数・NEW・鍵は角に重ねる |
+| 大きな写真のカード | `.pp-photo-card` (`--side`・`--prev`・`--next`) | 選んだものを少し傾けて大きく。隣は小さく薄く |
+| 説明の札 | `.pp-info-panel` | 名前・一行・作るもの・コスト。右下に丸いボタンを重ねる |
+| 数 | `.pp-count` (`--short`) | 「アイコン … 30」。足りないものは赤 |
+| 丸いボタン | `.pp-round-button` (`--small`・`--primary`・`--cancel`) | 決める操作は 1 画面に 1 つ。押すと縮む |
+| 横長のカード | `.pp-tile` | 港の注文など。左に丸い絵、右に丸いボタン |
+| 品物のカード | `.pp-item-card` | 生産量。手もちと 1 時間の増減 |
+
+- 建物の絵は `.pp-thumb` と `UiClasses.Thumb.Of(kind)`。PNG と `Thumbnails.uss` は **Production Island > Render Facility Thumbnails** が 3D モデルから描き出す (カードの下地と同じ背景色)。施設を足したら `UiClasses.Thumb` に足してから描き直す。
+- 画面は表示した直後に `.pp-screen--entering` を外して、下からふわっと入る (`ScreenNavigator`)。
+
 ## アイコンを追加する
 
 1. `viewBox="0 0 24 24"` で、塗りと線を `#FFFFFF` にした SVG を `Icons/` に置く (色は USS の tint で付ける)
 2. `Components.uss` に `.pp-icon--<name> { background-image: url("project://database/Assets/UI/DesignSystem/Icons/<name>.svg"); }` を追加する
 3. カタログの Icon 節に並べる
+4. C# から使うなら `UiClasses.Icon` に定数を足す
 
 ## 3D ワールドの上に UI を重ねる
 
@@ -168,4 +222,4 @@ UI Toolkit は、角丸が短辺の半分を超えると角が楕円に潰れる
 
 `Assets/Scenes/UITest.unity` の `AppUI` が `App.uxml` を表示し、ホーム画面は仮置きの 3D ワールド (`World`) の上に重なる。3D の要素は Capsule / Quad / Cylinder / Cube の仮モデルで、マテリアルは `Assets/Prototype/UITest/Materials/` にある。表示している値 (72% など) は固定のモックで、ゲームの状態とはまだつながっていない。スキャン画面のシャッターは撮影せずに解析中画面へ進むだけで、解析中の進行 (`AnalyzingScreenPresenter`) と記録画面のグラフ (`RecordScreenPresenter`) も仮の値で動いている。
 
-`Assets/Scenes/HomeWorld.unity` は `UITest` から派生したシーンで、氷山と小屋の 3D モデル (`Assets/3Dmodel/`) の上に `App.uxml` を重ねている。カメラは縦横比に合わせて画角を調整する (`WorldCameraFramer`)。解析中の進行と記録画面のグラフを動かす Presenter もこのシーンの `AppUI` に付けてある。
+`Assets/Scenes/HomeWorld.unity` は `UITest` から派生したシーンで、氷山と小屋の 3D モデル (`Assets/3Dmodel/`) の上に `App.uxml` を重ねている。カメラは縦横比に合わせて画角を調整する (`WorldCameraFramer`)。解析中の進行と記録画面のグラフを動かす Presenter もこのシーンの `AppUI` に付けてある。生産の島は `HomeWorld.unity` を複製した `ProductionIslandHome.unity` に組み込み、`HomeWorld.unity` は変えない。島だけの UI (資源の帯・道具ボタン・支えられる土地・吹き出しの中の「次にやること」) は `HomeScreen.uxml` では `pp-hidden` で隠してあり、`IslandHudPresenter` があるシーンでだけ出す。

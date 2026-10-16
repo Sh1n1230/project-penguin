@@ -8,11 +8,11 @@ namespace ProjectPenguin.Presentation.World
         [SerializeField] private KamabokoProductionCycle _cycle;
         [SerializeField] private Transform _visual, _leftWing, _rightWing, _leftFoot, _rightFoot;
         [SerializeField] private Transform _fish, _product, _lid, _chamber, _carrySocket, _lidHandle;
-        private string _activity;
+        private PenguinActivity _activity;
         private Vector3 _groundOrigin;
         private Vector3 _visualStart, _leftFootStart, _rightFootStart;
         private Quaternion _leftFootRotation, _rightFootRotation;
-        public string Activity => _activity;
+        public PenguinActivity Activity => _activity;
         public Transform CarrySocket => _carrySocket;
         public float PoseTime => _cycle.CycleTime;
 
@@ -41,11 +41,11 @@ namespace ProjectPenguin.Presentation.World
             var center = _chamber.position;
             var x = center.x;
             var direction = Vector3.back;
-            var activity = "WorkLoop";
+            var activity = PenguinActivity.WorkLoop;
             if (stage == KamabokoProductionCycle.ProcessStage.Loading)
             {
                 x = _fish.position.x;
-                activity = t < .8f ? "CarryWalk" : "WorkLoop";
+                activity = t < .8f ? PenguinActivity.CarryWalk : PenguinActivity.WorkLoop;
             }
             else if (stage == KamabokoProductionCycle.ProcessStage.Closing)
             {
@@ -54,29 +54,29 @@ namespace ProjectPenguin.Presentation.World
             }
             else if (stage == KamabokoProductionCycle.ProcessStage.Steaming)
             {
-                x -= .28f; activity = "Idle";
+                x -= .28f; activity = PenguinActivity.Idle;
                 direction = new Vector3(.45f, 0, -.9f);
             }
             else if (stage == KamabokoProductionCycle.ProcessStage.Opening)
                 x -= .28f * (1f - Mathf.SmoothStep(0, 1, (t - 4.3f) / .6f));
             else if (stage == KamabokoProductionCycle.ProcessStage.Output)
             {
-                x = _product.position.x; activity = "CarryWalk";
+                x = _product.position.x; activity = PenguinActivity.CarryWalk;
             }
             else if (t < 6.8f)
             {
-                x = _product.position.x; activity = "Cheer";
+                x = _product.position.x; activity = PenguinActivity.Cheer;
             }
             else
             {
                 x = Mathf.Lerp(center.x + .65f, center.x - .65f, Mathf.SmoothStep(0, 1, (t - 6.8f) / .7f));
-                activity = "CarryWalk";
+                activity = PenguinActivity.CarryWalk;
             }
             transform.position = new Vector3(x, _groundOrigin.y, _groundOrigin.z);
             // The existing v002 character faces local +Z. Animate its separate parts intact.
             transform.rotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
             _activity = activity;
-            var walk = activity == "CarryWalk";
+            var walk = activity == PenguinActivity.CarryWalk;
             var wave = Mathf.Sin(t * (t >= 6.8f ? 24f : 14f));
             _visual.localPosition = _visualStart + Vector3.up * (walk ? Mathf.Abs(wave) * .012f : 0);
             _visual.localRotation = Quaternion.Euler(0, 0, walk ? wave * 3f : 0);
@@ -85,9 +85,9 @@ namespace ProjectPenguin.Presentation.World
             _leftFoot.localRotation = Quaternion.Euler(walk ? wave * 12f : 0, 0, 0) * _leftFootRotation;
             _rightFoot.localRotation = Quaternion.Euler(walk ? -wave * 12f : 0, 0, 0) * _rightFootRotation;
             var carrying = stage == KamabokoProductionCycle.ProcessStage.Loading || stage == KamabokoProductionCycle.ProcessStage.Output;
-            var working = activity == "WorkLoop";
+            var working = activity == PenguinActivity.WorkLoop;
             var lift = carrying ? -70f : working ? -50f + Mathf.Sin(t * 9f) * 5f : 0;
-            var inward = carrying ? 25f : working ? 18f : activity == "Cheer" ? -65f : 0;
+            var inward = carrying ? 25f : working ? 18f : activity == PenguinActivity.Cheer ? -65f : 0;
             _leftWing.localRotation = Quaternion.Euler(lift, 0, -inward);
             _rightWing.localRotation = Quaternion.Euler(lift, 0, inward);
             // A little wooden handle connects the working flippers to the hot lid.

@@ -21,3 +21,12 @@
 .menu__content {
     padding: 0 var(--space-4) var(--space-4) var(--space-4);
 }
+
+.menu__note {
+    margin-top: var(--space-3);
+    white-space: normal;
+}
+
+.menu__modal-cancel {
+    margin-top: var(--space-2);
+}

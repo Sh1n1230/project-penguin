@@ -1,6 +1,9 @@
 using System;
-using ProjectPenguin.Domain.Clock;
+using System.Collections.Generic;
+using System.Linq;
+using ProjectPenguin.Data;
 using ProjectPenguin.Domain.Game;
+using ProjectPenguin.Domain.Island;
 using ProjectPenguin.Domain.World;
 using UnityEngine;
 
@@ -29,23 +32,76 @@ namespace ProjectPenguin.Systems
         public SpeechEvent Events => HomeState.EventsBetween(Before, After);
     }
 
+    /// <summary>写真 1 枚を受け取った結果。</summary>
+    public sealed class EcoPhotoResult
+    {
+        public EcoPhotoResult(EcoPhotoVerdict verdict, bool newRecordDay, ResourceBundle granted, HomeState before, HomeState after)
+        {
+            Verdict = verdict;
+            NewRecordDay = newRecordDay;
+            Granted = granted;
+            Before = before;
+            After = after;
+        }
+
+        public EcoPhotoVerdict Verdict { get; }
+
+        /// <summary>この写真で今日が記録日になった (氷が増えた)。</summary>
+        public bool NewRecordDay { get; }
+
+        /// <summary>受け取った資源。今日すでに受け取っていれば null。</summary>
+        public ResourceBundle Granted { get; }
+
+        public HomeState Before { get; }
+        public HomeState After { get; }
+    }
+
     /// <summary>
-    /// ゲームの状態 (<see cref="GameSession"/>) を持ち、起動・復帰・操作のたびに日を進めて変化を知らせる。
+    /// ゲームの状態を持つ。氷の状態機械 (<see cref="GameSession"/>) と生産の島 (<see cref="IslandGame"/>) を、
+    /// 起動・復帰・操作のたびに進め、変化を知らせて端末に保存する。
     /// 計算は Domain が行い、ここは時計を渡して呼ぶだけ (.claude/rules/unity.md)。
-    ///
-    /// 保存はまだ無い (SQLite は Hack Day で作る)。アプリを再起動すると初期状態から始まる。
     /// </summary>
+    [DefaultExecutionOrder(-100)]
     public sealed class GameStateSystem : MonoBehaviour
     {
         /// <summary>この日数以上あけて開いたら「おかえり」(15c §2.2)。</summary>
         public const int ComebackDays = 3;
 
-        private OffsetClock _clock;
-        private GameSession _session;
-        private int _lastOpenDay;
+        /// <summary>島の変化を画面に知らせる間隔 (秒)。</summary>
+        private const float IslandNotifyInterval = 0.2f;
 
-        /// <summary>状態が変わりうる操作のたびに呼ばれる (変化が無くても呼ぶ)。</summary>
+        /// <summary>動いている間も、この間隔で保存する (突然終了しても進みを失わないように)。</summary>
+        private const float AutosaveInterval = 20f;
+
+        /// <summary>記録画面に残す受け取りの記録の数。</summary>
+        private const int ActivityLimit = 200;
+
+        [Tooltip("保存しない (確認用のシーン・テスト)")]
+        [SerializeField] private bool _inMemoryOnly;
+
+        private SessionClock _clock;
+        private GameSession _session;
+        private IslandGame _island;
+        private IGameStore _store;
+        private IStepSource _steps;
+        private GameSave _save;
+        private readonly List<GameOp> _ops = new List<GameOp>();
+        private readonly List<ActivityEntry> _activity = new List<ActivityEntry>();
+        private int _lastOpenDay;
+        private float _islandNotifyTimer;
+        private float _autosaveTimer;
+
+        /// <summary>氷の状態が変わりうる操作のたびに呼ばれる (変化が無くても呼ぶ)。</summary>
         public event Action<GameStateChange> Changed;
+
+        /// <summary>島の状態が変わった (生産・操作)。毎フレームではなく間引いて呼ぶ。</summary>
+        public event Action IslandChanged;
+
+        /// <summary>島の出来事 (建てた・作った・沈んだ…)。演出に使う。</summary>
+        public event Action<IReadOnlyList<IslandEvent>> IslandEvents;
+
+        /// <summary>資源を受け取った (写真・歩数・ミッション)。画面に飛んでくる演出に使う。</summary>
+        public event Action<ResourceBundle, string> ResourcesReceived;
 
         public GameSession Session
         {
@@ -53,6 +109,15 @@ namespace ProjectPenguin.Systems
             {
                 EnsureCreated();
                 return _session;
+            }
+        }
+
+        public IslandGame Island
+        {
+            get
+            {
+                EnsureCreated();
+                return _island;
             }
         }
 
@@ -68,8 +133,25 @@ namespace ProjectPenguin.Systems
             }
         }
 
+        public int Today => Session.Today;
+
         /// <summary>「時間を進める」で進めた日数。0 でなければ画面に「デモ用」と出す。</summary>
         public int DemoDaysAdvanced => _clock == null ? 0 : (int)_clock.Offset.TotalDays;
+
+        public string PlayerName => _save?.playerName ?? "";
+
+        public bool Onboarded => _save != null && _save.onboarded;
+
+        /// <summary>受け取りの記録 (新しいものが後ろ)。</summary>
+        public IReadOnlyList<ActivityEntry> Activity => _activity;
+
+        public bool StepsSupported => _steps != null && _steps.IsSupported;
+
+        /// <summary>開発用の歩数 (Editor と iOS 以外)。</summary>
+        public FakeStepSource FakeSteps => _steps as FakeStepSource;
+
+        /// <summary>最後に届いた今日の歩数。まだ届いていなければ -1。</summary>
+        public int StepsToday { get; private set; } = -1;
 
         // 他のコンポーネントの OnEnable が先に呼ばれても使えるよう、最初に触られたときに作る。
         private void EnsureCreated()
@@ -79,41 +161,337 @@ namespace ProjectPenguin.Systems
                 return;
             }
 
-            _clock = new OffsetClock(new SystemClock());
-            _session = new GameSession(_clock, NoWeeklyBonus);
+            Initialize(_inMemoryOnly ? new MemoryGameStore() : new JsonGameStore(), new SystemClock(), StepSources.Create());
+        }
 
-            // 起動した日を「その日に初めて開いた」として挨拶させるため、前日に開いたことにしておく。
-            _lastOpenDay = _session.Today - 1;
+        /// <summary>
+        /// 置き場・端末の時計・歩数を差し込んで始める。ふだんは最初に触られたときに自動で呼ばれる。
+        /// テストでは固定の時計とメモリの置き場を渡し、保存から同じ状態に戻ることを確かめる。
+        /// </summary>
+        public void Initialize(IGameStore store, Domain.Clock.IClock deviceClock, IStepSource steps = null)
+        {
+            _store = store ?? throw new ArgumentNullException(nameof(store));
+            _steps = steps ?? new FakeStepSource();
+            _clock = new SessionClock(deviceClock ?? new SystemClock());
+            LoadOrCreate(_store.Load());
+        }
+
+        private void LoadOrCreate(GameSave save)
+        {
+            _ops.Clear();
+            _activity.Clear();
+            if (save == null)
+            {
+                var now = _clock.UtcNow;
+                _save = new GameSave { createdUnixMs = now.ToUnixTimeMilliseconds() };
+                _session = new GameSession(_clock, NoWeeklyBonus);
+                _island = new IslandGame(IslandParameters.Default, now);
+
+                // 起動した日を「その日に初めて開いた」として挨拶させるため、前日に開いたことにしておく。
+                _lastOpenDay = _session.Today - 1;
+            }
+            else
+            {
+                _save = save;
+                _clock.ResetOffset();
+                if (save.devOffsetMs > 0)
+                {
+                    _clock.Advance(TimeSpan.FromMilliseconds(save.devOffsetMs));
+                }
+
+                _session = Replay(save);
+                _island = IslandGame.FromSave(save.island, IslandParameters.Default, _clock.UtcNow);
+                _lastOpenDay = save.lastOpenDay;
+                _activity.AddRange(save.activity ?? Array.Empty<ActivityEntry>());
+            }
+
+            SyncIsland();
+            _island.Tick(_clock.UtcNow);
+        }
+
+        /// <summary>保存した操作を、その時刻に止めた時計で順に再生する。氷の計算は決定的なので同じ状態に戻る。</summary>
+        private GameSession Replay(GameSave save)
+        {
+            _clock.Pin(DateTimeOffset.FromUnixTimeMilliseconds(save.createdUnixMs));
+            var session = new GameSession(_clock, NoWeeklyBonus);
+            foreach (var op in save.ops ?? Array.Empty<GameOp>())
+            {
+                _clock.Pin(DateTimeOffset.FromUnixTimeMilliseconds(op.atMs));
+                Apply(session, op);
+                _ops.Add(op);
+            }
+
+            _clock.Unpin();
+            session.Advance();
+            return session;
+        }
+
+        private static bool Apply(GameSession session, GameOp op)
+        {
+            switch (op.kind)
+            {
+                case GameOp.Photo:
+                    return session.ScanReceipt(new ReceiptRecord(op.id, op.printDay));
+                case GameOp.Select:
+                    return session.SelectMission(op.id, (MissionVerification)op.verification);
+                case GameOp.CheckIn:
+                    return session.CheckIn(op.id, (CheckInAnswer)op.answer, op.noShopping);
+                default:
+                    return false;
+            }
+        }
+
+        private void Awake() => EnsureCreated();
+
+        private void Update()
+        {
+            if (_island == null)
+            {
+                return;
+            }
+
+            _island.Tick(_clock.UtcNow);
+            PollSteps();
+
+            _islandNotifyTimer += Time.unscaledDeltaTime;
+            if (_islandNotifyTimer >= IslandNotifyInterval)
+            {
+                _islandNotifyTimer = 0f;
+                PublishIsland();
+            }
+
+            _autosaveTimer += Time.unscaledDeltaTime;
+            if (_autosaveTimer >= AutosaveInterval)
+            {
+                _autosaveTimer = 0f;
+                Save();
+            }
         }
 
         private void OnApplicationPause(bool paused)
         {
-            // 閉じている間の進行 (氷の融解など) は、復帰時に経過日数からまとめて計算する。
-            if (!paused)
+            if (paused)
             {
+                // モバイルは予告なく終了されるので、裏に回るたびに保存する (.claude/rules/unity.md)。
+                Save();
+            }
+            else
+            {
+                // 閉じている間の進行 (氷の融解・島の生産) は、復帰時に経過時間からまとめて計算する。
                 Refresh();
             }
         }
+
+        private void OnApplicationQuit() => Save();
 
         /// <summary>経過した日を確定させて今日を始める。起動・復帰・画面を開いたときに呼ぶ。</summary>
         public void Refresh()
         {
             Apply(() => _session.Advance());
+            RequestSteps();
         }
 
-        /// <summary>
-        /// 見本のレシートを 1 枚記録する (ダミーデータ)。中身の解析と採点は Hack Day で作るので、
-        /// 今は「今日レシートを記録した」ことだけを伝える。
-        /// </summary>
+        // ------------------------------------------------------------------
+        // 現実の行動
+        // ------------------------------------------------------------------
+
+        /// <summary>今日まだ写真の資源を受け取れるか。</summary>
+        public bool CanReceivePhotoToday => Island.CanReceivePhoto(Today);
+
+        /// <summary>エコ活動の写真 1 枚を記録する。写真そのものは保存しない。</summary>
+        public EcoPhotoResult RecordEcoPhoto(EcoPhotoVerdict verdict)
+        {
+            EnsureCreated();
+            var before = HomeState.Of(_session);
+            var wasRecorded = _session.IsRecorded(_session.Today);
+            ResourceBundle granted = null;
+            Apply(() =>
+            {
+                var day = _session.Today;
+                var op = new GameOp
+                {
+                    kind = GameOp.Photo,
+                    atMs = _clock.UtcNow.ToUnixTimeMilliseconds(),
+                    id = $"photo-{day}-{_ops.Count}",
+                    printDay = day,
+                };
+                if (Apply(_session, op))
+                {
+                    _ops.Add(op);
+                }
+
+                granted = _island.ReceivePhoto(verdict, day);
+            });
+
+            if (granted != null)
+            {
+                AddActivity(ActivityEntry.Photo, verdict.Label, granted, (int)verdict.Category);
+                ResourcesReceived?.Invoke(granted, EcoCategories.NameOf(verdict.Category));
+            }
+
+            return new EcoPhotoResult(verdict, !wasRecorded && _session.IsRecorded(_session.Today), granted, before,
+                HomeState.Of(_session));
+        }
+
+        /// <summary>今日のミッションを選ぶ。</summary>
+        public bool SelectMission(MissionDef mission)
+        {
+            if (mission == null)
+            {
+                return false;
+            }
+
+            var ok = false;
+            Apply(() =>
+            {
+                var op = new GameOp
+                {
+                    kind = GameOp.Select,
+                    atMs = _clock.UtcNow.ToUnixTimeMilliseconds(),
+                    id = mission.Id,
+                    verification = (int)MissionVerification.Self,
+                };
+                ok = Apply(_session, op);
+                if (ok)
+                {
+                    _ops.Add(op);
+                }
+            });
+            return ok;
+        }
+
+        /// <summary>夜の振り返り。どの答えでも記録日になり、オールマイティがもらえる。</summary>
+        public ResourceBundle CheckIn(MissionDef mission, CheckInAnswer answer)
+        {
+            if (mission == null)
+            {
+                return null;
+            }
+
+            ResourceBundle granted = null;
+            Apply(() =>
+            {
+                var op = new GameOp
+                {
+                    kind = GameOp.CheckIn,
+                    atMs = _clock.UtcNow.ToUnixTimeMilliseconds(),
+                    id = mission.Id,
+                    answer = (int)answer,
+                };
+                if (Apply(_session, op))
+                {
+                    _ops.Add(op);
+                    granted = _island.ReceiveCheckIn(answer);
+                }
+            });
+
+            if (granted != null)
+            {
+                AddActivity(ActivityEntry.Mission, mission.Title, granted);
+                ResourcesReceived?.Invoke(granted, "ミッション");
+            }
+
+            return granted;
+        }
+
+        /// <summary>今日の歩数を問い合わせる (結果は後で届く)。</summary>
+        public void RequestSteps()
+        {
+            if (_steps == null || !_steps.IsSupported)
+            {
+                return;
+            }
+
+            _steps.Request(AppDayStartUtc(Today));
+        }
+
+        private void PollSteps()
+        {
+            if (_steps == null || !_steps.TryTake(out var steps))
+            {
+                return;
+            }
+
+            StepsToday = steps;
+            var gas = _island.ReceiveSteps(steps, Today);
+            if (gas > 0)
+            {
+                var bundle = ResourceBundle.Of(Resource.Gas, gas);
+                AddActivity(ActivityEntry.Steps, $"{steps:N0} 歩", bundle);
+                ResourcesReceived?.Invoke(bundle, "歩いたぶん");
+                MarkIslandDirty();
+            }
+        }
+
+        /// <summary>アプリの日 (03:00 JST 区切り) の始まりの時刻。</summary>
+        public static DateTimeOffset AppDayStartUtc(int appDay)
+        {
+            var epoch = new DateTimeOffset(1970, 1, 1, 3, 0, 0, TimeSpan.FromHours(9));
+            var guess = epoch.AddDays(appDay - AppCalendar.AppDay(epoch));
+            return guess.ToUniversalTime();
+        }
+
+        // ------------------------------------------------------------------
+        // 島の操作 (成功したら保存する)
+        // ------------------------------------------------------------------
+
+        public IslandActionResult Build(FacilityKind kind, Cell origin) => IslandAction(g => g.Build(kind, origin));
+        public IslandActionResult Move(int id, Cell origin) => IslandAction(g => g.Move(id, origin));
+        public IslandActionResult Demolish(int id) => IslandAction(g => g.Demolish(id));
+        public IslandActionResult SetWorkers(int id, int workers) => IslandAction(g => g.SetWorkers(id, workers));
+        public IslandActionResult SetRecipe(int id, int recipe) => IslandAction(g => g.SetRecipe(id, recipe));
+        public IslandActionResult AddPearl(int id) => IslandAction(g => g.AddPearl(id));
+        public IslandActionResult Upgrade(int id) => IslandAction(g => g.Upgrade(id));
+        public IslandActionResult Expand(Cell cell) => IslandAction(g => g.Expand(cell));
+        public IslandActionResult Deliver(int slot) => IslandAction(g => g.Deliver(slot));
+
+        private IslandActionResult IslandAction(Func<IslandGame, IslandActionResult> action)
+        {
+            EnsureCreated();
+            var r = action(_island);
+            if (r == IslandActionResult.Ok)
+            {
+                MarkIslandDirty();
+                Save();
+            }
+
+            return r;
+        }
+
+        public void CompleteOnboarding(string playerName)
+        {
+            EnsureCreated();
+            _save.playerName = string.IsNullOrWhiteSpace(playerName) ? "" : playerName.Trim();
+            _save.onboarded = true;
+            Save();
+        }
+
+        /// <summary>設定の「データを消す」。最初からやり直す。</summary>
+        public void ResetAll()
+        {
+            EnsureCreated();
+            _store.Delete();
+            _clock.ResetOffset();
+            LoadOrCreate(null);
+            Save();
+            Apply(() => { });
+            MarkIslandDirty();
+        }
+
+        public OfflineReport TakeOfflineReport() => Island.TakeOfflineReport();
+
+        // ------------------------------------------------------------------
+        // 開発ビルドの操作
+        // ------------------------------------------------------------------
+
+        /// <summary>見本の写真を 1 枚記録する (開発用)。</summary>
         public bool RecordSampleReceipt()
         {
-            var result = false;
-            Apply(() => result = _session.ScanReceipt(new ReceiptRecord("sample-" + Guid.NewGuid().ToString("N"), _session.Today)));
-            return result;
+            var r = RecordEcoPhoto(new EcoPhotoVerdict(EcoCategory.Goods, "マイボトル", "見本の写真だよ", 1.0));
+            return r.NewRecordDay;
         }
 
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
-        /// <summary>デモ用に時計を進める。開発ビルドと Editor だけ。</summary>
+        /// <summary>デモ用に時計を進める。開発ビルドと Editor だけ画面から呼べる。</summary>
         public void AdvanceDays(int days)
         {
             if (days <= 0)
@@ -124,8 +502,25 @@ namespace ProjectPenguin.Systems
             EnsureCreated();
             _clock.AdvanceDays(days);
             Refresh();
+            Save();
         }
-#endif
+
+        /// <summary>デモ用に島だけ時間を進める (時計は進めない)。</summary>
+        public void DevSimulateIsland(double seconds)
+        {
+            Island.Simulate(seconds);
+            MarkIslandDirty();
+        }
+
+        public void DevGrant(Resource resource, double amount)
+        {
+            Island.Grant(ResourceBundle.Of(resource, amount));
+            MarkIslandDirty();
+        }
+
+        // ------------------------------------------------------------------
+        // 内部
+        // ------------------------------------------------------------------
 
         private void Apply(Action action)
         {
@@ -136,11 +531,78 @@ namespace ProjectPenguin.Systems
             var isFirstOpenToday = today > _lastOpenDay;
             var isComeback = today - _lastOpenDay >= ComebackDays;
             _lastOpenDay = Math.Max(_lastOpenDay, today);
+            SyncIsland();
+            _island.Tick(_clock.UtcNow);
             Changed?.Invoke(new GameStateChange(before, HomeState.Of(_session), isComeback, isFirstOpenToday));
+            MarkIslandDirty();
+            Save();
         }
 
-        /// <summary>週の選び方の氷 B。レシートの採点ができるまでは 0。</summary>
-        private static double NoWeeklyBonus(int week, System.Collections.Generic.IReadOnlyList<ReceiptRecord> receipts)
+        private void SyncIsland()
+        {
+            _island.SyncWorld(_session.Ice, _session.TotalRecordDays, _session.Arrivals.Select(a => a.Species));
+        }
+
+        private void MarkIslandDirty() => PublishIsland();
+
+        /// <summary>出来事を配り、数字の再描画を促す (生産は少しずつ進むので、出来事が無くても数字は変わる)。</summary>
+        private void PublishIsland()
+        {
+            var events = _island.DrainEvents();
+            if (events.Count > 0)
+            {
+                IslandEvents?.Invoke(events);
+            }
+
+            IslandChanged?.Invoke();
+        }
+
+        private void AddActivity(string kind, string label, ResourceBundle granted, int category = -1)
+        {
+            _activity.Add(new ActivityEntry
+            {
+                atMs = _clock.UtcNow.ToUnixTimeMilliseconds(),
+                day = _session.Today,
+                kind = kind,
+                category = category,
+                label = label ?? "",
+                electricity = granted[Resource.Electricity],
+                water = granted[Resource.Water],
+                gas = granted[Resource.Gas],
+                allMighty = granted[Resource.AllMighty],
+            });
+            if (_activity.Count > ActivityLimit)
+            {
+                _activity.RemoveRange(0, _activity.Count - ActivityLimit);
+            }
+
+            Save();
+        }
+
+        private void Save()
+        {
+            if (_store == null || _session == null)
+            {
+                return;
+            }
+
+            _save.devOffsetMs = (long)_clock.Offset.TotalMilliseconds;
+            _save.lastOpenDay = _lastOpenDay;
+            _save.ops = _ops.ToArray();
+            _save.island = _island.ToSave();
+            _save.activity = _activity.ToArray();
+            try
+            {
+                _store.Save(_save);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"{nameof(GameStateSystem)}: 保存に失敗しました ({e.GetType().Name}: {e.Message})");
+            }
+        }
+
+        /// <summary>週の選び方の氷 B。写真では採点しないので 0 (docs/production-island/game-design.md)。</summary>
+        private static double NoWeeklyBonus(int week, IReadOnlyList<ReceiptRecord> receipts)
         {
             return 0.0;
         }

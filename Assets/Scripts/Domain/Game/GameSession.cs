@@ -193,6 +193,19 @@ namespace ProjectPenguin.Domain.Game
 
         public bool IsRecorded(int day) => _recordedDays.Contains(day);
 
+        /// <summary>その日に選んだミッション (選んだ順)。画面に出すための読み取り専用。</summary>
+        public IReadOnlyList<string> SelectedOn(int day) =>
+            _selected.TryGetValue(day, out var sel) ? sel.Select(x => x.Key).ToList() : (IReadOnlyList<string>)Array.Empty<string>();
+
+        /// <summary>その日のミッションを振り返り済みか。</summary>
+        public bool IsCheckedIn(int day, string missionId) => _checked.Contains((day, missionId));
+
+        /// <summary>1 日に選べるミッションの数。</summary>
+        public int SelectionsPerDay => _p.SelectionsPerDay;
+
+        /// <summary>その週 (月曜始まり) の記録日の数。</summary>
+        public int RecordDaysInWeek(int week) => _recordedDays.Count(d => AppCalendar.WeekOf(d) == week);
+
         /// <summary>時計から求めた今日のアプリの日。</summary>
         public int Today => AppCalendar.AppDay(_clock.UtcNow);
 

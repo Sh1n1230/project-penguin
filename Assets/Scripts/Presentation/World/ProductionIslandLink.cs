@@ -73,7 +73,7 @@ namespace ProjectPenguin.Presentation.World
             _flowSpeed = Mathf.Max(0f, itemsPerSecond) * .15f;
             _visibleBeadCount = _beads == null ? 0 : Mathf.Clamp(Mathf.CeilToInt(itemsPerSecond * 2f), 0, _beads.Length);
             _tint ??= new MaterialPropertyBlock();
-            _tint.SetColor("_BaseColor", itemColor);
+            _tint.SetColor(ShaderIds.BaseColor, itemColor);
             if (_beads != null)
                 foreach (var bead in _beads)
                 {

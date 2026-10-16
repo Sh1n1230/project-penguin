@@ -15,20 +15,26 @@ namespace ProjectPenguin.Presentation.UI
         Analyzing,
         Result,
         Menu,
+        Dex,
+
+        // 生産の島の画面 (ホームの道具と島の施設から開く)
+        Build,
+        BuildDetail,
+        Harbor,
+        Facility,
+        Production,
     }
 
     /// <summary>
     /// App.uxml に並べた画面のうち 1 つだけを表示する。シーンを分けずに画面を切り替えるための入口。
-    /// 非表示の画面は破棄せず <see cref="HiddenClass"/> で隠すだけなので、戻ったときに状態が残る。
+    /// 非表示の画面は破棄せず <see cref="UiClasses.Screen.Hidden"/> で隠すだけなので、戻ったときに状態が残る。
     /// 画面構成と遷移の考え方は docs/ui-structure.md を参照。
     /// </summary>
     [RequireComponent(typeof(UIDocument))]
     public sealed class ScreenNavigator : MonoBehaviour
     {
-        public const string TabBarName = "tabBar";
+        public const string TabBarName = UiNames.App.TabBar;
 
-        private const string HiddenClass = "pp-screen--hidden";
-        private const string ActiveTabClass = "pp-tab--active";
 
         /// <summary>
         /// ボタンと行き先の対応。<see cref="Scope"/> の要素の中から <see cref="Button"/> を探す
@@ -51,26 +57,33 @@ namespace ProjectPenguin.Presentation.UI
 
         public static readonly IReadOnlyList<Route> Routes = new[]
         {
-            new Route(TabBarName, "tabHome", AppScreen.Home),
-            new Route(TabBarName, "tabRecord", AppScreen.Record),
-            new Route(TabBarName, "tabScan", AppScreen.Scan),
-            new Route(TabBarName, "tabMission", AppScreen.Mission),
-            new Route(TabBarName, "tabMenu", AppScreen.Menu),
-            new Route(ElementNameOf(AppScreen.Scan), "closeButton", AppScreen.Home),
-            new Route(ElementNameOf(AppScreen.Scan), "shutterButton", AppScreen.Analyzing),
-            new Route(ElementNameOf(AppScreen.Analyzing), "closeButton", AppScreen.Home),
-            new Route(ElementNameOf(AppScreen.Result), "backButton", AppScreen.Home),
-            new Route(ElementNameOf(AppScreen.Result), "applyButton", AppScreen.Home),
-            new Route(ElementNameOf(AppScreen.Menu), "closeBand", null),
-            new Route(ElementNameOf(AppScreen.Menu), "menuRecord", AppScreen.Record),
-            new Route(ElementNameOf(AppScreen.Menu), "menuMission", AppScreen.Mission),
+            new Route(TabBarName, UiNames.TabBar.TabHome, AppScreen.Home),
+            new Route(TabBarName, UiNames.TabBar.TabRecord, AppScreen.Record),
+            new Route(TabBarName, UiNames.TabBar.TabScan, AppScreen.Scan),
+            new Route(TabBarName, UiNames.TabBar.TabMission, AppScreen.Mission),
+            new Route(TabBarName, UiNames.TabBar.TabMenu, AppScreen.Menu),
+            new Route(ElementNameOf(AppScreen.Home), UiNames.Home.SettingsButton, AppScreen.Menu),
+            new Route(ElementNameOf(AppScreen.Scan), UiNames.Scan.CloseButton, AppScreen.Home),
+            new Route(ElementNameOf(AppScreen.Analyzing), UiNames.Analyzing.CloseButton, AppScreen.Home),
+            new Route(ElementNameOf(AppScreen.Result), UiNames.Result.BackButton, AppScreen.Home),
+            new Route(ElementNameOf(AppScreen.Result), UiNames.Result.ApplyButton, AppScreen.Home),
+            new Route(ElementNameOf(AppScreen.Menu), UiNames.Menu.CloseBand, null),
+            new Route(ElementNameOf(AppScreen.Menu), UiNames.Menu.MenuRecord, AppScreen.Record),
+            new Route(ElementNameOf(AppScreen.Menu), UiNames.Menu.MenuMission, AppScreen.Mission),
+            new Route(ElementNameOf(AppScreen.Menu), UiNames.Menu.MenuPokedex, AppScreen.Dex),
+            new Route(ElementNameOf(AppScreen.Dex), UiNames.Dex.BackButton, null),
+            new Route(ElementNameOf(AppScreen.Build), UiNames.Build.CloseButton, AppScreen.Home),
+            new Route(ElementNameOf(AppScreen.BuildDetail), UiNames.BuildDetail.BackButton, AppScreen.Build),
+            new Route(ElementNameOf(AppScreen.BuildDetail), UiNames.BuildDetail.CloseButton, AppScreen.Home),
+            new Route(ElementNameOf(AppScreen.Harbor), UiNames.Harbor.CloseButton, AppScreen.Home),
+            new Route(ElementNameOf(AppScreen.Facility), UiNames.Facility.CloseButton, AppScreen.Home),
+            new Route(ElementNameOf(AppScreen.Production), UiNames.Production.CloseButton, AppScreen.Home),
         };
 
         /// <summary>端末の設定アプリを開くボタン。アプリ内の設定画面ができるまでの暫定。</summary>
         public static readonly IReadOnlyList<(string Scope, string Button)> AppSettingsButtons = new[]
         {
-            (ElementNameOf(AppScreen.Home), "settingsButton"),
-            (ElementNameOf(AppScreen.Menu), "menuSettings"),
+            (ElementNameOf(AppScreen.Menu), UiNames.Menu.MenuCamera),
         };
 
         [Tooltip("ホーム以外の不透明な画面の表示中に止める 3D ワールドのカメラ。見えない世界を描画し続けないため")]
@@ -78,35 +91,45 @@ namespace ProjectPenguin.Presentation.UI
 
         [SerializeField] private ReceiptCameraPreview _cameraPreview;
 
-        [Tooltip("未設定なら解析中画面を飛ばして結果画面を出す")]
-        [SerializeField] private AnalyzingScreenPresenter _analyzingPresenter;
+        [Tooltip("ホームを開いている間だけ島へのタッチを受け付ける")]
+        [SerializeField] private World.IslandInteraction _islandInteraction;
 
         private readonly Dictionary<AppScreen, VisualElement> _screens = new();
         private readonly Dictionary<AppScreen, Button> _tabButtons = new();
         private readonly List<(Button Button, Action Handler)> _bindings = new();
         private VisualElement _tabBar;
+        private bool _tabBarSuppressed;
         private AppScreen _lastTab = AppScreen.Home;
 
         public AppScreen Current { get; private set; }
 
+        /// <summary>画面が切り替わった (新しい画面, 前の画面)。</summary>
+        public event Action<AppScreen, AppScreen> ScreenShown;
+
         public static string ElementNameOf(AppScreen screen) => screen switch
         {
-            AppScreen.Home => "homeScreen",
-            AppScreen.Record => "recordScreen",
-            AppScreen.Mission => "missionScreen",
-            AppScreen.Scan => "scanScreen",
-            AppScreen.Analyzing => "analyzingScreen",
-            AppScreen.Result => "resultScreen",
-            AppScreen.Menu => "menuScreen",
+            AppScreen.Home => UiNames.App.HomeScreen,
+            AppScreen.Record => UiNames.App.RecordScreen,
+            AppScreen.Mission => UiNames.App.MissionScreen,
+            AppScreen.Scan => UiNames.App.ScanScreen,
+            AppScreen.Analyzing => UiNames.App.AnalyzingScreen,
+            AppScreen.Result => UiNames.App.ResultScreen,
+            AppScreen.Menu => UiNames.App.MenuScreen,
+            AppScreen.Dex => UiNames.App.DexScreen,
+            AppScreen.Build => UiNames.App.BuildScreen,
+            AppScreen.BuildDetail => UiNames.App.BuildDetailScreen,
+            AppScreen.Harbor => UiNames.App.HarborScreen,
+            AppScreen.Facility => UiNames.App.FacilityScreen,
+            AppScreen.Production => UiNames.App.ProductionScreen,
             _ => throw new ArgumentOutOfRangeException(nameof(screen), screen, null),
         };
 
         /// <summary>タブバーを出す画面と、そのときアクティブにするタブ。タブ画面でなければ null。</summary>
         public static string TabButtonOf(AppScreen screen) => screen switch
         {
-            AppScreen.Home => "tabHome",
-            AppScreen.Record => "tabRecord",
-            AppScreen.Mission => "tabMission",
+            AppScreen.Home => UiNames.TabBar.TabHome,
+            AppScreen.Record => UiNames.TabBar.TabRecord,
+            AppScreen.Mission => UiNames.TabBar.TabMission,
             _ => null,
         };
 
@@ -176,17 +199,24 @@ namespace ProjectPenguin.Presentation.UI
 
             foreach (var (key, element) in _screens)
             {
-                element.EnableInClassList(HiddenClass, key != screen);
+                element.EnableInClassList(UiClasses.Screen.Hidden, key != screen);
+            }
+
+            // 画面が変わったときだけ、下からふわっと入れる (ホームは 3D の島が見えるのでそのまま出す)。
+            if (screen != previous && screen != AppScreen.Home && _screens.TryGetValue(screen, out var shown))
+            {
+                shown.AddToClassList(UiClasses.Screen.Entering);
+                shown.schedule.Execute(() => shown.RemoveFromClassList(UiClasses.Screen.Entering)).StartingIn(16);
             }
 
             var isTab = TabButtonOf(screen) != null;
-            _tabBar.EnableInClassList(HiddenClass, !isTab);
+            _tabBar.EnableInClassList(UiClasses.Screen.Hidden, !isTab || _tabBarSuppressed);
             if (isTab)
             {
                 _lastTab = screen;
                 foreach (var (key, tab) in _tabButtons)
                 {
-                    tab.EnableInClassList(ActiveTabClass, key == screen);
+                    tab.EnableInClassList(UiClasses.Tab.Active, key == screen);
                 }
             }
 
@@ -208,25 +238,31 @@ namespace ProjectPenguin.Presentation.UI
                 }
             }
 
-            if (previous == AppScreen.Analyzing && screen != AppScreen.Analyzing && _analyzingPresenter != null)
+            if (_islandInteraction != null)
             {
-                _analyzingPresenter.Cancel();
+                _islandInteraction.InputEnabled = screen == AppScreen.Home;
+                if (screen != AppScreen.Home && _islandInteraction.Mode != World.IslandMode.Browse)
+                {
+                    _islandInteraction.Cancel();
+                }
             }
 
-            if (screen == AppScreen.Analyzing)
+            ScreenShown?.Invoke(screen, previous);
+        }
+
+        /// <summary>
+        /// タブバーを一時的に隠す (島の上で置き場所を選んでいる間など)。タブ画面でなければもともと出ていない。
+        /// </summary>
+        public void SetTabBarSuppressed(bool suppressed)
+        {
+            _tabBarSuppressed = suppressed;
+            if (_tabBar != null)
             {
-                if (_analyzingPresenter != null)
-                {
-                    _analyzingPresenter.Begin(() => Show(AppScreen.Result));
-                }
-                else
-                {
-                    Show(AppScreen.Result);
-                }
+                _tabBar.EnableInClassList(UiClasses.Screen.Hidden, suppressed || TabButtonOf(Current) == null);
             }
         }
 
-        /// <summary>戻るキー。フローの途中とタブ画面はホームへ、メニューは開く前のタブへ戻る。</summary>
+        /// <summary>戻るキー。フローの途中とタブ画面はホームへ、メニューは開く前のタブへ、建物の説明は一覧へ戻る。</summary>
         public void Back()
         {
             switch (Current)
@@ -235,6 +271,9 @@ namespace ProjectPenguin.Presentation.UI
                     return;
                 case AppScreen.Menu:
                     Show(_lastTab);
+                    return;
+                case AppScreen.BuildDetail:
+                    Show(AppScreen.Build);
                     return;
                 default:
                     Show(AppScreen.Home);

@@ -1,10 +1,18 @@
 # Project Penguin
 
-現実の消費行動を CO₂e に換算し、その結果でゲーム内の氷とペンギンの生息状況が変化する Unity アプリ。コンセプトと設計判断は `@README.md` を参照。
+毎日 1 枚のエコ写真・歩数・ミッションで資源を集め、ペンギンたちと「生産の島」を育てる Unity アプリ。記録を休むと氷が溶け、広げた島の端から沈む。コンセプトと設計判断は `@README.md` を参照。
 
 ## 応答の言語
 
 **ユーザーへの返答・説明・質問はすべて日本語で書く。** 途中で英語に切り替えない。コード・識別子・コマンド・ログの引用は原文のままでよい。
+
+## 作業の姿勢
+
+**デモで見せる最小限ではなく、製品として完成させるつもりで作る。** 「デモが動けば十分」と範囲を絞ると、結局完成しない。
+
+- 頼まれたことの周辺まで気を回す。演出・空の状態・エラー時・保存・テストなど、完成品に要るものは言われる前に入れる。やりすぎ・気が利きすぎくらいでよい。
+- 見た目は最優先の品質項目として扱う。仮データ・仮の見た目のまま「動く」で止めない。
+- 範囲を削る提案は、締切などの具体的な制約があるときだけ、理由を添えて行う。
 
 ## 技術スタック
 
@@ -31,8 +39,8 @@
 | `scripts/` | CI とローカル共用の検査スクリプト |
 | `tests/hooks/` | `.claude/hooks/` と `scripts/` の判定のテスト (pytest、標準ライブラリのみ) |
 | `docs/` | 設計メモ (`ui-structure.md` 画面構成、`design-system.md` 見た目の決まりごと) と参考画像 |
-| `docs/production-island/` | 生産の島 (主軸にする予定のインクリメンタル型の遊び。ホームには未組み込み) の素材・確認手順・テスト記録 |
-| `docs/game-logic.md` | ゲームロジックの仕様 (氷・盾・おかえり・段・来訪・スタンプ)。値と規則はこれを正とする |
+| `docs/production-island/` | 生産の島 (ゲームの主軸のインクリメンタル型の遊び) の仕様 (`game-design.md`)・素材・確認手順・テスト記録 |
+| `docs/game-logic.md` | 氷の規則の仕様 (氷・盾・おかえり・段・来訪・スタンプ)。値と規則はこれを正とする。生産の島の値と規則は `docs/production-island/game-design.md` を正とする |
 | `tools/game_sim/` | ゲームロジックの Python 参照実装。C# の期待値 (`GameSimGolden.cs`) を生成する |
 | `docs/decisions.md` | チームの決定事項 (Discord・JPHACKS の Notion と Slack から抽出)。仕様や前提を確かめるときに読む |
 | `.claude/rules/` | 領域別ルール (該当ファイルを読むと自動適用される) |
@@ -125,7 +133,7 @@ scope は `unity` / `backend` / `docs` / `ci`。プロジェクト全体にま�
 
 ## 現状
 
-- **実装済み**: ビルド・CI の土台、UI Toolkit の 7 画面と画面遷移 (`ScreenNavigator`)・SafeArea・カメラプレビュー (`Assets/Scripts/Presentation/UI/`)、ホームの 3D ワールド (`HomeWorld.unity`、`Assets/Scripts/Presentation/World/`)、その EditMode テスト。ゲームロジック v3 の状態機械 (氷・盾・おかえり・かけら・段・ペンギンの来訪・スタンプ。`Assets/Scripts/Domain/Game/`、仕様は `docs/game-logic.md`、Python の参照実装は `tools/game_sim/`)。ホームの氷の量のカード・吹き出し・氷山の大きさ・ペンギンの数はゲームの状態 (`GameStateSystem`) につながっている (開発ビルドではダミーの記録と時計の早送りで動かせる)。それ以外の画面の値は仮データ。
-- **未実装**: ゲームの状態の保存 (再起動で初期状態に戻る)・ミッションの一覧と選び方・図鑑・CO₂ の採点 (週の選び方の氷 B)、SQLite、FastAPI とその Unity 側のクライアント。
+- **実装済み**: ビルド・CI の土台。生産の島の規則 (`Assets/Scripts/Domain/Island/`、仕様は `docs/production-island/game-design.md`) と氷の状態機械 (`Assets/Scripts/Domain/Game/`、仕様は `docs/game-logic.md`)。ホームの 3D の島 (`ProductionIslandHome.unity`、`Assets/Scripts/Presentation/World/`。`HomeWorld.unity` を複製したシーンで、組み込みは **Production Island > Setup Home Island**。`HomeWorld.unity` は元の氷山と小屋のまま変えない)。UI Toolkit の全画面 (ホーム・建物の棚と説明・施設・港・生産量・エコ写真の撮影〜結果・ミッション・記録・図鑑・メニュー・はじめての案内)。施設の強化 (Lv5 まで、一覧は `docs/production-island/facilities.md`) と写真の表 (写っているもの → 資源)。建物の絵は **Production Island > Render Facility Thumbnails** で 3D モデルから描き出す。保存 (JSON、`Assets/Scripts/Data/`)。写真判定の口 (`IEcoPhotoJudge`) とモック。iOS の歩数。EditMode テスト。開発ビルドと Editor ではホームに早送りなどのデモ用の操作が出る。
+- **未実装 (Hack Day に作る)**: FastAPI の写真判定と Unity 側の HTTP クライアント、SQLite (`IGameStore` の差し替え)、スポンサー賞に向けた連携 (未決)。
 
 UI や画面遷移を触る前に、既存の Presenter と `docs/ui-structure.md` を読むこと。未実装の領域で実装を探して見つからない場合は「まだ存在しない」が正しい答えであり、既存実装を推測で仮定しないこと。

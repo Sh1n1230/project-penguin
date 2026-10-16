@@ -72,7 +72,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
             if (_cycle == null) { _result.staticStage = true; return; }
             Transform Part(string n) => root.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name == n);
             _input = Part("InputItem"); _raw = Part("ProcessRaw"); _finished = Part("ProcessFinished"); _output = Part("OutputItem"); _tool = Part("WorkingPart");
-            _secondary = Part("SecondaryTool");
+            _secondary = Part(ModelParts.Cycle.SecondaryTool);
             _result.duration = _cycle.Duration;
             _times = new[] { _cycle.InputEndTime * .5f, (_cycle.InputEndTime + _cycle.TransformationTime) * .5f,
                 (_cycle.TransformationTime + _cycle.WorkEndTime) * .5f, (_cycle.WorkEndTime + _cycle.OutputEndTime) * .5f,

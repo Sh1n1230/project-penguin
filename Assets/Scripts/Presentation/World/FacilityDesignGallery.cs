@@ -1,3 +1,4 @@
+using ProjectPenguin.Presentation.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -29,26 +30,26 @@ namespace ProjectPenguin.Presentation.World
         private void Start()
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
-            var reviewPanel = root.Q<VisualElement>(className: "review-panel");
+            var reviewPanel = root.Q<VisualElement>(className: UiClasses.FacilityReview.Panel);
             reviewPanel.RegisterCallback<GeometryChangedEvent>(_ => FitCameraBelowControls(root, reviewPanel));
             root.RegisterCallback<GeometryChangedEvent>(_ => FitCameraBelowControls(root, reviewPanel));
-            _title = root.Q<Label>("FacilityTitle"); _recipe = root.Q<Label>("FacilityRecipe");
-            _action = root.Q<Label>("FacilityAction");
-            root.Q<Button>("PreviousButton").clicked += () => Select(_index - 1);
-            root.Q<Button>("NextButton").clicked += () => Select(_index + 1);
-            _overviewButton = root.Q<Button>("OverviewButton");
+            _title = root.Q<Label>(UiNames.FacilityReview.FacilityTitle); _recipe = root.Q<Label>(UiNames.FacilityReview.FacilityRecipe);
+            _action = root.Q<Label>(UiNames.FacilityReview.FacilityAction);
+            root.Q<Button>(UiNames.FacilityReview.PreviousButton).clicked += () => Select(_index - 1);
+            root.Q<Button>(UiNames.FacilityReview.NextButton).clicked += () => Select(_index + 1);
+            _overviewButton = root.Q<Button>(UiNames.FacilityReview.OverviewButton);
             _overviewButton.clicked += () => { if (_overview) Select(_index); else ShowOverview(); };
-            _runningButton = root.Q<Button>("RunningButton");
+            _runningButton = root.Q<Button>(UiNames.FacilityReview.RunningButton);
             _runningButton.clicked += () => SetRunning(!_running);
-            _picker = root.Q<VisualElement>("FacilityPicker");
-            _choices = root.Q<VisualElement>("FacilityChoices");
-            root.Q<Button>("PickerButton").clicked += () => _picker.style.display = DisplayStyle.Flex;
-            root.Q<Button>("ClosePickerButton").clicked += () => _picker.style.display = DisplayStyle.None;
+            _picker = root.Q<VisualElement>(UiNames.FacilityReview.FacilityPicker);
+            _choices = root.Q<VisualElement>(UiNames.FacilityReview.FacilityChoices);
+            root.Q<Button>(UiNames.FacilityReview.PickerButton).clicked += () => _picker.style.display = DisplayStyle.Flex;
+            root.Q<Button>(UiNames.FacilityReview.ClosePickerButton).clicked += () => _picker.style.display = DisplayStyle.None;
             for (var i = 0; i < _facilities.Length; i++)
             {
                 var facilityIndex = i;
                 var button = new Button(() => Select(facilityIndex)) { text = (i + 1) + "  " + _labels[i], userData = i, name = "ChooseFacility" + i };
-                button.AddToClassList("facility-choice");
+                button.AddToClassList(UiClasses.FacilityReview.Choice);
                 _choices.Add(button);
             }
             Select(0);
@@ -125,7 +126,7 @@ namespace ProjectPenguin.Presentation.World
             _lastAction = null;
             if (_action != null && _overview) _action.text = "施設ごとに異なる周期で動きます";
             if (_choices != null)
-                foreach (var choice in _choices.Children()) choice.EnableInClassList("selected", !_overview && (int)choice.userData == _index);
+                foreach (var choice in _choices.Children()) choice.EnableInClassList(UiClasses.FacilityReview.ChoiceSelected, !_overview && (int)choice.userData == _index);
         }
     }
 }

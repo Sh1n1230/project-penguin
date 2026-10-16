@@ -30,12 +30,21 @@
     --color-danger: #E5534B;
     --color-danger-soft: #FCE3E1;
 
+    /* ---- Color: 島の資源 (アイコンの tint と数値) ---- */
+    --color-res-electricity: #F2B705;
+    --color-res-water: #1F8BEA;
+    --color-res-gas: #F2762E;
+    --color-res-allmighty: #9B6BE0;
+    --color-res-fish: #2A7FC0;
+    --color-res-pearl: #C98BB9;
+
     /* ---- Color: text & surface ---- */
     --color-text: #17385F;
     --color-text-sub: #6B8199;
     --color-text-on-primary: #FFFFFF;
     --color-surface: rgba(255, 255, 255, 0.95);
     --color-surface-glass: rgba(255, 255, 255, 0.8);
+    --color-surface-solid: #FFFFFF;
     --color-divider: #E3EEF7;
     --color-elevation: rgba(23, 56, 95, 0.12);
 

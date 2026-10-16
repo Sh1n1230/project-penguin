@@ -1,7 +1,13 @@
 {
     "name": "ProjectPenguin.Presentation",
     "rootNamespace": "ProjectPenguin.Presentation",
-    "references": ["ProjectPenguin.Domain","ProjectPenguin.Systems","Unity.InputSystem"],
+    "references": [
+        "ProjectPenguin.Domain",
+        "ProjectPenguin.Systems",
+        "Unity.InputSystem",
+        "ProjectPenguin.Backend",
+        "ProjectPenguin.Data"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

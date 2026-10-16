@@ -6,23 +6,23 @@ using UnityEngine.UIElements;
 namespace ProjectPenguin.Presentation.UI
 {
     /// <summary>
-    /// 解析中画面の 3 段階 (読み取り → 分類 → CO₂ 計算) の進み具合を表示する。
-    /// 今はバックエンドにつながっていないので、一定時間ごとに段階を進める仮の実装。
-    /// FastAPI のクライアントができたら、<see cref="Begin"/> の中身をその応答待ちに差し替える。
+    /// 解析中画面の 3 段階 (受け取り → 見分け → 資源に変える) の進み具合を表示する。
+    /// 判定 (<see cref="EcoPhotoFlowPresenter"/>) の応答が来るまでは最後の段階で待ち、
+    /// <see cref="Finish"/> で全段階を完了にしてから次へ進む。
     /// </summary>
     [RequireComponent(typeof(UIDocument))]
     public sealed class AnalyzingScreenPresenter : MonoBehaviour
     {
-        private const string ActiveClass = "pp-step--active";
-        private const string DoneClass = "pp-step--done";
 
-        private static readonly string[] StepNames = { "stepRead", "stepClassify", "stepCalculate" };
+        private static readonly string[] StepNames = { UiNames.Analyzing.StepRead, UiNames.Analyzing.StepClassify, UiNames.Analyzing.StepCalculate };
 
-        [Tooltip("仮の進行で 1 段階にかける秒数")]
-        [SerializeField] private float _secondsPerStep = 0.8f;
+        [Tooltip("1 段階を見せる最短の秒数")]
+        [SerializeField] private float _secondsPerStep = 0.7f;
 
         private VisualElement[] _steps;
+        private Label _caption;
         private Coroutine _routine;
+        private int _current = -1;
 
         private void OnEnable()
         {
@@ -32,15 +32,29 @@ namespace ProjectPenguin.Presentation.UI
             {
                 _steps[i] = screen.Q(StepNames[i]);
             }
+
+            _caption = screen.Q<Label>(UiNames.Analyzing.AnalyzingCaption);
         }
 
         private void OnDisable() => Cancel();
 
-        /// <summary>最初の段階から進め、すべて終わったら <paramref name="onCompleted"/> を呼ぶ。</summary>
-        public void Begin(Action onCompleted)
+        /// <summary>最初の段階から進め、最後の段階で <see cref="Finish"/> を待つ。</summary>
+        public void Begin()
         {
             Cancel();
-            _routine = StartCoroutine(Run(onCompleted));
+            SetCaption("写真を見ています");
+            _routine = StartCoroutine(Run());
+        }
+
+        /// <summary>残りの段階を完了にし、少し見せてから <paramref name="onCompleted"/> を呼ぶ。</summary>
+        public void Finish(Action onCompleted)
+        {
+            if (_routine != null)
+            {
+                StopCoroutine(_routine);
+            }
+
+            _routine = StartCoroutine(FinishRoutine(onCompleted));
         }
 
         /// <summary>途中でやめる。表示は最初の状態に戻す。</summary>
@@ -55,17 +69,36 @@ namespace ProjectPenguin.Presentation.UI
             ShowStep(-1);
         }
 
-        private IEnumerator Run(Action onCompleted)
+        public void SetCaption(string text)
+        {
+            if (_caption != null)
+            {
+                _caption.text = text;
+            }
+        }
+
+        private IEnumerator Run()
         {
             for (var i = 0; i < _steps.Length; i++)
             {
                 ShowStep(i);
-                yield return new WaitForSeconds(_secondsPerStep);
+                yield return new WaitForSecondsRealtime(_secondsPerStep);
+            }
+
+            _routine = null;
+        }
+
+        private IEnumerator FinishRoutine(Action onCompleted)
+        {
+            // 早く応答が来ても、各段階が一瞬で過ぎないように見せる。
+            for (var i = Mathf.Max(0, _current); i < _steps.Length; i++)
+            {
+                ShowStep(i);
+                yield return new WaitForSecondsRealtime(_secondsPerStep * 0.5f);
             }
 
             ShowStep(_steps.Length);
-            yield return new WaitForSeconds(_secondsPerStep / 2f);
-
+            yield return new WaitForSecondsRealtime(_secondsPerStep * 0.6f);
             _routine = null;
             onCompleted?.Invoke();
         }
@@ -73,6 +106,7 @@ namespace ProjectPenguin.Presentation.UI
         // current より前は完了、current は進行中、それ以降は未着手。-1 ならすべて未着手。
         private void ShowStep(int current)
         {
+            _current = current;
             if (_steps == null)
             {
                 return;
@@ -80,8 +114,8 @@ namespace ProjectPenguin.Presentation.UI
 
             for (var i = 0; i < _steps.Length; i++)
             {
-                _steps[i].EnableInClassList(DoneClass, current >= 0 && i < current);
-                _steps[i].EnableInClassList(ActiveClass, i == current);
+                _steps[i].EnableInClassList(UiClasses.Step.Done, current >= 0 && i < current);
+                _steps[i].EnableInClassList(UiClasses.Step.Active, i == current);
             }
         }
     }

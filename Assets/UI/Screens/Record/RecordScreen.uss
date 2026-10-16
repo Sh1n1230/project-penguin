@@ -44,3 +44,8 @@
     padding-top: var(--space-1);
     padding-bottom: var(--space-1);
 }
+
+.record__note {
+    margin-top: var(--space-2);
+    white-space: normal;
+}

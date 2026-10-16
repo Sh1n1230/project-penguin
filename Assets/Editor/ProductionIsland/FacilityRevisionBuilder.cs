@@ -201,7 +201,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
             var path = SharedFolder + "/" + name + ".mat";
             var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (mat == null) { mat = new Material(Shader.Find("Universal Render Pipeline/Lit")); AssetDatabase.CreateAsset(mat, path); }
-            mat.SetColor("_BaseColor", Color.white); mat.SetFloat("_Smoothness", .12f);
+            mat.SetColor(ShaderIds.BaseColor, Color.white); mat.SetFloat(ShaderIds.Smoothness, .12f);
             mat.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(SharedFolder + "/" + texture));
             EditorUtility.SetDirty(mat); return mat;
         }
@@ -211,7 +211,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
             var path = SharedFolder + "/" + name + ".mat";
             var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (mat == null) { mat = new Material(Shader.Find("Universal Render Pipeline/Lit")); AssetDatabase.CreateAsset(mat, path); }
-            mat.SetColor("_BaseColor", color); mat.SetFloat("_Smoothness", .1f); EditorUtility.SetDirty(mat); return mat;
+            mat.SetColor(ShaderIds.BaseColor, color); mat.SetFloat(ShaderIds.Smoothness, .1f); EditorUtility.SetDirty(mat); return mat;
         }
 
         private static WorkshopPenguin CreatePenguin(Transform frame, Scene scene, string role)

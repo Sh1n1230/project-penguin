@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -134,11 +135,11 @@ namespace ProjectPenguin.Presentation.World
             if (_effect != null) { _effectStart = Point(_effect); _effectScale = _effect.localScale; }
             var parts = GetComponentsInChildren<Transform>(true);
             Transform Part(string name) => parts.FirstOrDefault(p => p.name == name);
-            _secondary = Part("SecondaryTool"); _fluid = Part("FluidLevel");
+            _secondary = Part(ModelParts.Cycle.SecondaryTool); _fluid = Part(ModelParts.Cycle.FluidLevel);
             if (_secondary != null) { _secondaryStart = Point(_secondary); _secondaryRotation = Quaternion.Inverse(_frame.rotation) * _secondary.rotation; }
             if (_fluid != null) { _fluidStart = Point(_fluid); _fluidScale = _fluid.localScale; }
-            _charges = new[] { Part("Charge0"), Part("Charge1"), Part("Charge2") };
-            _routes = new[] { Part("Route0"), Part("Route1"), Part("Route2") };
+            _charges = Array.ConvertAll(ModelParts.Cycle.Charges, Part);
+            _routes = Array.ConvertAll(ModelParts.Cycle.Routes, Part);
             _initialized = true; ApplyPose(); ApplyMaterials();
         }
         public void SetRunning(bool running) { _running = running; if (_initialized) { ApplyPose(); ApplyMaterials(); } }
