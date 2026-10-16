@@ -27,6 +27,100 @@ namespace ProjectPenguin.Domain.Island
         Unknown,
     }
 
+    /// <summary>
+    /// 写真に写っているもの。もらえる資源は <see cref="EcoSubjects"/> の表で決まる
+    /// (docs/production-island/resources.md の「写真の表」)。判定 (AI・モック) は、このどれかを返す。
+    /// </summary>
+    public enum EcoSubject
+    {
+        /// <summary>表のどれでもない (カテゴリだけで決める古い判定、または判定できない写真)。</summary>
+        None,
+        LightsOff,
+        AirConditioner,
+        ShortShower,
+        SaveWater,
+        MyBottle,
+        EcoBag,
+        Walk,
+        Bicycle,
+        Train,
+        CleanPlate,
+        LocalFood,
+        Recycle,
+    }
+
+    /// <summary>写真の表の 1 行: 写っているもの・名前・カテゴリ・もらえる資源。</summary>
+    public sealed class EcoSubjectDef
+    {
+        public EcoSubjectDef(EcoSubject subject, string id, string name, EcoCategory category, params (Resource Resource, double Amount)[] grants)
+        {
+            Subject = subject;
+            Id = id;
+            Name = name;
+            Category = category;
+            Grants = grants;
+        }
+
+        public EcoSubject Subject { get; }
+
+        /// <summary>backend の API で使う ID (「my_bottle」など)。</summary>
+        public string Id { get; }
+
+        /// <summary>画面に出す名前 (「マイボトル」など)。</summary>
+        public string Name { get; }
+
+        public EcoCategory Category { get; }
+        public IReadOnlyList<(Resource Resource, double Amount)> Grants { get; }
+
+        public ResourceBundle Bundle()
+        {
+            var b = new ResourceBundle();
+            foreach (var (r, v) in Grants)
+            {
+                b[r] += v;
+            }
+
+            return b;
+        }
+    }
+
+    /// <summary>
+    /// 写真の表。「マイボトルなら水 +10・オールマイティ +10」のように、写っているものごとに量を決める。
+    /// 量を変えるときはここだけ直す (ゲーム内の「資源の集め方」もここから読む)。
+    /// </summary>
+    public static class EcoSubjects
+    {
+        public static readonly IReadOnlyList<EcoSubjectDef> All = new[]
+        {
+            new EcoSubjectDef(EcoSubject.LightsOff, "lights_off", "消した電気", EcoCategory.SaveElectricity, (Resource.Electricity, 20)),
+            new EcoSubjectDef(EcoSubject.AirConditioner, "air_conditioner", "エアコンの温度設定", EcoCategory.SaveElectricity, (Resource.Electricity, 20)),
+            new EcoSubjectDef(EcoSubject.ShortShower, "short_shower", "短いシャワー", EcoCategory.SaveWater, (Resource.Water, 20)),
+            new EcoSubjectDef(EcoSubject.SaveWater, "save_water", "蛇口をしめる・ため洗い", EcoCategory.SaveWater, (Resource.Water, 15)),
+            new EcoSubjectDef(EcoSubject.MyBottle, "my_bottle", "マイボトル", EcoCategory.Goods, (Resource.Water, 10), (Resource.AllMighty, 10)),
+            new EcoSubjectDef(EcoSubject.EcoBag, "eco_bag", "エコバッグ", EcoCategory.Goods, (Resource.AllMighty, 15)),
+            new EcoSubjectDef(EcoSubject.Walk, "walk", "歩いて移動", EcoCategory.Move, (Resource.Gas, 20)),
+            new EcoSubjectDef(EcoSubject.Bicycle, "bicycle", "自転車", EcoCategory.Move, (Resource.Gas, 20)),
+            new EcoSubjectDef(EcoSubject.Train, "train", "電車・バス", EcoCategory.Move, (Resource.Gas, 15)),
+            new EcoSubjectDef(EcoSubject.CleanPlate, "clean_plate", "食べきったお皿", EcoCategory.Food, (Resource.AllMighty, 15)),
+            new EcoSubjectDef(EcoSubject.LocalFood, "local_food", "地元の食材", EcoCategory.Food, (Resource.AllMighty, 10), (Resource.Water, 5)),
+            new EcoSubjectDef(EcoSubject.Recycle, "recycle", "分別・リサイクル", EcoCategory.Goods, (Resource.AllMighty, 10), (Resource.Electricity, 5)),
+        };
+
+        /// <summary>エコ活動が写っていない・判定できない写真でも、記録にはなる。少しだけ渡す。</summary>
+        public static readonly (Resource Resource, double Amount)[] UnknownGrants =
+        {
+            (Resource.Electricity, 3), (Resource.Water, 3), (Resource.Gas, 3),
+        };
+
+        private static readonly Dictionary<EcoSubject, EcoSubjectDef> BySubject = All.ToDictionary(d => d.Subject);
+        private static readonly Dictionary<string, EcoSubjectDef> ById = All.ToDictionary(d => d.Id);
+
+        public static EcoSubjectDef Find(EcoSubject subject) => BySubject.TryGetValue(subject, out var d) ? d : null;
+
+        /// <summary>backend の ID から引く。知らない ID は null (判定できない写真として扱う)。</summary>
+        public static EcoSubjectDef FindById(string id) => id != null && ById.TryGetValue(id, out var d) ? d : null;
+    }
+
     /// <summary>写真の判定結果。画像そのものは持たない (端末の外にも残さない)。</summary>
     public sealed class EcoPhotoVerdict
     {
@@ -38,7 +132,21 @@ namespace ProjectPenguin.Domain.Island
             Confidence = confidence;
         }
 
+        /// <summary>写真の表のどれかとして判定した結果。カテゴリと名前は表から決まる。</summary>
+        public EcoPhotoVerdict(EcoSubject subject, string comment, double confidence)
+        {
+            var def = EcoSubjects.Find(subject);
+            Subject = def != null ? subject : EcoSubject.None;
+            Category = def?.Category ?? EcoCategory.Unknown;
+            Label = def?.Name ?? "";
+            Comment = comment ?? "";
+            Confidence = confidence;
+        }
+
         public EcoCategory Category { get; }
+
+        /// <summary>写真の表のどれか。<see cref="EcoSubject.None"/> ならカテゴリだけで資源を決める。</summary>
+        public EcoSubject Subject { get; }
 
         /// <summary>写っていたもの (「マイボトル」など)。</summary>
         public string Label { get; }
@@ -181,6 +289,24 @@ namespace ProjectPenguin.Domain.Island
                 return b;
             }
 
+            // 写真の表にあるものは、表の量をそのまま渡す。
+            var def = EcoSubjects.Find(verdict.Subject);
+            if (def != null)
+            {
+                return def.Bundle();
+            }
+
+            if (!verdict.IsEco)
+            {
+                foreach (var (r, v) in EcoSubjects.UnknownGrants)
+                {
+                    b[r] += v;
+                }
+
+                return b;
+            }
+
+            // 表を使わない判定 (カテゴリだけ) のときは、主の資源に多く、ほかの電気・水・ガスに少し。
             var main = verdict.IsEco ? EcoCategories.MainResource(verdict.Category) : Resource.AllMighty;
             var mainAmount = verdict.IsEco ? p.PhotoMainGrant : p.PhotoSideGrant;
             b[main] += mainAmount;

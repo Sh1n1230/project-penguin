@@ -146,15 +146,16 @@ Content-Type: multipart/form-data   (image: JPEG、長い辺 1280px まで)
 
 200 OK
 {
-  "category": "save_electricity" | "save_water" | "move" | "food" | "goods" | "unknown",
-  "label": "マイボトル",          // 写っていたもの (20 文字まで)
+  "subject": "my_bottle",        // 写真の表の ID (resources.md の「写真の表」)。どれでもなければ "unknown"
   "comment": "マイボトル、かっこいいね",  // ペンギンのひとこと (40 文字まで、数字を言わない)
   "confidence": 0.82
 }
 ```
 
+- `subject` は `EcoSubjects.FindById` で引く。知らない ID と `"unknown"` は「判定できない写真」(電気・水・ガス +3 ずつ) にする。名前とカテゴリは表から決まるので、サーバーは返さない。
+
 - サーバーは画像をメモリ上で Gemini に渡し、応答を Pydantic で検証してから返す。画像も応答もディスク・ログに残さない (`.claude/rules/privacy.md`)。
-- 資源の量はサーバーでは決めない。クライアントがカテゴリから決める (§4)。不正に強くする必要が出たら、そのときにサーバーへ移す。
+- 資源の量はサーバーでは決めない。クライアントが写真の表 (`EcoSubjects`) から決める。不正に強くする必要が出たら、そのときにサーバーへ移す。
 - 失敗 (通信・判定不能) のときは 4xx/5xx を返し、クライアントは「もう一度撮ってね」を出してスキャン画面に戻る。
 
 ## 13. 調整の手順

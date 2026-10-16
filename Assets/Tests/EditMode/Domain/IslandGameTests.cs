@@ -297,8 +297,48 @@ namespace ProjectPenguin.Tests.EditMode.Domain
         {
             var g = New();
             var got = g.ReceivePhoto(new EcoPhotoVerdict(EcoCategory.Unknown, "", "", 0.1), 1);
-            Assert.That(got[Resource.AllMighty], Is.EqualTo(5));
-            Assert.That(got[Resource.Electricity], Is.EqualTo(5));
+            Assert.That(got[Resource.AllMighty], Is.EqualTo(0));
+            Assert.That(got[Resource.Electricity], Is.EqualTo(3));
+            Assert.That(got[Resource.Water], Is.EqualTo(3));
+            Assert.That(got[Resource.Gas], Is.EqualTo(3));
+        }
+
+        [Test]
+        public void 写真の表のものは表の量だけもらえる()
+        {
+            var g = New();
+            var bottle = EcoSubjects.Find(EcoSubject.MyBottle);
+            var got = g.ReceivePhoto(new EcoPhotoVerdict(EcoSubject.MyBottle, "", 0.9), 1);
+
+            Assert.That(got[Resource.Water], Is.EqualTo(bottle.Bundle()[Resource.Water]));
+            Assert.That(got[Resource.AllMighty], Is.EqualTo(bottle.Bundle()[Resource.AllMighty]));
+            Assert.That(got[Resource.Electricity], Is.EqualTo(0), "表に無い資源は入らない");
+        }
+
+        [Test]
+        public void 写真の表は名前とカテゴリを決め_IDで引ける()
+        {
+            var verdict = new EcoPhotoVerdict(EcoSubject.EcoBag, "えらい", 0.9);
+            Assert.That(verdict.Label, Is.EqualTo("エコバッグ"));
+            Assert.That(verdict.Category, Is.EqualTo(EcoCategory.Goods));
+            Assert.That(verdict.IsEco, Is.True);
+            Assert.That(EcoSubjects.FindById("eco_bag").Subject, Is.EqualTo(EcoSubject.EcoBag));
+            Assert.That(EcoSubjects.FindById("unknown_thing"), Is.Null);
+        }
+
+        [Test]
+        public void 写真の表はIDが重ならず_どれも何かがもらえる()
+        {
+            Assert.That(EcoSubjects.All.Select(d => d.Id).Distinct().Count(), Is.EqualTo(EcoSubjects.All.Count));
+            Assert.That(EcoSubjects.All.Select(d => d.Subject).Distinct().Count(), Is.EqualTo(EcoSubjects.All.Count));
+            foreach (var d in EcoSubjects.All)
+            {
+                Assert.That(d.Bundle().IsEmpty, Is.False, d.Name);
+                Assert.That(d.Category, Is.Not.EqualTo(EcoCategory.Unknown), d.Name);
+            }
+
+            var all = Enum.GetValues(typeof(EcoSubject)).Cast<EcoSubject>().Where(x => x != EcoSubject.None);
+            Assert.That(all.All(x => EcoSubjects.Find(x) != null), Is.True, "enum に足したら表にも足す");
         }
 
         [Test]

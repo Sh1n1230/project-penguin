@@ -25,23 +25,25 @@ namespace ProjectPenguin.Backend
     }
 
     /// <summary>
-    /// backend ができるまでの判定。写真の色の傾向からカテゴリを選ぶ (緑が多ければ食べ物、青が多ければ水 など)。
+    /// backend ができるまでの判定。写真のバイト列から写真の表 (<see cref="EcoSubjects"/>) のどれかを選ぶ。
     /// 同じ写真なら同じ結果になる。待ち時間を入れて、解析中の画面の流れを本番と同じにする。
     /// </summary>
     public sealed class MockEcoPhotoJudge : IEcoPhotoJudge
     {
-        private static readonly (EcoCategory Category, string Label, string Comment)[] Samples =
+        private static readonly (EcoSubject Subject, string Comment)[] Samples =
         {
-            (EcoCategory.SaveElectricity, "消した電気", "電気を大事にしてくれたんだね。工場がよろこんでるよ"),
-            (EcoCategory.SaveElectricity, "こまめな消灯", "まっくらでも、ぼくらは平気だよ"),
-            (EcoCategory.SaveWater, "節水", "お水を大事にしてくれてありがとう。島が広げられるね"),
-            (EcoCategory.SaveWater, "短いシャワー", "その水で、氷がひとつ増やせそう"),
-            (EcoCategory.Move, "歩いて移動", "いっぱい歩いたね。ガスがたまったよ"),
-            (EcoCategory.Move, "自転車", "風を切って走るの、気持ちよさそう"),
-            (EcoCategory.Food, "食べきったお皿", "ぴかぴかのお皿だ！ぼくもお魚は残さないよ"),
-            (EcoCategory.Food, "地元の野菜", "近くでとれたものっていいね"),
-            (EcoCategory.Goods, "マイボトル", "マイボトル、かっこいいね"),
-            (EcoCategory.Goods, "エコバッグ", "エコバッグで買い物、えらい！"),
+            (EcoSubject.LightsOff, "電気を大事にしてくれたんだね。工場がよろこんでるよ"),
+            (EcoSubject.AirConditioner, "ちょうどいい温度だね。ぼくらは寒いほうが好きだけど"),
+            (EcoSubject.ShortShower, "その水で、氷がひとつ増やせそう"),
+            (EcoSubject.SaveWater, "お水を大事にしてくれてありがとう。島が広げられるね"),
+            (EcoSubject.Walk, "いっぱい歩いたね。ガスがたまったよ"),
+            (EcoSubject.Bicycle, "風を切って走るの、気持ちよさそう"),
+            (EcoSubject.Train, "みんなで乗ると、ガスが少しで済むんだって"),
+            (EcoSubject.CleanPlate, "ぴかぴかのお皿だ！ぼくもお魚は残さないよ"),
+            (EcoSubject.LocalFood, "近くでとれたものっていいね"),
+            (EcoSubject.MyBottle, "マイボトル、かっこいいね"),
+            (EcoSubject.EcoBag, "エコバッグで買い物、えらい！"),
+            (EcoSubject.Recycle, "分けてくれたから、また使えるね"),
         };
 
         private readonly TimeSpan _delay;
@@ -79,7 +81,7 @@ namespace ProjectPenguin.Backend
                 }
 
                 var s = Samples[(int)(h % (ulong)Samples.Length)];
-                return new EcoPhotoVerdict(s.Category, s.Label, s.Comment, 0.8);
+                return new EcoPhotoVerdict(s.Subject, s.Comment, 0.8);
             }
         }
     }

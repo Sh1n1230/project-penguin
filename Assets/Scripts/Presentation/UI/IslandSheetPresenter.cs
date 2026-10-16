@@ -321,18 +321,34 @@ namespace ProjectPenguin.Presentation.UI
                     body.Add(row);
                 }
 
-                Add(Resource.Electricity,
-                    $"エコ写真で「電気の節約」と判定 +{p.PhotoMainGrant:0}、ほかの写真でも +{p.PhotoSideGrant:0}（1 日 {p.PhotosPerDay} 枚まで）",
-                    "施設を建てる");
-                Add(Resource.Water,
-                    $"エコ写真で「水の節約」と判定 +{p.PhotoMainGrant:0}、ほかの写真でも +{p.PhotoSideGrant:0}（1 日 {p.PhotosPerDay} 枚まで）",
-                    "海を凍らせて島を広げる");
+                Add(Resource.Electricity, $"写真：{PhotoSources(Resource.Electricity)}", "施設を建てる・強化する");
+                Add(Resource.Water, $"写真：{PhotoSources(Resource.Water)}", "海を凍らせて島を広げる");
                 Add(Resource.Gas,
-                    $"{p.StepsPerGas:N0} 歩ごとに +1（1 日 {p.StepGasPerDayMax:0} まで）。写真で「移動」と判定 +{p.PhotoMainGrant:0}、ほかの写真でも +{p.PhotoSideGrant:0}",
+                    $"{p.StepsPerGas:N0} 歩ごとに +1（1 日 {p.StepGasPerDayMax:0} まで）。写真：{PhotoSources(Resource.Gas)}",
                     "施設を動かす（動いている間ずっと減る）");
                 Add(Resource.AllMighty,
-                    $"夜の振り返りで「できた」+{p.MissionAllMighty:0}、「できなかった」でも +{p.MissionTriedAllMighty:0}。写真で「食べ物」「物を大事に」と判定 +{p.PhotoMainGrant:0}、エコと判定できない写真 +{p.PhotoSideGrant:0}",
+                    $"夜の振り返りで「できた」+{p.MissionAllMighty:0}、「できなかった」でも +{p.MissionTriedAllMighty:0}。写真：{PhotoSources(Resource.AllMighty)}",
                     "電気・水・ガスが足りないとき、代わりに 1 対 1 で使われる");
+
+                // 写真の表 (写っているもの → もらえる量)。1 日 1 枚まで。
+                body.Add(IslandUi.Text($"写真の表（1 日 {p.PhotosPerDay} 枚まで）", UiClasses.SectionTitle));
+                foreach (var def in EcoSubjects.All)
+                {
+                    var counts = new VisualElement { pickingMode = PickingMode.Ignore };
+                    counts.AddToClassList(UiClasses.Counts);
+                    foreach (var (res, v) in def.Grants)
+                    {
+                        counts.Add(IslandUi.Count(IslandUi.IconClass(res), IslandUi.TintClass(res), $"+{v:0}"));
+                    }
+
+                    var row = IslandUi.Row(null, def.Name, null);
+                    row.Q(className: UiClasses.Row.Body).Add(counts);
+                    body.Add(row);
+                }
+
+                var unknown = IslandUi.Row(null, "エコと判定できない写真", "記録にはなる。電気・水・ガスに少しずつ");
+                unknown.EnableInClassList(UiClasses.Row.Last, true);
+                body.Add(unknown);
 
                 body.Add(IslandUi.Text("島の中で増えるもの", UiClasses.SectionTitle));
                 body.Add(IslandUi.Row(IslandUi.IconBadge(UiClasses.Icon.Fish, UiClasses.Tint.Fish), "お魚",
@@ -370,6 +386,16 @@ namespace ProjectPenguin.Presentation.UI
                     kv.Value.text = MultiplierText(island, kv.Key);
                 }
             });
+        }
+
+        /// <summary>その資源がもらえる写真 (「マイボトル +10・短いシャワー +20」のように)。</summary>
+        private static string PhotoSources(Resource r)
+        {
+            var parts = EcoSubjects.All
+                .SelectMany(d => d.Grants.Where(g => g.Resource == r).Select(g => $"{d.Name} +{g.Amount:0}"))
+                .ToList();
+            var unknown = EcoSubjects.UnknownGrants.Where(g => g.Resource == r).Select(g => $"判定できない写真 +{g.Amount:0}");
+            return string.Join("・", parts.Concat(unknown));
         }
 
         /// <summary>受け取る量の倍率と、その内訳 (増幅施設・図鑑のペンギン)。</summary>

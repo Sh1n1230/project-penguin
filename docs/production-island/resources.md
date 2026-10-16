@@ -11,32 +11,34 @@
 
 | 資源 | 増える条件 | 量 (初期値) | 上限・制限 | パラメータ |
 |---|---|---|---|---|
-| 電気 | エコ写真が「電気の節約」と判定される | +20 | 写真は 1 日 1 枚まで資源になる (2 枚目以降は記録だけ) | `PhotoMainGrant`, `PhotosPerDay` |
-| 電気 | エコ写真が電気以外と判定される (エコと判定できない写真も含む) | +5 | 同上 | `PhotoSideGrant` |
-| 水 | エコ写真が「水の節約」と判定される | +20 | 同上 | `PhotoMainGrant` |
-| 水 | エコ写真が水以外と判定される | +5 | 同上 | `PhotoSideGrant` |
+| 電気・水・ガス・オールマイティ | エコ写真 (下の「写真の表」で、写っているものごとに決まる) | 表のとおり | 写真は 1 日 1 枚まで資源になる (2 枚目以降は記録だけ) | `EcoSubjects.All`, `PhotosPerDay` |
+| 電気・水・ガス | エコと判定できない写真 (記録にはなる) | +3 ずつ | 同上 | `EcoSubjects.UnknownGrants` |
 | ガス | 歩く (iOS の歩数計。アプリの 1 日 = 03:00 JST 区切り) | 500 歩ごとに +1 | 1 日 20 まで | `StepsPerGas`, `StepGasPerDayMax` |
-| ガス | エコ写真が「移動」と判定される | +20 | 写真は 1 日 1 枚 | `PhotoMainGrant` |
-| ガス | エコ写真がガス以外と判定される | +5 | 同上 | `PhotoSideGrant` |
 | オールマイティ | 夜の振り返り (18 時から) で「できた」と答える | +5 / 件 | 選べるミッションは 1 日 2 件 (`GameParameters.SelectionsPerDay`) | `MissionAllMighty` |
 | オールマイティ | 夜の振り返りで「できなかった」「少しだけ」と答える | +2 / 件 | 正直に答えても損をしないため | `MissionTriedAllMighty` |
-| オールマイティ | エコ写真が「食べ物」「物を大事に」と判定される | +20 | 写真は 1 日 1 枚 | `PhotoMainGrant` |
-| オールマイティ | エコと判定できない写真 | +5 (ほかに電気・水・ガス +5 ずつ) | 同上 | `PhotoSideGrant` |
 
-### 写真の判定カテゴリと、多く入る資源
+### 写真の表
 
-`EcoCategories.MainResource` (`EcoActions.cs`)。判定したカテゴリの資源に `PhotoMainGrant`、残りの電気・水・ガスに `PhotoSideGrant` ずつ入る。
+「エコバッグならいくつ、マイボトルならいくつ」という簡単な表 (2026-10-16 の決定)。表は `EcoSubjects.All` (`Assets/Scripts/Domain/Island/EcoActions.cs`) にあり、量を変えるときはそこだけを直す。ゲーム内の「資源の集め方」もこの表から作る。判定 (AI・モック) は、写っているものの ID を返すだけで、量は決めない。
 
-| 判定 (`EcoCategory`) | 例 | 多く入る資源 |
-|---|---|---|
-| `SaveElectricity` | 消灯・冷暖房の設定・待機電力 | 電気 |
-| `SaveWater` | シャワー・洗い物・節水 | 水 |
-| `Move` | 徒歩・自転車・公共交通 | ガス |
-| `Food` | 食べきり・地元の食材・植物性の食事 | オールマイティ |
-| `Goods` | マイボトル・エコバッグ・リユース・分別 | オールマイティ |
-| `Unknown` | エコ活動が写っていない・判定できない | オールマイティ (`PhotoSideGrant` だけ) |
+| 写っているもの | ID | カテゴリ | もらえる資源 |
+|---|---|---|---|
+| 消した電気 | `lights_off` | 電気の節約 | 電気 +20 |
+| エアコンの温度設定 | `air_conditioner` | 電気の節約 | 電気 +20 |
+| 短いシャワー | `short_shower` | 水の節約 | 水 +20 |
+| 蛇口をしめる・ため洗い | `save_water` | 水の節約 | 水 +15 |
+| マイボトル | `my_bottle` | 物を大切に | 水 +10・オールマイティ +10 |
+| エコバッグ | `eco_bag` | 物を大切に | オールマイティ +15 |
+| 歩いて移動 | `walk` | エコな移動 | ガス +20 |
+| 自転車 | `bicycle` | エコな移動 | ガス +20 |
+| 電車・バス | `train` | エコな移動 | ガス +15 |
+| 食べきったお皿 | `clean_plate` | 食べ物を大切に | オールマイティ +15 |
+| 地元の食材 | `local_food` | 食べ物を大切に | オールマイティ +10・水 +5 |
+| 分別・リサイクル | `recycle` | 物を大切に | オールマイティ +10・電気 +5 |
+| (判定できない) | — | — | 電気・水・ガス +3 ずつ |
 
-今の判定はモック (`MockEcoPhotoJudge`)。写真の色の傾向でカテゴリが決まる。Hack Day に FastAPI + Gemini の判定に差し替える (`docs/production-island/game-design.md` の API の節)。
+- 表にない判定 (カテゴリだけを返す古い形) のときは、カテゴリの資源に `PhotoMainGrant` (+20)、ほかの電気・水・ガスに `PhotoSideGrant` (+5) ずつ入る。
+- 今の判定はモック (`MockEcoPhotoJudge`)。写真のバイト列から表のどれかを選ぶ (同じ写真なら同じ結果)。Hack Day に FastAPI + Gemini の判定に差し替える (`docs/production-island/game-design.md` の API の節)。
 
 ### いつ受け取るか
 
