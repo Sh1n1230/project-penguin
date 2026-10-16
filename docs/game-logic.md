@@ -3,7 +3,7 @@
 2026-10-15 作成。チームの調査資料「10 スコア v2」の氷の規則を土台に、「15a 継続の仕組み」「15b ミッション」「15c ペンギンと世界」「15d シミュレーション」を 1 つにまとめたもの。**ゲームロジックの値と規則はこの文書を正とする。** 15a〜15c と食い違う箇所は §9 に一覧した。
 
 - 調査資料の本体 (出典つきの PDF) とミッション一覧 (`missions_catalog.csv`) はリポジトリに入れていない。ミッションの値の多くはデコ活データベース由来で、利用規約上「デコ活応援団」への参画前に公開できないため (`THIRD_PARTY_NOTICES.md`)。
-- **この文書をチームの正式な仕様として採用するかは未決** (§10、`docs/decisions.md` の「未決・検討中」)。
+- **氷の規則は 2026-10-15 に採用した** (`docs/decisions.md`)。記録の手段はレシートから「1 日 1 回のエコ写真」に変わり、氷は生産の島の「支えられる土地の広さ」になる。生産の島の規則は [`docs/production-island/game-design.md`](production-island/game-design.md)。この文書の「レシート」は、記録の操作としては「写真」と読み替える。
 
 ## 実装との対応
 
@@ -14,9 +14,10 @@
 | 見た目の規則 (面積・気分・氷に乗る数・ひび) と吹き出しの選び方 (15c §1・§2) | `Assets/Scripts/Domain/World/` | 実装済み |
 | ホームへの反映 (氷の量のカード・吹き出し・氷山の大きさ・ペンギンの数・ひび) | `GameStateSystem` (Systems)、`HomeStatusPresenter`・`IceWorldView` (Presentation) | 実装済み。開発ビルドと Editor ではホームに「記録する」「1 日進める」のデモ用の操作が出る |
 | Python の参照実装と 8 人の利用者のシミュレーション | `tools/game_sim/` | 実装済み。C# との一致は `GameSimParityTests` で確かめる |
-| 週の選び方の氷 B (レシートの採点) | — | Hack Day で作る。`GameSession` は B を関数で受け取るので、それまでは 0 を返す関数を渡す |
-| ミッションの一覧・朝の 3 件の選び方 (15b §3.2) | — | Hack Day 以降。`GameSession` には選択と振り返りの入口だけがある |
-| 保存 (SQLite) | — | Hack Day で作る |
+| 週の選び方の氷 B (レシートの採点) | — | 使わない。写真では CO₂ を採点しないので、`GameSession` には常に 0 を返す関数を渡す |
+| ミッションの一覧・朝の 3 件の選び方 | `Assets/Scripts/Domain/Island/EcoActions.cs` (`MissionCatalog`) | 実装済み。出典の要らないアプリ独自の 16 件から、日付を種にした乱数で 3 件。`missions_catalog.csv` (デコ活由来) は使っていない |
+| 写真 = 記録 | `GameStateSystem.RecordEcoPhoto` | 実装済み。`GameSession.ScanReceipt` に写真用の ID を渡す |
+| 保存 | `GameStateSystem` (操作の記録を再生)・`Assets/Scripts/Data/JsonGameStore.cs` | 実装済み (JSON)。Hack Day に SQLite へ差し替える |
 
 ## 0. 設計の芯
 

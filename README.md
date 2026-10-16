@@ -6,7 +6,7 @@
 
 環境問題は、誰もが「大事だ」と思いながら、自分の日常と結びつかないまま忘れられていきます。数字やグラフでは人は動かない。でも、自分が育てたペンギンの足場が日に日に小さくなっていくのを見たら、人は動くと信じています。
 
-ゲーム内の氷は、ユーザーの現実の行動と連動します。レシートを撮影するだけで日々の消費を CO2 換算でスコアリングし、環境負荷の低い選択を続けるほど氷が守られ、新しい種類のペンギンが住み着く。朝に選んだデイリーミッションを夜に振り返ることで、「今日はちゃんとやれた」という小さな達成が、ペンギンの居場所を増やしていきます。
+ゲーム内の氷は、ユーザーの現実の行動と連動します。1 日 1 回、マイボトルや消した電気など、何でもよいエコな行動の写真を撮ると、それが今日の記録になって氷が守られ、AI が写真を見分けて電気・水などの資源が島に届きます。歩いた歩数はガスに、夜のミッションの振り返りはどれにでも使える資源になります。集めた資源とペンギンたちで施設を建て、お魚を作って港に届け、島を広げていく「生産の島」がゲームの主軸です。記録を休むと氷が溶けて、広げた島の端から沈んでいきます (記録すれば浮かびます)。
 
 放置すると失われる、という「現実と地続きの緊張感」こそが、このプロダクトの核です。
 
@@ -22,16 +22,14 @@
 │  ├─ Animation                  │
 │  └─ UI                         │
 │                                │
-│  Game Logic                    │
-│  ├─ GameState                  │
-│  ├─ PenguinSystem              │
-│  ├─ IceSystem                  │
+│  Game Logic (Domain)           │
+│  ├─ GameSession (氷・来訪)     │
+│  ├─ IslandGame (生産の島)      │
 │  ├─ DailyMission               │
-│  ├─ Pokedex                    │
-│  └─ Reward                     │
+│  └─ PenguinDex (図鑑)          │
 │                                │
 │  Local Data                    │
-│  └─ SQLite                     │
+│  └─ JSON → SQLite (Hack Day)   │
 └───────────────┬────────────────┘
                 │
              REST API
@@ -40,15 +38,11 @@
 ┌────────────────────────────────┐
 │            FastAPI             │
 │                                │
-│  Receipt Service               │
+│  Eco Photo Service             │
 │  ├─ Image Validation           │
 │  ├─ Gemini Client              │
 │  └─ JSON Validation            │
-│                                │
-│  Carbon Service                │
-│  ├─ Category Mapping           │
-│  ├─ Emission Factors           │
-│  └─ CO₂e Calculation           │
+│     (カテゴリ・写っていたもの) │
 │                                │
 │  API Key Management            │
 └───────────────┬────────────────┘
@@ -59,11 +53,11 @@
 
 ## プライバシー方針
 
-本プロジェクトはレシート、すなわち**ユーザーの購買履歴そのもの**を扱います。これは実装が始まる前に決めておくべき設計制約であり、後から思い出すものではありません。以下を前提として実装します。
+本プロジェクトはユーザーの日常を写した写真 (と、以前の設計ではレシート、すなわち購買履歴) を扱います。これは実装が始まる前に決めておくべき設計制約であり、後から思い出すものではありません。以下を前提として実装します。
 
-1. **レシート画像はサーバに保存しない。** FastAPI 側では画像をメモリ上で処理して Gemini に渡し、レスポンスを得た時点で破棄する。ディスクへの永続化やログへの出力を行わない。
-2. **ローカル DB はリポジトリにコミットしない。** 端末上の SQLite には購買履歴が入りうるため、`.gitignore` で `*.db` / `*.sqlite*` を除外している。
-3. **端末外に出すのは CO₂e スコアのみ。** 購買明細の生データ(店名・品目・金額)を端末外へ送信・集約しない。サーバとやり取りするのは解析に必要な最小限の入力と、算出済みの CO₂e 値に限る。
+1. **写真は端末にもサーバにも保存しない。** クライアントはカメラ映像の 1 フレームをメモリ上で JPEG にして判定に渡し、結果を受け取ったら捨てる。FastAPI 側も画像をメモリ上で Gemini に渡し、レスポンスを得た時点で破棄する。ディスクへの永続化やログへの出力を行わない。
+2. **ローカルのデータはリポジトリにコミットしない。** 端末上の保存 (今は JSON、Hack Day に SQLite) には行動の記録が入るため、`.gitignore` で `*.db` / `*.sqlite*` を除外している。
+3. **端末外に出すのは判定に要る写真 1 枚と、その分類結果だけ。** 記録に残すのは分類・写っていたものの名前・受け取った資源の量で、写真そのものは残さない。
 4. **API キーを Unity クライアントに埋め込まない。** Gemini / OpenRouter のキーは FastAPI 側でのみ保持し、クライアントはバックエンドを経由する。ビルド成果物を展開してもキーが取り出せないようにするため。
 
 なお、バックエンドのエンドポイント認証は現時点で未実装です。クライアントに固定シークレットを埋め込む方式は、ビルドを展開すれば取り出せてしまうため対策になりません。開発中はエンドポイントを非公開に留め、本格運用時に Firebase Auth 等の正規のユーザー認証を導入します。
@@ -194,22 +188,24 @@ Android (MVP 後に再開するとき用):
 
 ## 現状
 
-上記アーキテクチャ図のうち、実装済みなのは Presentation の一部です。図はこれから作るものを含めた設計を表しています。
+上記アーキテクチャ図のうち、クライアントはほぼ一通りできています。backend と SQLite は Hack Day に作ります。
 
-**実装済み (ゲームの状態とはまだつながっていない)**
+**実装済み**
 
-- ビルド・署名・CI の土台 (`Assets/Editor/Build/`、`.github/workflows/`、`scripts/`)
-- UI Toolkit による 7 画面 (ホーム / 記録 / ミッション / スキャン / 解析中 / 結果 / メニュー) と画面遷移、SafeArea 対応 (`Assets/UI/`、`Assets/Scripts/Presentation/UI/`)。デザインシステムは `docs/design-system.md`、画面構成は `docs/ui-structure.md`
-- スキャン画面のカメラプレビュー。撮影・解析はまだ行わず、解析中画面の進行と記録画面のグラフは仮の値で動く
-- ホームの 3D ワールド (`Assets/Scenes/HomeWorld.unity`)。氷山と小屋のモデル、円周上を歩くペンギン、端末の縦横比に合わせたカメラの画角調整 (`Assets/Scripts/Presentation/World/`)
-- ゲームロジック v3 の状態機械 (`Assets/Scripts/Domain/Game/`)。氷・盾・おかえり・氷のかけら・見た目の段・ペンギンの来訪・スタンプを、時計を注入して 1 日ずつ進める。仕様は [`docs/game-logic.md`](docs/game-logic.md)、Python の参照実装と 8 人の利用者のシミュレーションは `tools/game_sim/`。ホームの氷の量・吹き出し・氷山の大きさ・ペンギンの数はこの状態につながっており、開発ビルドでは「記録する」「1 日進める」で動かせる
-- 上記の EditMode テスト (`Assets/Tests/EditMode/`)
+- ビルド・署名・CI の土台 (`Assets/Editor/Build/`、`.github/workflows/`、`scripts/`)。iOS の歩数 (CoreMotion) のためのビルド後処理 (`IosPostprocess`)
+- 生産の島 (`Assets/Scripts/Domain/Island/`): 10×10 の盤面、開拓、15 種の施設と生産の連鎖、ペンギンの配属、港の注文とレベル、真珠、放置中の生産、氷が足りないと後から広げた土地から沈む規則。仕様は [`docs/production-island/game-design.md`](docs/production-island/game-design.md)
+- ゲームロジック v3 の状態機械 (`Assets/Scripts/Domain/Game/`)。氷・盾・おかえり・氷のかけら・見た目の段・ペンギンの来訪・スタンプ。仕様は [`docs/game-logic.md`](docs/game-logic.md)、Python の参照実装は `tools/game_sim/`
+- ホームの 3D の島 (`Assets/Scenes/ProductionIslandHome.unity`。`HomeWorld.unity` を複製したシーンで、元の `HomeWorld.unity` は氷山と小屋のまま残してある。`Assets/Scripts/Presentation/World/`)。施設が動き、ペンギンが働き、沈む・浮かぶ・建てる・作ったの演出が出る。ドラッグで移動、ピンチで寄り引き、タップで選ぶ・建てる・広げる
+- UI Toolkit の画面 (`Assets/UI/`、`Assets/Scripts/Presentation/UI/`): ホームの資源と道具・下から出るシート (建てる・施設・港・生産量)、エコ写真の撮影 → 解析中 → 結果、ミッション (選ぶ・夜の振り返り)、記録、図鑑、メニュー、はじめての案内
+- 保存 (`Assets/Scripts/Data/`、`GameStateSystem`)。氷は操作の記録を再生して戻し、島は状態を保存する。今は JSON
+- 写真の判定の口 (`IEcoPhotoJudge`) とモック。歩数 (iOS は CMPedometer、Editor は開発用の操作)
+- 上記の EditMode テスト (`Assets/Tests/EditMode/`)。開発ビルドと Editor ではホームに早送りなどの操作が出る
 
-**未実装**
+**未実装 (Hack Day に作る)**
 
-- ゲームの状態の保存 (今はアプリを再起動すると初期状態に戻る)、ミッションの一覧と選び方、図鑑、CO₂ の採点 (週の選び方の氷)
-- SQLite によるローカルデータ (`Data`)
-- FastAPI バックエンド (`backend/`) とその Unity 側のクライアント (`Backend`)
+- FastAPI バックエンド (`backend/`) の写真判定と、Unity 側の HTTP クライアント (`HttpEcoPhotoJudge`)。API の形は game-design.md §12
+- SQLite による保存 (`IGameStore` の差し替え)
+- スポンサー賞に向けた連携 (未決。`docs/decisions.md`)
 
 ## ライセンス
 

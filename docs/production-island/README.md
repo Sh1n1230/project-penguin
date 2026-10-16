@@ -1,10 +1,12 @@
 # 生産の島 (ペンギン村)
 
-ペンギンが施設で食べ物を作る「生産の島」の素材と確認シーンの文書。**ゲームの主軸にする予定のインクリメンタル型の遊び** (2026-10-15、`docs/decisions.md`) で、元の案は [2026-09-29 のボード](../reference/incremental-concept-board.png)。Web 試作 `penguin-village` で試した遊びを Unity に持ってきたもので、今は確認用のシーンだけで動き、ホーム (`HomeWorld.unity`) にはまだ組み込まれていない。
+ペンギンが施設で食べ物を作る「生産の島」の素材と確認シーンの文書。**ゲームの主軸のインクリメンタル型の遊び** (2026-10-15、`docs/decisions.md`) で、元の案は [2026-09-29 のボード](../reference/incremental-concept-board.png)。Web 試作 `penguin-village` で試した遊びを Unity に持ってきたもので、ホーム (`HomeWorld.unity` を複製した `ProductionIslandHome.unity`) に組み込んである (メニュー **Production Island > Setup Home Island**)。
 
 | 文書 | 中身 |
 |---|---|
-| [production-island-review-user-guide.md](production-island-review-user-guide.md) | Unity で施設を確認する手順 (まずこれ) |
+| [game-design.md](game-design.md) | **ゲームの規則と数値・画面の流れ・写真判定の API** (まずこれ) |
+| [resources.md](resources.md) | 資源が増える条件・量・倍率・使い道の一覧 (開発者向け。ゲーム内では資源の帯をタップ) |
+| [production-island-review-user-guide.md](production-island-review-user-guide.md) | Unity で施設の見た目を確認する手順 |
 | [production-island-asset-pack.md](production-island-asset-pack.md) | 素材パック v001 (地形・建物・小物・接続・VFX) と使い方 |
 | [production-island-facilities-v002.md](production-island-facilities-v002.md) | 施設 v002 の仕様 |
 | [production-island-facility-motions.md](production-island-facility-motions.md) | 施設ごとの特徴と動き |
