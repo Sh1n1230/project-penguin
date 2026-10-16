@@ -93,7 +93,7 @@ class Params:
     shields_start: int = 2
     shields_max: int = 2
     comeback_min_gap: int = 3
-    comeback_ratio: float = 0.5
+    comeback_ratio: float = 0.0               # 2026-10-16: the ice bonus is off; the comeback is the fish made while away (0.5 = v3/v4)
     comeback_max: int = 10
     tier_bounds: Tuple[float, ...] = (60.0, 80.0, 100.0, 125.0)
     tier_hysteresis: float = 6.0              # 15d change: decided 4 flickers for 週2 (md §4)
@@ -115,7 +115,7 @@ class Params:
 
 DEFAULT = Params()
 # the 15d rules (v3) exactly as shipped on 2026-10-15: old comeback trigger, rollback ignored, no jump limit
-V3 = Params(comeback_requires_melt=False, rollback_clamp=False, max_catch_up_days=None)
+V3 = Params(comeback_ratio=0.5, comeback_requires_melt=False, rollback_clamp=False, max_catch_up_days=None)
 # the rules exactly as decided on 2026-10-15, before the two 15d changes (and before v4)
 DECIDED = dataclasses.replace(V3, tier_hysteresis=4.0, onboarding_exempt_from_cap=False)
 # 16d §5.2-3 option (a): B settles on Wednesday 03:00 so late-scanned receipts still count
@@ -893,7 +893,8 @@ def check_targets(results: Dict[str, RunResult], p: Params = DEFAULT) -> List[Tu
     out.append(("気まぐれの人も 7・14 日目に氷が初期以上", c[6].ice >= p.initial and c[13].ice >= p.initial,
                 f"ice d7={c[6].ice} d14={c[13].ice}"))
     rd = recovery_days(results["lapsed"])
-    out.append(("14 日休んだ人が休む前の氷に戻るまで 7 日以内（15a §2.3 の目安 5 日）", rd is not None and rd <= 7, f"{rd} 日"))
+    # 2026-10-16: the ice comeback bonus is off (the comeback reward is the fish made while away), so recovery is 8 days instead of 5
+    out.append(("14 日休んだ人が休む前の氷に戻るまで 8 日以内（15a §2.3 の目安は 5 日。氷のおかえりをやめて 8 日）", rd is not None and rd <= 8, f"{rd} 日"))
     ch, da = results["cheater"].snaps, results["daily"].snaps
     ok = all(x.ice <= y.ice + 1e-9 and x.shards <= y.shards and x.penguins <= y.penguins
              and x.stamp_points <= y.stamp_points for x, y in zip(ch, da))

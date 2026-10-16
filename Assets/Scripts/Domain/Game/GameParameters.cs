@@ -18,7 +18,11 @@ namespace ProjectPenguin.Domain.Game
         public int ShieldsStart { get; set; } = 2;
         public int ShieldsMax { get; set; } = 2;
         public int ComebackMinGap { get; set; } = 3;
-        public double ComebackRatio { get; set; } = 0.5;
+        /// <summary>
+        /// おかえりで足す氷の割合 (休んで溶けた量 × この値)。2026-10-16 に 0 にした: おかえりのごほうびは氷ではなく、
+        /// 留守の間に島が作ったお魚 (<c>IslandGame.OfflineReport</c>)。来訪の合図 (ガラパゴス) の条件は残る。0.5 にすると v3/v4 の挙動に戻る。
+        /// </summary>
+        public double ComebackRatio { get; set; }
         public int ComebackMax { get; set; } = 10;
         public double WeeklyBonusMax { get; set; } = 4.0;
 
@@ -54,16 +58,16 @@ namespace ProjectPenguin.Domain.Game
         /// </summary>
         public int? MaxCatchUpDays { get; set; }
 
-        /// <summary>v4 の推奨値 (15d の値 + 17a の修正)。</summary>
+        /// <summary>v4 の推奨値 (15d の値 + 17a の修正)。氷のおかえりは 0 (留守の間のお魚に一本化)。</summary>
         public static GameParameters Default => new GameParameters();
 
         /// <summary>15d (v3) のままの値。おかえりは空白 3 日以上、巻き戻しは無視、先送りの制限なし。</summary>
-        public static GameParameters V3 => new GameParameters { ComebackRequiresMelt = false, RollbackClamp = false, MaxCatchUpDays = null };
+        public static GameParameters V3 => new GameParameters { ComebackRatio = 0.5, ComebackRequiresMelt = false, RollbackClamp = false, MaxCatchUpDays = null };
 
         /// <summary>2026-10-15 に決めたままの値 (段の幅 4、初回のアデリーも週の枠に数える。v4 の修正も入れない)。</summary>
         public static GameParameters Decided => new GameParameters
         {
-            TierHysteresis = 4.0, OnboardingExemptFromCap = false, ComebackRequiresMelt = false, RollbackClamp = false, MaxCatchUpDays = null,
+            TierHysteresis = 4.0, OnboardingExemptFromCap = false, ComebackRatio = 0.5, ComebackRequiresMelt = false, RollbackClamp = false, MaxCatchUpDays = null,
         };
     }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using ProjectPenguin.Domain.Clock;
 using ProjectPenguin.Domain.Game;
@@ -45,6 +46,9 @@ namespace ProjectPenguin.Tests.EditMode.Domain
         private static readonly Func<int, IReadOnlyList<ReceiptRecord>, double> Bonus0 = (w, rs) => 0.0;
 
         private ManualClock _clock;
+
+        /// <summary>氷のおかえり (溶けた量の半分、上限 10) を戻した値。v3/v4 の挙動を確かめるため。</summary>
+        private static GameParameters IceComeback => new GameParameters { ComebackRatio = 0.5 };
 
         private GameSession New(DateTimeOffset start, GameParameters p = null, Func<int, IReadOnlyList<ReceiptRecord>, double> bonus = null)
         {
@@ -123,9 +127,24 @@ namespace ProjectPenguin.Tests.EditMode.Domain
         }
 
         [Test]
-        public void ComebackAddsHalfOfMelted()
+        public void ComebackAddsNoIceByDefaultButStillFires()
         {
+            // 2026-10-16: おかえりのごほうびは氷ではなく、留守の間に島が作ったお魚。来訪の合図 (ガラパゴス) は残る。
             var s = New(T(2026, 10, 27, 9));
+            At(T(2026, 11, 2, 12));
+            s.Advance();
+            Assert.That(s.GapMelted, Is.EqualTo(8.0));
+            Scan(s, T(2026, 11, 2, 13), "a");
+            Assert.That(s.Ice, Is.EqualTo(92.0 + 2));
+            Assert.That(s.Comebacks, Is.EqualTo(1));
+            Assert.That(s.ComebackLog[0].Value, Is.EqualTo(0));
+            Assert.That(s.Arrivals.Any(a => a.Species == PenguinCatalog.FirstComeback) || s.MilestoneQueue.Contains(PenguinCatalog.FirstComeback), Is.True);
+        }
+
+        [Test]
+        public void ComebackAddsHalfOfMeltedWhenTheIceBonusIsOn()
+        {
+            var s = New(T(2026, 10, 27, 9), IceComeback);
             At(T(2026, 11, 2, 12));
             s.Advance();
             Assert.That(s.GapMelted, Is.EqualTo(8.0));
@@ -137,7 +156,7 @@ namespace ProjectPenguin.Tests.EditMode.Domain
         [Test]
         public void ComebackCappedAt10AndRescueDoubles()
         {
-            var s = New(T(2026, 10, 27, 9));
+            var s = New(T(2026, 10, 27, 9), IceComeback);
             At(T(2027, 2, 1, 12));
             s.Advance();
             Assert.That(s.Ice, Is.EqualTo(40.0));

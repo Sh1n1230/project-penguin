@@ -128,7 +128,7 @@ namespace ProjectPenguin.Tests.EditMode.Domain
             Assert.That(s.Ice, Is.LessThan(100.0));
             var before = s.Ice;
             Assert.That(Scan(s, c, Start.AddDays(30), "a"), Is.True);
-            Assert.That(s.Ice, Is.EqualTo(before + 2 + 10));
+            Assert.That(s.Ice, Is.EqualTo(before + 2));   // 氷のおかえりは既定で 0 (留守のお魚に一本化)
         }
 
         [Test]
@@ -187,7 +187,7 @@ namespace ProjectPenguin.Tests.EditMode.Domain
         public void OneMeltedDayGivesPlusOne()
         {
             var c = new ManualClock(T(2026, 10, 27, 9));
-            var s = new GameSession(c, Bonus0);
+            var s = new GameSession(c, Bonus0, new GameParameters { ComebackRatio = 0.5 });
             c.Set(T(2026, 10, 29, 12));
             s.Advance();
             HonestCheckIn(s, c, T(2026, 10, 29, 20), "a");

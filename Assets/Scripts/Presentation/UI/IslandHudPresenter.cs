@@ -452,7 +452,18 @@ namespace ProjectPenguin.Presentation.UI
 
             var hours = report.Seconds / 3600.0;
             var span = hours >= 1 ? $"{Math.Floor(hours)} 時間" : $"{Math.Max(1, Math.Floor(report.Seconds / 60))} 分";
-            ShowModal("おかえり！", $"留守の {span}の間に、みんなが働いてくれたよ", list, "受け取る");
+            var fish = report[Item.Fish];
+            var message = fish > 0
+                ? $"留守の {span}の間に、お魚が {IslandUi.Number(fish)} 匹とれたよ"
+                : $"留守の {span}の間に、みんなが働いてくれたよ";
+
+            // 長く休んでも、働いてくれるのは上限までだと伝える (毎日のぞいたほうが得になる)。
+            if (report.Seconds >= _game.Island.Parameters.OfflineCapSeconds - 1)
+            {
+                message += $"\n(留守番は {Math.Floor(_game.Island.Parameters.OfflineCapSeconds / 3600)} 時間ぶんまで)";
+            }
+
+            ShowModal("おかえり！", message, list, "受け取る");
         }
     }
 }

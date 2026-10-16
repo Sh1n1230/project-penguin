@@ -661,7 +661,7 @@ namespace ProjectPenguin.Tests.EditMode.Domain
             Assert.That(g.Board.Expansions.Count, Is.EqualTo(g.Board.Capacity(102)));
             Assert.That(maxSunk, Is.GreaterThan(0), "30 日休むと沈む");
             Assert.That(sunkLastRestDay, Is.GreaterThan(0), "休みの最後の日も沈んだまま");
-            Assert.That(sunkOnReturn, Is.LessThan(sunkLastRestDay), "戻った日の記録とおかえりで、すぐに少し浮かぶ");
+            Assert.That(sunkOnReturn, Is.LessThanOrEqualTo(sunkLastRestDay), "戻った日の記録で氷が戻りはじめる (沈みは増えない)");
             Assert.That(g.Board.SunkCount(g.Ice), Is.EqualTo(0), "戻って 12 日記録すれば浮かぶ");
         }
 

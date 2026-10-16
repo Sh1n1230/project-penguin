@@ -32,6 +32,10 @@ class Calendar(unittest.TestCase):
         self.assertEqual(g.round_half_up(0.49), 0)
 
 
+# 2026-10-16: the default no longer adds ice on a comeback (the reward is the fish made while away). v3/v4 = 0.5.
+ICE_COMEBACK = dc.replace(g.DEFAULT, comeback_ratio=0.5)
+
+
 class Ice(unittest.TestCase):
     def sess(self, start=T(2026, 10, 27, 9), p=g.DEFAULT):
         return g.Session(start, bonus0, p)
@@ -67,15 +71,23 @@ class Ice(unittest.TestCase):
         self.assertEqual(s.s.ice, 92)
         self.assertEqual(s.s.shields, 2)
 
-    def test_comeback(self):
+    def test_comeback_adds_no_ice_by_default(self):
         s = self.sess()
+        s.advance(T(2026, 11, 2, 12))
+        self.assertEqual(s.s.gap_melted, 8)
+        s.scan_receipt(T(2026, 11, 2, 13), g.Receipt("a", 0))
+        self.assertEqual(s.s.ice, 92 + 2)                     # no extra ice
+        self.assertEqual(s.comeback_log, [(s.comeback_log[0][0], 0)])   # but the comeback still fires (the penguin's visit)
+
+    def test_comeback(self):
+        s = self.sess(p=ICE_COMEBACK)
         s.advance(T(2026, 11, 2, 12))         # gap Tue..Sun 6 days, 4 melted *2 = 8
         self.assertEqual(s.s.gap_melted, 8)
         s.scan_receipt(T(2026, 11, 2, 13), g.Receipt("a", 0))
         self.assertEqual(s.s.ice, 92 + 2 + 4)
 
     def test_comeback_capped(self):
-        s = self.sess()
+        s = self.sess(p=ICE_COMEBACK)
         s.advance(T(2026, 11, 30, 12))
         self.assertGreater(s.s.gap_melted, 20)
         before = s.s.ice
@@ -83,7 +95,7 @@ class Ice(unittest.TestCase):
         self.assertEqual(s.s.ice, before + (4 if before < 60 else 2) + 10)
 
     def test_rescue_and_floor(self):
-        s = self.sess()
+        s = self.sess(p=ICE_COMEBACK)
         s.advance(T(2027, 2, 1, 12))
         self.assertEqual(s.s.ice, 40)
         s.scan_receipt(T(2027, 2, 1, 13), g.Receipt("a", 0))
@@ -203,7 +215,8 @@ class Targets(unittest.TestCase):
         self.assertEqual(len(failed), 2)
 
     def test_lapsed_recovery(self):
-        self.assertLessEqual(g.recovery_days(g.run_persona("lapsed")), 7)
+        self.assertLessEqual(g.recovery_days(g.run_persona("lapsed")), 8)
+        self.assertLessEqual(g.recovery_days(g.run_persona("lapsed", ICE_COMEBACK)), 5)   # with the ice comeback (v3/v4)
 
 
 def honest_checkin(s, when, mid):
@@ -255,7 +268,7 @@ class ClockV4(unittest.TestCase):
         self.assertLess(s.s.ice, 100)
         before = s.s.ice
         self.assertTrue(s.scan_receipt(later, g.Receipt("a", 0)))
-        self.assertEqual(s.s.ice, before + 2 + 10)          # comeback capped at 10
+        self.assertEqual(s.s.ice, before + 2)               # no ice comeback by default (it was +10 with 0.5)
 
     def test_B_banking_days_ahead_gives_no_lasting_gain(self):
         cheat = g.Session(self.START, bonus0, clock_trusted=False)
@@ -285,7 +298,7 @@ class ComebackV4(unittest.TestCase):
             self.assertEqual(s.s.ice, 110)
 
     def test_one_melted_day_gives_plus_one(self):
-        s = g.Session(T(2026, 10, 27, 9), bonus0)
+        s = g.Session(T(2026, 10, 27, 9), bonus0, ICE_COMEBACK)
         s.advance(T(2026, 10, 29, 12))          # Tue, Wed shielded (2 days)
         honest_checkin(s, T(2026, 10, 29, 20), "a")
         s.advance(T(2026, 10, 31, 12))          # Thu shield 0 -> Fri melts 2

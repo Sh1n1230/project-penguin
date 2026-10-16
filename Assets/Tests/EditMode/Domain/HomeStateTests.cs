@@ -86,14 +86,18 @@ namespace ProjectPenguin.Tests.EditMode.Domain
             Assert.That(Now().Tier, Is.EqualTo(2));
             Assert.That(Now().Ice, Is.LessThan(100.0));
 
-            // 3 日以上の空白のあとの記録は +2 に「おかえり」(溶けた 8 の半分) が付いて 98。
+            // 空白のあとの記録は +2 だけ (氷のおかえりはやめた。ごほうびは留守の間に島が作ったお魚)。
             var events = Record();
             Assert.That(events.HasFlag(SpeechEvent.Recorded), Is.True);
-            Assert.That(Now().Ice, Is.EqualTo(98.0));
+            Assert.That(Now().Ice, Is.EqualTo(94.0));
 
-            // 次の日も記録すると 100 に届き、段が T3 に戻る。
-            AdvanceDay();
-            events = Record();
+            // 記録を続けると 100 に届き、段が T3 に戻る。
+            for (var i = 0; i < 3; i++)
+            {
+                AdvanceDay();
+                events = Record();
+            }
+
             Assert.That(events.HasFlag(SpeechEvent.TierUp), Is.True);
             Assert.That(Now().Tier, Is.EqualTo(3));
         }
