@@ -25,6 +25,12 @@ namespace ProjectPenguin.Domain.Island
 
         /// <summary>エコ活動が写っていない、または判定できない。</summary>
         Unknown,
+
+        /// <summary>
+        /// ガスを節約する (鍋にふた・まとめて調理・重ね着で暖房を控える)。インフラ (電気・ガス・水道) それぞれにまつわるエコで
+        /// それぞれの資源が取れるよう 2026-10-17 に足した。保存 (受け取りの記録) は数値なので末尾に置く。
+        /// </summary>
+        SaveGas,
     }
 
     /// <summary>
@@ -47,6 +53,8 @@ namespace ProjectPenguin.Domain.Island
         CleanPlate,
         LocalFood,
         Recycle,
+        LidCooking,
+        WarmClothes,
     }
 
     /// <summary>写真の表の 1 行: 写っているもの・名前・カテゴリ・もらえる資源。</summary>
@@ -94,10 +102,12 @@ namespace ProjectPenguin.Domain.Island
         {
             new EcoSubjectDef(EcoSubject.LightsOff, "lights_off", "消した電気", EcoCategory.SaveElectricity, (Resource.Electricity, 20)),
             new EcoSubjectDef(EcoSubject.AirConditioner, "air_conditioner", "エアコンの温度設定", EcoCategory.SaveElectricity, (Resource.Electricity, 20)),
-            new EcoSubjectDef(EcoSubject.ShortShower, "short_shower", "短いシャワー", EcoCategory.SaveWater, (Resource.Water, 20)),
+            new EcoSubjectDef(EcoSubject.ShortShower, "short_shower", "短いシャワー", EcoCategory.SaveWater, (Resource.Water, 15), (Resource.Gas, 10)),
             new EcoSubjectDef(EcoSubject.SaveWater, "save_water", "蛇口をしめる・ため洗い", EcoCategory.SaveWater, (Resource.Water, 15)),
             new EcoSubjectDef(EcoSubject.MyBottle, "my_bottle", "マイボトル", EcoCategory.Goods, (Resource.Water, 10), (Resource.AllMighty, 10)),
             new EcoSubjectDef(EcoSubject.EcoBag, "eco_bag", "エコバッグ", EcoCategory.Goods, (Resource.AllMighty, 15)),
+            new EcoSubjectDef(EcoSubject.LidCooking, "lid_cooking", "鍋にふた・まとめて調理", EcoCategory.SaveGas, (Resource.Gas, 20)),
+            new EcoSubjectDef(EcoSubject.WarmClothes, "warm_clothes", "重ね着で暖房をひかえる", EcoCategory.SaveGas, (Resource.Gas, 15)),
             new EcoSubjectDef(EcoSubject.Walk, "walk", "歩いて移動", EcoCategory.Move, (Resource.Gas, 20)),
             new EcoSubjectDef(EcoSubject.Bicycle, "bicycle", "自転車", EcoCategory.Move, (Resource.Gas, 20)),
             new EcoSubjectDef(EcoSubject.Train, "train", "電車・バス", EcoCategory.Move, (Resource.Gas, 15)),
@@ -198,6 +208,7 @@ namespace ProjectPenguin.Domain.Island
         {
             EcoCategory.SaveElectricity => "電気の節約",
             EcoCategory.SaveWater => "水の節約",
+            EcoCategory.SaveGas => "ガスの節約",
             EcoCategory.Move => "エコな移動",
             EcoCategory.Food => "食べ物を大切に",
             EcoCategory.Goods => "物を大切に",
@@ -209,6 +220,7 @@ namespace ProjectPenguin.Domain.Island
         {
             EcoCategory.SaveElectricity => Resource.Electricity,
             EcoCategory.SaveWater => Resource.Water,
+            EcoCategory.SaveGas => Resource.Gas,
             EcoCategory.Move => Resource.Gas,
             _ => Resource.AllMighty,
         };

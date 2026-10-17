@@ -28,6 +28,9 @@ namespace ProjectPenguin.Domain.Island
 
         /// <summary>置き場がいっぱい。</summary>
         StorageFull,
+
+        /// <summary>働くペンギンのごはん (お魚) が足りない。</summary>
+        NoFish,
     }
 
     /// <summary>操作の結果。失敗の理由は画面にそのまま出す。</summary>
@@ -66,6 +69,12 @@ namespace ProjectPenguin.Domain.Island
         ResourcesGained,
         HarborStageUp,
         Upgraded,
+
+        /// <summary>お魚の桁が上がり、施設が建てられるようになった (<see cref="IslandEvent.Value"/> は <see cref="FacilityKind"/>)。</summary>
+        Unlocked,
+
+        /// <summary>実績を満たして、新しい種のペンギンが来た (<see cref="IslandEvent.Value"/> は <see cref="PenguinCatalog.AllIds"/> の番号)。</summary>
+        PenguinArrived,
     }
 
     public readonly struct IslandEvent
@@ -188,6 +197,9 @@ namespace ProjectPenguin.Domain.Island
 
         public double Seconds { get; internal set; }
         public double GasUsed { get; internal set; }
+
+        /// <summary>働くペンギンが食べたお魚。</summary>
+        public long FishEaten { get; internal set; }
         public int Delivered { get; internal set; }
         public int Pearls { get; internal set; }
 
@@ -217,6 +229,11 @@ namespace ProjectPenguin.Domain.Island
         private readonly Order[] _orders;
         private readonly List<IslandEvent> _events = new List<IslandEvent>();
         private readonly List<string> _species = new List<string>();
+        private readonly List<string> _sessionSpecies = new List<string>();
+        private readonly List<string> _achievedSpecies = new List<string>();
+        private readonly long[] _made = new long[IslandCatalog.Items.Count];
+        private readonly HashSet<int> _photoCategories = new HashSet<int>();
+        private double _fishDebt;
 
         private int _nextId = 1;
         private int _orderSerial;
@@ -233,6 +250,7 @@ namespace ProjectPenguin.Domain.Island
             _resources[(int)Resource.Gas] = _p.StartGas;
             _resources[(int)Resource.AllMighty] = _p.StartAllMighty;
             _stock[(int)Item.Fish] = (long)_p.StartFish;
+            MaxFishHeld = (long)_p.StartFish;
             Level = 1;
             Ice = 100.0;
             LastTickUtc = now;
@@ -262,7 +280,29 @@ namespace ProjectPenguin.Domain.Island
         public double Ice { get; private set; }
 
         public int RecordDays { get; private set; }
+
+        /// <summary>来た種 (<see cref="GameSession"/> の節目の来訪と、島の実績で解放した種を合わせたもの)。</summary>
         public IReadOnlyList<string> Species => _species;
+
+        /// <summary>島の実績で解放した種 (<see cref="PenguinUnlocks"/>)。</summary>
+        public IReadOnlyList<string> AchievedSpecies => _achievedSpecies;
+
+        /// <summary>氷の段 (T0〜T4。<see cref="GameSession.Tier"/>)。ペンギンのやる気を決める。</summary>
+        public int IceTier { get; private set; }
+
+        /// <summary>ペンギンのやる気。氷が大きいほど上がり、施設の効果 (作る速さ・増幅・氷室) に掛かる。</summary>
+        public double Motivation => _p.MotivationByTier[Math.Max(0, Math.Min(_p.MotivationByTier.Length - 1, IceTier))];
+
+        /// <summary>これまでに持ったお魚の最大。施設の解放 (お魚の桁) に使う。</summary>
+        public long MaxFishHeld { get; private set; }
+
+        /// <summary>これまでに作った品目の数 (実績に使う)。</summary>
+        public long MadeOf(Item item) => _made[(int)item];
+
+        public long PearlsMade { get; private set; }
+
+        /// <summary>これまでに写真で撮った分類の数 (実績に使う)。</summary>
+        public int PhotoCategoryCount => _photoCategories.Count;
 
         public int PhotoDay { get; private set; }
         public int PhotosToday { get; private set; }
@@ -330,17 +370,27 @@ namespace ProjectPenguin.Domain.Island
         // 外の世界 (GameSession と現実の行動)
         // ------------------------------------------------------------------
 
-        /// <summary>氷・記録日・来たペンギンを受け取る。沈む・浮かぶマスがあれば出来事にする。</summary>
-        public void SyncWorld(double ice, int recordDays, IEnumerable<string> species)
+        /// <summary>
+        /// 氷・記録日・来たペンギン・氷の段を受け取る。沈む・浮かぶマスがあれば出来事にする。
+        /// 段を渡さなければ今の段のまま (Systems は <see cref="GameSession.Tier"/> を毎回渡す)。
+        /// </summary>
+        public void SyncWorld(double ice, int recordDays, IEnumerable<string> species, int? tier = null)
         {
             var beforeSunk = Board.Expansions.Where(c => Board.IsSunk(c, Ice)).ToList();
             Ice = ice;
             RecordDays = Math.Max(0, recordDays);
-            _species.Clear();
+            if (tier.HasValue)
+            {
+                IceTier = tier.Value;
+            }
+
+            _sessionSpecies.Clear();
             if (species != null)
             {
-                _species.AddRange(species.Distinct());
+                _sessionSpecies.AddRange(species.Distinct());
             }
+
+            RebuildSpecies();
 
             var afterSunk = Board.Expansions.Where(c => Board.IsSunk(c, Ice)).ToList();
             foreach (var c in afterSunk.Except(beforeSunk))
@@ -355,31 +405,51 @@ namespace ProjectPenguin.Domain.Island
 
             TrimWorkers();
             RefreshStatuses();
+            CheckAchievements();
         }
 
-        /// <summary>今日の写真を受け取る。1 日 <see cref="IslandParameters.PhotosPerDay"/> 枚まで。</summary>
+        /// <summary>
+        /// 今日の写真を受け取る。1 日 <see cref="IslandParameters.PhotosPerDay"/> 枚まで。
+        /// 最後に受け取った日より前の日 (時計を戻した) の写真は資源にしない。
+        /// </summary>
         public ResourceBundle ReceivePhoto(EcoPhotoVerdict verdict, int appDay)
         {
+            if (!CanReceivePhoto(appDay))
+            {
+                return null;
+            }
+
             if (PhotoDay != appDay)
             {
                 PhotoDay = appDay;
                 PhotosToday = 0;
             }
 
-            if (PhotosToday >= _p.PhotosPerDay)
+            PhotosToday++;
+            if (verdict != null && verdict.Category != EcoCategory.Unknown)
             {
-                return null;
+                _photoCategories.Add((int)verdict.Category);
             }
 
-            PhotosToday++;
-            return Grant(EcoGrant.ForPhoto(verdict, _p));
+            var got = Grant(EcoGrant.ForPhoto(verdict, _p));
+            CheckAchievements();
+            return got;
         }
 
-        public bool CanReceivePhoto(int appDay) => PhotoDay != appDay || PhotosToday < _p.PhotosPerDay;
+        public bool CanReceivePhoto(int appDay) =>
+            appDay > PhotoDay || (appDay == PhotoDay && PhotosToday < _p.PhotosPerDay);
 
-        /// <summary>今日の歩数 (累計) を受け取り、まだ渡していない分のガスを渡す。</summary>
+        /// <summary>
+        /// 今日の歩数 (累計) を受け取り、まだ渡していない分のガスを渡す。
+        /// 最後に受け取った日より前の日 (時計を戻した・前日の問い合わせが遅れて届いた) の歩数は資源にしない。
+        /// </summary>
         public double ReceiveSteps(int stepsToday, int appDay)
         {
+            if (appDay < StepDay)
+            {
+                return 0;
+            }
+
             if (StepDay != appDay)
             {
                 StepDay = appDay;
@@ -428,14 +498,35 @@ namespace ProjectPenguin.Domain.Island
             }
 
             var amps = _facilities.Where(f => f.Def.Amplifies == r && f.Status == FacilityStatus.Running).Sum(AmplifierBonusOf);
-            return (1.0 + amps) * PenguinDex.ResourceMultiplier(_species, r);
+            return (1.0 + amps * Motivation) * PenguinDex.ResourceMultiplier(_species, r);
+        }
+
+        /// <summary>氷室 1 棟の効き目 (レベル込み、やる気の前)。</summary>
+        public double IceHouseReductionOf(Facility f) => _p.IceHouseReduction + (f.Level - 1) * _p.IceHouseReductionPerLevel;
+
+        /// <summary>
+        /// 記録しなかった日に溶ける氷を減らす割合 (動いている氷室 × やる気、上限あり)。
+        /// 氷の計算は <see cref="GameSession"/> にあるので、Systems がこの値を <see cref="GameSession.SetMeltReduction"/> に渡す。
+        /// </summary>
+        public double MeltReduction
+        {
+            get
+            {
+                var best = _facilities.Where(f => f.Def.Role == FacilityRole.IceGuard && f.Status == FacilityStatus.Running)
+                    .Select(IceHouseReductionOf).DefaultIfEmpty(0.0).Max();
+                return Math.Round(Math.Min(_p.MaxMeltReduction, best * Motivation), 4);
+            }
         }
 
         // ------------------------------------------------------------------
         // 操作
         // ------------------------------------------------------------------
 
-        public bool IsUnlocked(FacilityKind kind) => Level >= IslandCatalog.Get(kind).UnlockLevel;
+        /// <summary>お魚の桁で解放されているか (これまでに持ったお魚の最大で数える)。</summary>
+        public bool IsUnlocked(FacilityKind kind) => MaxFishHeld >= IslandCatalog.Get(kind).UnlockFish;
+
+        /// <summary>次に開く段のお魚の数。すべて開いていれば null。</summary>
+        public long? NextUnlockFish => IslandCatalog.UnlockSteps.Where(n => n > MaxFishHeld).Select(n => (long?)n).FirstOrDefault();
 
         public int CountOf(FacilityKind kind) => _facilities.Count(f => f.Kind == kind);
 
@@ -486,6 +577,11 @@ namespace ProjectPenguin.Domain.Island
                 return IslandActionResult.NotEnoughElectricity;
             }
 
+            if (def.WaterCost > 0 && !CanAfford(Resource.Water, def.WaterCost))
+            {
+                return IslandActionResult.NotEnoughWater;
+            }
+
             return Fish < def.FishCost ? IslandActionResult.NotEnoughFish : IslandActionResult.Ok;
         }
 
@@ -505,13 +601,19 @@ namespace ProjectPenguin.Domain.Island
 
             var def = IslandCatalog.Get(kind);
             Spend(Resource.Electricity, def.ElectricityCost);
+            if (def.WaterCost > 0)
+            {
+                Spend(Resource.Water, def.WaterCost);
+            }
+
             _stock[(int)Item.Fish] -= (long)def.FishCost;
             var f = new Facility(_nextId++, kind, origin);
             _facilities.Add(f);
             f.Workers = Math.Min(def.Workers, FreeWorkers);
-            AddExp(5 + def.UnlockLevel * 3);
+            AddExp(5 + def.UnlockTier * 3);
             RefreshStatuses();
             Emit(new IslandEvent(IslandEventKind.Built, f.Id));
+            CheckAchievements();
             return IslandActionResult.Ok;
         }
 
@@ -545,7 +647,9 @@ namespace ProjectPenguin.Domain.Island
             }
 
             _resources[(int)Resource.Electricity] += Math.Floor(f.Def.ElectricityCost / 2);
+            _resources[(int)Resource.Water] += Math.Floor(f.Def.WaterCost / 2);
             _stock[(int)Item.Fish] += (long)Math.Floor(f.Def.FishCost / 2);
+            NoteFish();
             _resources[(int)Resource.Pearl] += f.Pearls;
             _facilities.Remove(f);
             TrimWorkers();
@@ -633,6 +737,7 @@ namespace ProjectPenguin.Domain.Island
             AddExp(3 + f.Level * 2);
             RefreshStatuses();
             Emit(new IslandEvent(IslandEventKind.Upgraded, f.Id, value: f.Level));
+            CheckAchievements();
             return IslandActionResult.Ok;
         }
 
@@ -699,6 +804,7 @@ namespace ProjectPenguin.Domain.Island
             AddExp(_p.ExpandExp);
             RefreshStatuses();
             Emit(new IslandEvent(IslandEventKind.Expanded, cell: c));
+            CheckAchievements();
             return IslandActionResult.Ok;
         }
 
@@ -740,6 +846,8 @@ namespace ProjectPenguin.Domain.Island
                 Emit(new IslandEvent(IslandEventKind.HarborStageUp, value: HarborStage));
             }
 
+            NoteFish();
+            CheckAchievements();
             return IslandActionResult.Ok;
         }
 
@@ -791,7 +899,7 @@ namespace ProjectPenguin.Domain.Island
             if (offline)
             {
                 _recordEvents = true;
-                if (!_offline.IsEmpty || _offline.GasUsed > 0)
+                if (!_offline.IsEmpty || _offline.GasUsed > 0 || _offline.FishEaten > 0)
                 {
                     PendingOfflineReport = _offline;
                 }
@@ -811,6 +919,17 @@ namespace ProjectPenguin.Domain.Island
         public void DevAddStock(Item item, long count)
         {
             _stock[(int)item] = Math.Max(0, _stock[(int)item] + count);
+            NoteFish();
+            CheckAchievements();
+        }
+
+        /// <summary>開発用: これまでに持ったお魚の最大を少なくとも <paramref name="fish"/> にする (施設の解放)。</summary>
+        public void DevSetMaxFish(long fish)
+        {
+            if (fish > MaxFishHeld)
+            {
+                UnlockUpTo(fish);
+            }
         }
 
         public OfflineReport TakeOfflineReport()
@@ -844,6 +963,7 @@ namespace ProjectPenguin.Domain.Island
             s *= 1.0 + f.Pearls * _p.PearlSpeed;
             s *= 1.0 + (f.Level - 1) * _p.UpgradeSpeedPerLevel;
             s *= PenguinDex.FacilityMultiplier(_species, f.Kind);
+            s *= Motivation;
             return s;
         }
 
@@ -874,8 +994,12 @@ namespace ProjectPenguin.Domain.Island
                 }
             }
 
+            used[(int)Item.Fish] += FishUpkeepPerHour;
             return IslandCatalog.Items.Select(i => new ItemRate(i, made[(int)i], used[(int)i])).ToList();
         }
+
+        /// <summary>動ける施設の働くペンギンが食べるお魚 (毎時)。</summary>
+        public double FishUpkeepPerHour => _facilities.Where(f => !IsStructurallyStopped(f)).Sum(f => f.Def.FishPerHour);
 
         /// <summary>動いている施設の毎時のガス。</summary>
         public double GasPerHour => _facilities.Where(f => f.Recipe != null && !IsStructurallyStopped(f)).Sum(f => f.Recipe.GasPerHour);
@@ -905,6 +1029,12 @@ namespace ProjectPenguin.Domain.Island
                 photosToday = PhotosToday,
                 stepDay = StepDay,
                 stepGasToday = StepGasToday,
+                maxFishHeld = MaxFishHeld,
+                fishDebt = _fishDebt,
+                made = _made.ToArray(),
+                pearlsMade = PearlsMade,
+                photoCategories = _photoCategories.OrderBy(c => c).ToArray(),
+                achievedSpecies = _achievedSpecies.ToArray(),
                 expansionsX = Board.Expansions.Select(c => c.X).ToArray(),
                 expansionsY = Board.Expansions.Select(c => c.Y).ToArray(),
                 facilities = _facilities.Select(f => new FacilitySave
@@ -957,6 +1087,25 @@ namespace ProjectPenguin.Domain.Island
             g.PhotosToday = save.photosToday;
             g.StepDay = save.stepDay;
             g.StepGasToday = save.stepGasToday;
+            g._fishDebt = Math.Max(0.0, save.fishDebt);
+            g.PearlsMade = save.pearlsMade;
+            if (save.made != null)
+            {
+                for (var i = 0; i < Math.Min(save.made.Length, g._made.Length); i++)
+                {
+                    g._made[i] = save.made[i];
+                }
+            }
+
+            if (save.photoCategories != null)
+            {
+                g._photoCategories.UnionWith(save.photoCategories);
+            }
+
+            if (save.achievedSpecies != null)
+            {
+                g._achievedSpecies.AddRange(save.achievedSpecies.Where(PenguinCatalog.IsKnown).Distinct());
+            }
             if (save.expansionsX != null && save.expansionsY != null)
             {
                 g.Board.RestoreExpansions(save.expansionsX.Zip(save.expansionsY, (x, y) => new Cell(x, y)));
@@ -996,6 +1145,10 @@ namespace ProjectPenguin.Domain.Island
                 }
             }
 
+            // お魚の桁の解放を入れる前 (版 1) の保存は、持っているお魚と建てた施設が開いている所までを解放済みにする。
+            var built = g._facilities.Select(f => f.Def.UnlockFish).DefaultIfEmpty(0).Max();
+            g.MaxFishHeld = Math.Max(save.maxFishHeld, Math.Max(g.Fish, built));
+            g.RebuildSpecies();
             g.RefreshStatuses();
             return g;
         }
@@ -1027,6 +1180,11 @@ namespace ProjectPenguin.Domain.Island
                 {
                     StepProducer(f, dt);
                 }
+                else if (f.Status == FacilityStatus.Running && !PayFish(f.Def.FishPerHour * dt / 3600.0))
+                {
+                    // 生産しない施設も、働くペンギンのごはんが無ければ効かない。
+                    f.Status = FacilityStatus.NoFish;
+                }
             }
 
             if (_facilities.Any(f => f.Def.Role == FacilityRole.AutoDeliver && f.Status == FacilityStatus.Running))
@@ -1048,6 +1206,9 @@ namespace ProjectPenguin.Domain.Island
                     Emit(new IslandEvent(IslandEventKind.OrderArrived, value: i));
                 }
             }
+
+            NoteFish();
+            CheckAchievements();
         }
 
         private void StepProducer(Facility f, double dt)
@@ -1096,6 +1257,12 @@ namespace ProjectPenguin.Domain.Island
                         return;
                     }
 
+                    if (!PayFish(f.Def.FishPerHour * use / 3600.0))
+                    {
+                        f.Status = FacilityStatus.NoFish;
+                        return;
+                    }
+
                     Spend(Resource.Gas, gas);
                     if (_offline != null)
                     {
@@ -1124,6 +1291,7 @@ namespace ProjectPenguin.Domain.Island
             if (IslandCatalog.ProducesPearl(f.Kind))
             {
                 _resources[(int)Resource.Pearl] += 1;
+                PearlsMade++;
                 if (_offline != null)
                 {
                     _offline.Pearls++;
@@ -1141,6 +1309,7 @@ namespace ProjectPenguin.Domain.Island
                 }
 
                 _stock[(int)output.Item] += output.Count;
+                _made[(int)output.Item] += output.Count;
                 _offline?.Add(output.Item, output.Count);
                 Emit(new IslandEvent(IslandEventKind.Produced, f.Id, output.Item, output.Count));
             }
@@ -1166,7 +1335,8 @@ namespace ProjectPenguin.Domain.Island
                 else if (f.Def.Role != FacilityRole.Producer || IsStructurallyStopped(f))
                 {
                     // 生産しない施設は効いているだけ。生産する施設はここで止まりの理由を解き、次の Step で決め直す。
-                    f.Status = FacilityStatus.Running;
+                    // お魚が 1 匹も無ければごはんを払えないので、操作の直後に一瞬だけ効く (氷室の効き目が揺れる) ことのないよう先に止める。
+                    f.Status = f.Def.FishPerHour > 0 && Fish < 1 ? FacilityStatus.NoFish : FacilityStatus.Running;
                 }
             }
         }
@@ -1209,6 +1379,88 @@ namespace ProjectPenguin.Domain.Island
 
         private bool CanAfford(Resource r, double amount) => Get(r) + Get(Resource.AllMighty) + 1e-9 >= amount;
 
+        /// <summary>
+        /// 働くペンギンのごはんを払う。お魚は整数なので、端数はためておき 1 匹になったら引く。払えなければ何も引かずに false。
+        /// </summary>
+        private bool PayFish(double amount)
+        {
+            if (amount <= 0)
+            {
+                return true;
+            }
+
+            var owed = _fishDebt + amount;
+            var whole = (long)Math.Floor(owed + 1e-9);
+            if (Fish < Math.Max(1, (long)Math.Ceiling(owed - 1e-9)))
+            {
+                return false;
+            }
+
+            _stock[(int)Item.Fish] -= whole;
+            _fishDebt = Math.Max(0.0, owed - whole);
+            if (_offline != null)
+            {
+                _offline.FishEaten += whole;
+            }
+
+            return true;
+        }
+
+        /// <summary>お魚が増えたら、これまでの最大を更新し、新しく開いた施設を知らせる。</summary>
+        private void NoteFish()
+        {
+            if (Fish > MaxFishHeld)
+            {
+                UnlockUpTo(Fish);
+            }
+        }
+
+        private void UnlockUpTo(long fish)
+        {
+            var before = MaxFishHeld;
+            MaxFishHeld = fish;
+            foreach (var def in IslandCatalog.Facilities)
+            {
+                if (def.UnlockFish > before && def.UnlockFish <= fish)
+                {
+                    Emit(new IslandEvent(IslandEventKind.Unlocked, value: (int)def.Kind));
+                }
+            }
+
+            CheckAchievements();
+        }
+
+        /// <summary>島の実績を確かめ、満たした種を来させる。一度来た種は消えない。</summary>
+        private void CheckAchievements()
+        {
+            var added = false;
+            foreach (var u in PenguinUnlocks.All)
+            {
+                if (u.Source != UnlockSource.Island || _achievedSpecies.Contains(u.Species) || !u.IsMet(null, this))
+                {
+                    continue;
+                }
+
+                _achievedSpecies.Add(u.Species);
+                added = true;
+                if (!_sessionSpecies.Contains(u.Species))
+                {
+                    Emit(new IslandEvent(IslandEventKind.PenguinArrived, value: PenguinCatalog.IndexOf(u.Species)));
+                }
+            }
+
+            if (added)
+            {
+                RebuildSpecies();
+            }
+        }
+
+        private void RebuildSpecies()
+        {
+            _species.Clear();
+            _species.AddRange(_sessionSpecies.Concat(_achievedSpecies).Distinct());
+        }
+
         /// <summary>足りない分はオールマイティから出す。</summary>
         private void Spend(Resource r, double amount)
         {
@@ -1236,7 +1488,7 @@ namespace ProjectPenguin.Domain.Island
         private Order NewOrder(double arrivesAt)
         {
             var rng = new SplitMix64((ulong)(++_orderSerial * 104729L + 3));
-            var pool = IslandCatalog.Items.Where(i => Level >= UnlockLevelOf(i)).ToList();
+            var pool = IslandCatalog.Items.Where(i => MaxFishHeld >= UnlockFishOf(i)).ToList();
 
             // 新しい品目ほど出やすくして、作ったものの出番を作る。
             var weighted = new List<Item>();
@@ -1257,19 +1509,20 @@ namespace ProjectPenguin.Domain.Island
             return new Order(item, count, reward, exp, arrivesAt);
         }
 
-        /// <summary>その品目を作る施設が建てられるレベル。</summary>
-        public static int UnlockLevelOf(Item item)
+        /// <summary>その品目を作る施設が開く、お魚の数 (これまでの最大)。作る施設が無ければ long.MaxValue。</summary>
+        public static long UnlockFishOf(Item item)
         {
-            var levels = IslandCatalog.Facilities
+            var steps = IslandCatalog.Facilities
                 .Where(f => f.Recipes.Any(r => !IslandCatalog.ProducesPearl(f.Kind) && r.Output.Item == item))
-                .Select(f => f.UnlockLevel)
+                .Select(f => f.UnlockFish)
                 .ToList();
-            return levels.Count == 0 ? int.MaxValue : levels.Min();
+            return steps.Count == 0 ? long.MaxValue : steps.Min();
         }
 
         private void Emit(IslandEvent e)
         {
-            if (_recordEvents || e.Kind == IslandEventKind.LevelUp || e.Kind == IslandEventKind.HarborStageUp)
+            if (_recordEvents || e.Kind == IslandEventKind.LevelUp || e.Kind == IslandEventKind.HarborStageUp ||
+                e.Kind == IslandEventKind.Unlocked || e.Kind == IslandEventKind.PenguinArrived)
             {
                 _events.Add(e);
             }
@@ -1280,7 +1533,8 @@ namespace ProjectPenguin.Domain.Island
     [Serializable]
     public sealed class IslandSave
     {
-        public const int CurrentVersion = 1;
+        /// <summary>2: お魚の桁の解放・お魚のごはん・島の実績 (2026-10-17)。</summary>
+        public const int CurrentVersion = 2;
 
         public int version;
         public double[] resources;
@@ -1296,6 +1550,17 @@ namespace ProjectPenguin.Domain.Island
         public int photosToday;
         public int stepDay;
         public double stepGasToday;
+
+        /// <summary>これまでに持ったお魚の最大。版 1 では 0 なので、読むときに持っているお魚と建てた施設から決める。</summary>
+        public long maxFishHeld;
+
+        /// <summary>まだ引いていない、ごはんのお魚の端数。</summary>
+        public double fishDebt;
+
+        public long[] made;
+        public long pearlsMade;
+        public int[] photoCategories;
+        public string[] achievedSpecies;
         public int[] expansionsX;
         public int[] expansionsY;
         public FacilitySave[] facilities;

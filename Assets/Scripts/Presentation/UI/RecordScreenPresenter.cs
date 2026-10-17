@@ -77,7 +77,7 @@ namespace ProjectPenguin.Presentation.UI
             _screen.Q<Label>(UiNames.Record.WeekSummary).text = $"記録 {session.RecordDaysInWeek(week)} / 7 日";
             _screen.Q<Label>(UiNames.Record.TotalValue).text = $"{session.TotalRecordDays} 日";
             _screen.Q<Label>(UiNames.Record.StreakValue).text = $"{session.Streak} 日";
-            _screen.Q<Label>(UiNames.Record.PenguinValue).text = $"{session.Arrivals.Count} 羽";
+            _screen.Q<Label>(UiNames.Record.PenguinValue).text = $"{_game.Island.Species.Count} 種";
             _screen.Q<Label>(UiNames.Record.DeliveredValue).text = $"{_game.Island.Delivered} 回";
 
             var history = _screen.Q(UiNames.Record.History);

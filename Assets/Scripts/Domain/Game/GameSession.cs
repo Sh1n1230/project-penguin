@@ -100,17 +100,31 @@ namespace ProjectPenguin.Domain.Game
         public int To { get; }
     }
 
+    /// <summary>直前の操作で時計をどう扱ったか (v4)。保存しない。</summary>
+    public enum ClockStatus
+    {
+        /// <summary>通常。</summary>
+        Ok,
+
+        /// <summary>時計が最後に見た日より前だった。操作は最後に見た日のものとして扱った。UI で「端末の時計が戻っています」を 1 回出す。</summary>
+        Behind,
+
+        /// <summary>信頼できない時計が大きく先に進んでいる。日を確定させず、操作も受け付けていない。<see cref="GameSession.ConfirmClock"/> で確定できる。</summary>
+        AheadPending,
+    }
+
     /// <summary>
     /// 統合ルールの状態機械 (game_sim.py の <c>Session</c> と 1 対 1)。現在時刻は <see cref="IClock"/> から読む。
     /// <list type="bullet">
     /// <item>アプリの日は 03:00 JST で切り替わる。記録日は操作したアプリの日 (レシートの印字日ではない)。</item>
     /// <item>記録 = レシート登録 または 選んだミッションの夜の振り返り (「できなかった」も含む)。1 日 1 回 +2、氷 60 未満なら +4。</item>
     /// <item>記録のない日は盾 1 枚、盾がなければ −2 (下限 40)。盾は月曜 03:00 に 2 枚へ戻る。</item>
-    /// <item>3 日以上の空白の後の最初の記録に、空白中に溶けた量 × 0.5 (0.5 切り上げ、上限 10) を足す。</item>
+    /// <item>盾で守れず溶けた日が 1 日以上ある空白の後の最初の記録に、空白中に溶けた量 × 0.5 (0.5 切り上げ、上限 10) を足す (v4。v3 は空白 3 日以上)。</item>
     /// <item>上限 150 を超えた分は氷のかけら (1:1)。週の選び方の氷 B は月曜の始まりに足す。</item>
     /// <item>ミッションは氷を増やさない。金スタンプ (レシートで確認) 2 点、白スタンプ (自己申告・写真の「できた」) 1 点、白は 1 日 1・週 5 まで数える。</item>
     /// <item>ペンギンは週 1 羽まで (節目が先、週ごとの分は順番待ち)。来たペンギンは消えない。</item>
-    /// <item>時計が前回より前のアプリの日に戻っていたら、その操作は何もしない。</item>
+    /// <item>時計が最後に見た日より前に戻っていたら、操作は最後に見た日のものとして扱う (v4。昔の日は埋め直せない)。</item>
+    /// <item>信頼できない時計で最後に見た日から <see cref="GameParameters.MaxCatchUpDays"/> を超えて進んだら、確定させずに保留する (v4)。</item>
     /// </list>
     /// 保存は、このクラスの状態をそのまま書き出す前提 (保存形式は未定。15c §6)。
     /// </summary>
@@ -191,7 +205,19 @@ namespace ProjectPenguin.Domain.Game
         /// <summary>(日, おかえりで足した量)。</summary>
         public IReadOnlyList<KeyValuePair<int, int>> ComebackLog => _comebackLog;
 
+        /// <summary>時計が戻っていた操作の回数 (保存しない)。</summary>
+        public int ClockRollbacks { get; private set; }
+
+        /// <summary>直前の <see cref="Advance"/> の結果 (保存しない)。</summary>
+        public ClockStatus ClockStatus { get; private set; }
+
+        /// <summary>保留している先の日 (<see cref="ClockStatus.AheadPending"/> のとき)。</summary>
+        public int? PendingAheadDay { get; private set; }
+
         public bool IsRecorded(int day) => _recordedDays.Contains(day);
+
+        /// <summary>やりとげたミッションの種類の数 (図鑑の解放条件の進み具合に使う)。</summary>
+        public int DoneMissionCount => _doneMissions.Count;
 
         /// <summary>その日に選んだミッション (選んだ順)。画面に出すための読み取り専用。</summary>
         public IReadOnlyList<string> SelectedOn(int day) =>
@@ -211,15 +237,55 @@ namespace ProjectPenguin.Domain.Game
 
         /// <summary>
         /// 今日より前の未確定の日を確定させ、今日を始める (月曜なら盾・B・来訪)。
-        /// 時計が戻っていれば何もせず null。
+        /// 時計が戻っていれば最後に見た日を返す (v3 の値では null)。
+        /// 信頼できない時計が <see cref="GameParameters.MaxCatchUpDays"/> を超えて進んでいれば、何もせず null。
         /// </summary>
         public int? Advance()
         {
-            var today = Today;
-            if (today < LastStartedDay)
+            return AdvanceCore(false);
+        }
+
+        /// <summary>保留した先送りを確定させる。Systems 側でサーバー時刻などにより時刻を確かめた後や、利用者が端末の時刻で進めると選んだときに呼ぶ。</summary>
+        public int? ConfirmClock()
+        {
+            return AdvanceCore(true);
+        }
+
+        private bool ClockIsTrusted => _clock is ITrustedClock t && t.IsTrusted;
+
+        /// <summary>今日として扱う日を決める。巻き戻りは最後に見た日に揃え、信頼できない時計の大きな先送りは保留 (null) にする。</summary>
+        private int? ResolveToday(bool force)
+        {
+            var d = Today;
+            if (d < LastStartedDay)
+            {
+                ClockRollbacks++;
+                PendingAheadDay = null;
+                ClockStatus = ClockStatus.Behind;
+                return _p.RollbackClamp ? LastStartedDay : (int?)null;
+            }
+
+            if (_p.MaxCatchUpDays.HasValue && d - LastStartedDay > _p.MaxCatchUpDays.Value && !(force || ClockIsTrusted))
+            {
+                PendingAheadDay = d;
+                ClockStatus = ClockStatus.AheadPending;
+                return null;
+            }
+
+            PendingAheadDay = null;
+            ClockStatus = ClockStatus.Ok;
+            return d;
+        }
+
+        private int? AdvanceCore(bool force)
+        {
+            var resolved = ResolveToday(force);
+            if (resolved == null)
             {
                 return null;
             }
+
+            var today = resolved.Value;
 
             for (var d = LastSettledDay + 1; d < today; d++)
             {
@@ -245,7 +311,7 @@ namespace ProjectPenguin.Domain.Game
             return today;
         }
 
-        /// <summary>レシートを登録する。重複 (同じ ID) と時計の巻き戻りは false。</summary>
+        /// <summary>記録を 1 件登録する (写真でもレシートでも、記録の手段は問わない)。重複 (同じ ID) と、保留中の先送りは false。</summary>
         public bool ScanReceipt(ReceiptRecord receipt)
         {
             if (receipt == null)
@@ -281,6 +347,26 @@ namespace ProjectPenguin.Domain.Game
             }
 
             Record(d.Value, RecordKind.Receipt);
+            return true;
+        }
+
+        /// <summary>記録しなかった日に溶ける量を減らす割合 (0〜<see cref="GameParameters.MaxMeltReduction"/>)。島の氷室の効き目。</summary>
+        public double MeltReduction { get; private set; }
+
+        /// <summary>
+        /// 溶ける量を減らす割合を変える。先に今日まで確定させるので、それまでに過ぎた日は前の割合で溶ける。
+        /// 島の状態から決まる値なので、Systems はこれを操作として記録し、再生で同じ氷に戻す。
+        /// </summary>
+        public bool SetMeltReduction(double reduction)
+        {
+            Advance();
+            var r = Math.Max(0.0, Math.Min(_p.MaxMeltReduction, reduction));
+            if (Math.Abs(r - MeltReduction) < 1e-9)
+            {
+                return false;
+            }
+
+            MeltReduction = r;
             return true;
         }
 
@@ -410,7 +496,11 @@ namespace ProjectPenguin.Domain.Game
 
                 if (Get(_weekRecordDays, prev) >= _p.WeeklyArrivalMinDays)
                 {
-                    WeeklyPending++;
+                    if (_p.WeeklyArrivals)
+                    {
+                        WeeklyPending++;
+                    }
+
                     ConsecutiveWeeks++;
                     if (ConsecutiveWeeks >= 4)
                     {
@@ -437,7 +527,7 @@ namespace ProjectPenguin.Domain.Game
                 return;
             }
 
-            var m = Math.Max(0.0, Math.Min(_p.Melt, Ice - _p.Floor));
+            var m = Math.Max(0.0, Math.Min(_p.Melt * (1.0 - MeltReduction), Ice - _p.Floor));
             Ice -= m;
             GapMelted += m;
             SetTier(d);
@@ -458,7 +548,8 @@ namespace ProjectPenguin.Domain.Game
 
             _recordedDays.Add(d);
             var gain = _p.RecordGain * (Ice < _p.RescueBelow ? _p.RescueMultiplier : 1.0);
-            if (GapDays >= _p.ComebackMinGap)
+            var fires = _p.ComebackRequiresMelt ? GapMelted > 0 : GapDays >= _p.ComebackMinGap;
+            if (fires)
             {
                 var extra = Math.Min(_p.ComebackMax, AppCalendar.RoundHalfUp(_p.ComebackRatio * GapMelted));
                 gain += extra;

@@ -18,7 +18,13 @@ namespace ProjectPenguin.Presentation.World
             public Transform Transform;
             public Vector3 Target;
             public float Wait;
+
+            /// <summary>足踏みのアニメーション (雛形が持っていれば)。</summary>
+            public Animator Animator;
         }
+
+        /// <summary>立ち止まっている間の足踏みの速さ (歩いている間は 1)。その場でゆっくり足を動かす。</summary>
+        private const float IdleWaddleSpeed = 0.35f;
 
         [SerializeField] private GameStateSystem _game;
         [SerializeField] private IslandBoardView _board;
@@ -94,7 +100,10 @@ namespace ProjectPenguin.Presentation.World
             var start = RandomLandPoint();
             go.transform.localPosition = start;
             IslandPop.Play(go.transform);
-            _walkers.Add(new Walker { Transform = go.transform, Target = start, Wait = Random.Range(0f, 2f) });
+            _walkers.Add(new Walker
+            {
+                Transform = go.transform, Target = start, Wait = Random.Range(0f, 2f), Animator = go.GetComponentInChildren<Animator>(),
+            });
         }
 
         private void Update()
@@ -114,6 +123,7 @@ namespace ProjectPenguin.Presentation.World
                 if (w.Wait > 0f)
                 {
                     w.Wait -= Time.deltaTime;
+                    SetWaddle(w, IdleWaddleSpeed);
                     continue;
                 }
 
@@ -126,10 +136,20 @@ namespace ProjectPenguin.Presentation.World
                     continue;
                 }
 
+                SetWaddle(w, 1f);
+
                 var step = Mathf.Min(to.magnitude, _speed * Time.deltaTime);
                 t.localPosition += to.normalized * step;
                 var look = Quaternion.LookRotation(to.normalized, Vector3.up);
                 t.localRotation = Quaternion.Slerp(t.localRotation, look, 1f - Mathf.Exp(-8f * Time.deltaTime));
+            }
+        }
+
+        private static void SetWaddle(Walker w, float speed)
+        {
+            if (w.Animator != null)
+            {
+                w.Animator.speed = speed;
             }
         }
 

@@ -21,6 +21,9 @@ namespace ProjectPenguin.Presentation.UI
     {
         private const float ToastSeconds = 2.6f;
 
+        /// <summary>はじめて氷室を建てたときの説明 (氷の大きさとやる気) を見せたか。デモの「最初から」で消す。</summary>
+        private const string IceHouseIntroKey = "pp.island.iceHouseIntroShown";
+
         /// <summary>夜の振り返りを始める時刻 (JST、docs/game-logic.md §3)。</summary>
         private const int EveningHour = 18;
 
@@ -51,6 +54,7 @@ namespace ProjectPenguin.Presentation.UI
         private Button _modalButton;
         private Button _modalCancel;
         private Action _modalAction;
+        private readonly Queue<Action> _modalQueue = new Queue<Action>();
         private VisualElement _harborDot;
 
         private readonly Dictionary<Resource, double> _shown = new Dictionary<Resource, double>();
@@ -172,6 +176,13 @@ namespace ProjectPenguin.Presentation.UI
         /// </summary>
         public void ShowModal(string title, string text, VisualElement body, string button, Action onClose = null, bool cancellable = false)
         {
+            // 知らせが重なったら (施設が開いた・ペンギンが来た・おかえり が同時など)、閉じてから順に出す。
+            if (IsModalOpen)
+            {
+                _modalQueue.Enqueue(() => ShowModal(title, text, body, button, onClose, cancellable));
+                return;
+            }
+
             IslandUi.SetVisible(_modalCancel, cancellable);
             _modalTitle.text = title;
             _modalText.text = text;
@@ -187,18 +198,30 @@ namespace ProjectPenguin.Presentation.UI
             IslandUi.SetVisible(_modal, true);
         }
 
+        private bool IsModalOpen => _modal != null && !_modal.ClassListContains(UiClasses.Hidden);
+
         private void CloseModal()
         {
             IslandUi.SetVisible(_modal, false);
             var a = _modalAction;
             _modalAction = null;
             a?.Invoke();
+            ShowNextModal();
         }
 
         private void CancelModal()
         {
             _modalAction = null;
             IslandUi.SetVisible(_modal, false);
+            ShowNextModal();
+        }
+
+        private void ShowNextModal()
+        {
+            if (!IsModalOpen && _modalQueue.Count > 0)
+            {
+                _modalQueue.Dequeue()();
+            }
         }
 
         private IEnumerator ToastRoutine(Label toast)
@@ -245,6 +268,9 @@ namespace ProjectPenguin.Presentation.UI
 
             var fish = island.Fish;
             _fishValue.text = IslandUi.Number(fish);
+
+            // お魚が尽きると、働くペンギンのごはんが無くて施設が止まる。帯で知らせる。
+            _fishBox.EnableInClassList(UiClasses.Resource.Empty, fish < 1 && island.FishUpkeepPerHour > 0);
             if (_shownFish >= 0 && fish >= _shownFish + 10)
             {
                 Bump(_fishBox);
@@ -257,7 +283,11 @@ namespace ProjectPenguin.Presentation.UI
 
             var board = island.Board;
             var sunk = board.SunkCount(island.Ice);
-            _land.text = sunk > 0 ? $"島の端が {sunk} マス沈んでいる" : $"支えられる土地 {board.Expansions.Count} / {board.Capacity(island.Ice)}";
+            // 氷が大きいとペンギンのやる気が上がり、施設がよく働く。上がっているときだけ添える (カードの幅に収まるよう短く)。
+            var motivated = island.Motivation > 1.0 + 1e-9;
+            _land.text = sunk > 0 ? $"島の端が {sunk} マス沈んでいる"
+                : motivated ? $"土地 {board.Expansions.Count} / {board.Capacity(island.Ice)}・やる気{IslandUi.Motivation(island.Motivation)}"
+                : $"支えられる土地 {board.Expansions.Count} / {board.Capacity(island.Ice)}";
             _land.EnableInClassList(UiClasses.Home.StatNoteDanger, sunk > 0);
 
             var readyOrder = Enumerable.Range(0, island.Orders.Count)
@@ -278,15 +308,25 @@ namespace ProjectPenguin.Presentation.UI
             string key, label, icon;
             Action action;
             var island = _game.Island;
-            var firstBuild = island.Facilities.Count == 0 && island.CanBuild(FacilityKind.Fishery) == IslandActionResult.Ok;
+
+            // はじめての流れ: 写真 → 氷室 (氷を溶けにくくする) → 漁場 (お魚をとる) → 港。
+            // 1 度でも建てたら案内しない (取り壊した人に何度も言わない)。お金が足りないうちは出さず、次の案内に進む。
+            var firstIceHouse = island.CountOf(FacilityKind.IceHouse) == 0 && island.Facilities.All(f => f.Kind != FacilityKind.Fishery) &&
+                                island.CanBuild(FacilityKind.IceHouse) == IslandActionResult.Ok;
+            var firstFishery = island.CountOf(FacilityKind.Fishery) == 0 && island.CanBuild(FacilityKind.Fishery) == IslandActionResult.Ok;
             if (_game.CanReceivePhotoToday)
             {
                 (key, label, icon, action) = ("photo", "今日のエコ写真を撮る", UiClasses.Icon.Camera, () => _navigator.Show(AppScreen.Scan));
             }
-            else if (firstBuild && _build != null)
+            else if (firstIceHouse && _build != null)
             {
-                // はじめての人は、写真の次に漁場を建てる。説明の画面へ直接案内する。
-                (key, label, icon, action) = ("build", "漁場を建てて魚をとろう", UiClasses.Icon.Build, () => _build.OpenDetail(FacilityKind.Fishery));
+                // はじめての人は、写真で得たインフラで、まず氷室を建てる。説明の画面へ直接案内する。
+                (key, label, icon, action) = ("build", "氷室を建てて、氷を溶けにくくしよう", UiClasses.Icon.Build,
+                    () => _build.OpenDetail(FacilityKind.IceHouse));
+            }
+            else if (firstFishery && _build != null)
+            {
+                (key, label, icon, action) = ("build-fishery", "漁場を建てて魚をとろう", UiClasses.Icon.Build, () => _build.OpenDetail(FacilityKind.Fishery));
             }
             else if (readyOrder && _harbor != null)
             {
@@ -308,7 +348,7 @@ namespace ProjectPenguin.Presentation.UI
             _nextAction = action;
 
             // はじめての建てる案内のあいだは、建てるボタンも光らせる。
-            _toolBuild?.EnableInClassList(UiClasses.Tool.Active, key == "build");
+            _toolBuild?.EnableInClassList(UiClasses.Tool.Active, key == "build" || key == "build-fishery");
             IslandUi.SetVisible(_action, action != null);
             if (key == _nextActionKey)
             {
@@ -331,6 +371,10 @@ namespace ProjectPenguin.Presentation.UI
         /// <summary>デモ用: すべて消して、はじめての案内から見せ直す (イベントで何度も最初から見せるため)。</summary>
         private void ResetForDemo()
         {
+            PlayerPrefs.DeleteKey(IceHouseIntroKey);
+            _modalQueue.Clear();
+            _modalAction = null;
+            IslandUi.SetVisible(_modal, false);
             _game.ResetAll();
             _nextActionKey = null;
             _navigator.Show(AppScreen.Home);
@@ -394,6 +438,12 @@ namespace ProjectPenguin.Presentation.UI
                 ShowToast("港に舟が着いたよ");
             }
 
+            var unlocked = events.Where(e => e.Kind == IslandEventKind.Unlocked).Select(e => IslandCatalog.Get((FacilityKind)e.Value)).ToList();
+            if (unlocked.Count > 0)
+            {
+                ShowUnlocked(unlocked);
+            }
+
             foreach (var e in events)
             {
                 switch (e.Kind)
@@ -404,15 +454,86 @@ namespace ProjectPenguin.Presentation.UI
                     case IslandEventKind.HarborStageUp:
                         ShowToast(e.Value >= 5 ? "港が完成！おでん祭りだ！" : "港が少し立派になったよ");
                         break;
+                    case IslandEventKind.PenguinArrived:
+                        ShowPenguinArrived(e.Value);
+                        break;
+                    case IslandEventKind.Built:
+                        var built = _game.Island.Find(e.FacilityId);
+                        if (built != null && built.Kind == FacilityKind.IceHouse)
+                        {
+                            ShowIceHouseIntro();
+                        }
+
+                        break;
                 }
             }
         }
 
         private void ShowLevelUp(int level)
         {
-            var unlocked = IslandCatalog.Facilities.Where(f => f.UnlockLevel == level).Select(f => f.Name).ToList();
-            var text = unlocked.Count > 0 ? $"{string.Join("・", unlocked)} が建てられるようになったよ" : "島を広げられる数が増えたよ";
+            var p = _game.Island.Parameters;
+            var text = level <= p.FacilityMaxLevel
+                ? $"島を広げられる数が増えて、施設を Lv{level} まで強化できるようになったよ"
+                : "島を広げられる数が増えたよ";
             ShowModal($"レベル {level}！", text, null, "やったね");
+        }
+
+        /// <summary>お魚の桁が上がって、新しい施設が開いた。建物の絵を並べて見せ、棚へ案内する。</summary>
+        private void ShowUnlocked(IReadOnlyList<FacilityDef> defs)
+        {
+            var list = new VisualElement();
+            foreach (var def in defs)
+            {
+                list.Add(IslandUi.Row(IslandUi.IconBadge(IslandUi.IconClass(def), IslandUi.TintClass(def)), def.Name, def.Description));
+            }
+
+            var fish = defs.Max(d => d.UnlockFish);
+            ShowModal($"お魚 {IslandUi.Number(fish)} 匹！", "お魚の桁が上がって、新しい施設が建てられるようになったよ", list, "見に行く",
+                () => _build?.Open());
+        }
+
+        /// <summary>実績を満たして、新しい種のペンギンが来た。</summary>
+        private void ShowPenguinArrived(int index)
+        {
+            if (index < 0 || index >= PenguinCatalog.AllIds.Count)
+            {
+                return;
+            }
+
+            var species = PenguinCatalog.AllIds[index];
+            var entry = PenguinDex.Find(species);
+            var unlock = PenguinUnlocks.Find(species);
+            var body = new VisualElement();
+            if (unlock != null)
+            {
+                body.Add(IslandUi.Row(IslandUi.IconBadge(UiClasses.Icon.Check, UiClasses.Tint.Eco, true), "達成", unlock.Condition));
+            }
+
+            if (entry != null)
+            {
+                body.Add(IslandUi.Row(IslandUi.IconBadge(UiClasses.Icon.Penguin, UiClasses.Tint.Original), "島へのおくりもの", entry.BonusText));
+            }
+
+            ShowModal($"{PenguinCatalog.DisplayNameJa[species]}が来た！", entry?.Fact, body, "ようこそ");
+        }
+
+        /// <summary>はじめて氷室を建てたとき、氷の大きさとペンギンのやる気のつながりを 1 回だけ伝える。</summary>
+        private void ShowIceHouseIntro()
+        {
+            if (PlayerPrefs.GetInt(IceHouseIntroKey, 0) != 0)
+            {
+                return;
+            }
+
+            PlayerPrefs.SetInt(IceHouseIntroKey, 1);
+            PlayerPrefs.Save();
+            var p = _game.Island.Parameters;
+            var body = new VisualElement();
+            body.Add(IslandUi.Row(IslandUi.IconBadge(UiClasses.Icon.Snowflake, UiClasses.Tint.Water), "休んだ日も溶けにくい",
+                $"記録しなかった日に溶ける氷が {p.IceHouseReduction * 100:0}% 減るよ。強化するともっと減る"));
+            body.Add(IslandUi.Row(IslandUi.IconBadge(UiClasses.Icon.Penguin, UiClasses.Tint.Original), "氷が大きいと、やる気が出る",
+                $"氷が「ゆたか」で {IslandUi.Motivation(p.MotivationByTier[3])}、「ひろがる」で {IslandUi.Motivation(p.MotivationByTier[4])}。施設がよく働くよ"));
+            ShowModal("氷が溶けにくくなったよ", "毎日のエコ写真で氷が増えると、ペンギンたちのやる気も上がるんだ", body, "わかった");
         }
 
         private void ShowOfflineReport()
@@ -445,6 +566,12 @@ namespace ProjectPenguin.Presentation.UI
                     IslandUi.Text(report.Delivered + " 回", UiClasses.Text.Label, UiClasses.Text.Heavy)));
             }
 
+            if (report.FishEaten > 0)
+            {
+                list.Add(IslandUi.Row(IslandUi.IconBadge(UiClasses.Icon.Penguin, UiClasses.Tint.Original), "ペンギンのごはん", null,
+                    IslandUi.Text("−" + IslandUi.Number(report.FishEaten), UiClasses.Text.Label, UiClasses.Text.Heavy)));
+            }
+
             if (list.childCount == 0)
             {
                 return;
@@ -452,7 +579,18 @@ namespace ProjectPenguin.Presentation.UI
 
             var hours = report.Seconds / 3600.0;
             var span = hours >= 1 ? $"{Math.Floor(hours)} 時間" : $"{Math.Max(1, Math.Floor(report.Seconds / 60))} 分";
-            ShowModal("おかえり！", $"留守の {span}の間に、みんなが働いてくれたよ", list, "受け取る");
+            var fish = report[Item.Fish];
+            var message = fish > 0
+                ? $"留守の {span}の間に、お魚が {IslandUi.Number(fish)} 匹とれたよ"
+                : $"留守の {span}の間に、みんなが働いてくれたよ";
+
+            // 長く休んでも、働いてくれるのは上限までだと伝える (毎日のぞいたほうが得になる)。
+            if (report.Seconds >= _game.Island.Parameters.OfflineCapSeconds - 1)
+            {
+                message += $"\n(留守番は {Math.Floor(_game.Island.Parameters.OfflineCapSeconds / 3600)} 時間ぶんまで)";
+            }
+
+            ShowModal("おかえり！", message, list, "受け取る");
         }
     }
 }

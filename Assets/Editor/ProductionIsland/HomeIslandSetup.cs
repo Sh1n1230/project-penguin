@@ -22,6 +22,17 @@ namespace ProjectPenguin.Editor.ProductionIsland
         private const string SourceScenePath = "Assets/Scenes/HomeWorld.unity";
         private const string MaterialFolder = "Assets/ProductionIsland/Materials";
 
+        /// <summary>足踏みのアニメーションを持つペンギン (約 2 秒のループ)。歩くペンギンは全員これにそろえる。</summary>
+        private const string WaddleModelPath = "Assets/3Dmodel/Penguin_v001/Penguin_Waddle_1p3m.fbx";
+
+        private const string WaddleControllerPath = "Assets/3Dmodel/Penguin_v001/Penguin_Waddle.controller";
+
+        /// <summary>HomeWorld の Penguin1 (足踏みしている 1 羽) の Model の下の置き方。FBX の単位が静止版と違うので大きさも違う。</summary>
+        private static readonly Vector3 WaddleLocalPosition = new Vector3(0f, 0.269f, -0.097f);
+
+        private static readonly Vector3 WaddleLocalEuler = new Vector3(270f, 0f, 0f);
+        private const float WaddleLocalScale = 11.887f;
+
         [MenuItem("Production Island/Setup Home Island")]
         public static void Run()
         {
@@ -169,9 +180,10 @@ namespace ProjectPenguin.Editor.ProductionIsland
 
             // HomeWorld の大きなペンギン (原点に立つ) は、島の施設と重なるので隠す。小屋の氷山の上は小さなペンギンたちが歩く。
             // HomeWorld には同じ名前のものが 2 つある (Animator 付きと、置いただけのもの) ので、どちらも隠す。
+            // 歩くペンギン (Penguins の下) の足踏みのモデルも同じ名前なので、それは除く (除き忘れると Penguin1 だけ姿が消える)。
             foreach (var big in UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
-                if (big.name != "Penguin_Waddle_1p3m")
+                if (big.name != "Penguin_Waddle_1p3m" || IsUnderPenguins(big))
                 {
                     continue;
                 }
@@ -183,6 +195,11 @@ namespace ProjectPenguin.Editor.ProductionIsland
                 }
 
                 big.gameObject.SetActive(false);
+            }
+
+            if (penguins != null)
+            {
+                UseWaddlePenguins(penguins);
             }
 
             if (iceberg == null)
@@ -212,6 +229,71 @@ namespace ProjectPenguin.Editor.ProductionIsland
             }
 
             so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static bool IsUnderPenguins(Transform t)
+        {
+            for (var p = t.parent; p != null; p = p.parent)
+            {
+                if (p.name == "Penguins")
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 氷山を歩くペンギン (と、それを雛形に島を歩くペンギン) を、全員足踏みのアニメーション付きのモデルにそろえる。
+        /// HomeWorld では Penguin1 だけが足踏みし、ほかは静止モデルを滑らせていた。足の動きがそろわないよう、再生位置もずらす。
+        /// </summary>
+        private static void UseWaddlePenguins(Transform penguins)
+        {
+            var waddle = AssetDatabase.LoadAssetAtPath<GameObject>(WaddleModelPath);
+            var controller = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(WaddleControllerPath);
+            if (waddle == null || controller == null)
+            {
+                Debug.LogWarning("HomeIslandSetup: 足踏みのペンギンのモデルかコントローラーが見つかりません。");
+                return;
+            }
+
+            foreach (Transform penguin in penguins)
+            {
+                var model = penguin.Find("Model");
+                if (model == null)
+                {
+                    model = new GameObject("Model").transform;
+                    model.SetParent(penguin, false);
+                }
+
+                var keep = model.childCount == 1 && PrefabUtility.GetCorrespondingObjectFromSource(model.GetChild(0).gameObject) == waddle
+                    ? model.GetChild(0).gameObject
+                    : null;
+                for (var i = model.childCount - 1; i >= 0; i--)
+                {
+                    if (model.GetChild(i).gameObject != keep)
+                    {
+                        UnityEngine.Object.DestroyImmediate(model.GetChild(i).gameObject);
+                    }
+                }
+
+                if (keep == null)
+                {
+                    keep = (GameObject)PrefabUtility.InstantiatePrefab(waddle, penguin.gameObject.scene);
+                    keep.transform.SetParent(model, false);
+                }
+
+                keep.SetActive(true);
+                keep.transform.localPosition = WaddleLocalPosition;
+                keep.transform.localRotation = Quaternion.Euler(WaddleLocalEuler);
+                keep.transform.localScale = Vector3.one * WaddleLocalScale;
+                var animator = Ensure<Animator>(keep);
+                animator.runtimeAnimatorController = controller;
+                animator.applyRootMotion = false;
+                animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+                Ensure<AnimatorPhaseOffset>(penguin.gameObject);
+            }
         }
 
         private static Transform FindUnder(Transform root, string name)
@@ -282,7 +364,7 @@ namespace ProjectPenguin.Editor.ProductionIsland
         internal static GameObject FacilityModel(IslandKind kind)
         {
             var name = kind.ToString();
-            var small = kind == IslandKind.Warehouse || kind == IslandKind.Dormitory || kind == IslandKind.Sorter;
+            var small = ProjectPenguin.Domain.Island.IslandCatalog.Get(kind).Size == 1;
             var model = Model($"Building_{name}_{(small ? "1x1" : "2x2")}_v002");
             if (model == null)
             {

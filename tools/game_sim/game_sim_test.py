@@ -1,5 +1,8 @@
-"""Tests for game_sim.py (run from the repository root: python3 -m pytest tools/game_sim)."""
+"""Tests for game_sim.py (run: python3 -m unittest game_sim_test -v)."""
+import csv
 import dataclasses as dc
+import json
+import os
 import unittest
 from datetime import datetime, timedelta
 
@@ -27,6 +30,10 @@ class Calendar(unittest.TestCase):
     def test_round_half_up(self):
         self.assertEqual(g.round_half_up(2.5), 3)
         self.assertEqual(g.round_half_up(0.49), 0)
+
+
+# 2026-10-16: the default no longer adds ice on a comeback (the reward is the fish made while away). v3/v4 = 0.5.
+ICE_COMEBACK = dc.replace(g.DEFAULT, comeback_ratio=0.5)
 
 
 class Ice(unittest.TestCase):
@@ -64,15 +71,23 @@ class Ice(unittest.TestCase):
         self.assertEqual(s.s.ice, 92)
         self.assertEqual(s.s.shields, 2)
 
-    def test_comeback(self):
+    def test_comeback_adds_no_ice_by_default(self):
         s = self.sess()
+        s.advance(T(2026, 11, 2, 12))
+        self.assertEqual(s.s.gap_melted, 8)
+        s.scan_receipt(T(2026, 11, 2, 13), g.Receipt("a", 0))
+        self.assertEqual(s.s.ice, 92 + 2)                     # no extra ice
+        self.assertEqual(s.comeback_log, [(s.comeback_log[0][0], 0)])   # but the comeback still fires (the penguin's visit)
+
+    def test_comeback(self):
+        s = self.sess(p=ICE_COMEBACK)
         s.advance(T(2026, 11, 2, 12))         # gap Tue..Sun 6 days, 4 melted *2 = 8
         self.assertEqual(s.s.gap_melted, 8)
         s.scan_receipt(T(2026, 11, 2, 13), g.Receipt("a", 0))
         self.assertEqual(s.s.ice, 92 + 2 + 4)
 
     def test_comeback_capped(self):
-        s = self.sess()
+        s = self.sess(p=ICE_COMEBACK)
         s.advance(T(2026, 11, 30, 12))
         self.assertGreater(s.s.gap_melted, 20)
         before = s.s.ice
@@ -80,7 +95,7 @@ class Ice(unittest.TestCase):
         self.assertEqual(s.s.ice, before + (4 if before < 60 else 2) + 10)
 
     def test_rescue_and_floor(self):
-        s = self.sess()
+        s = self.sess(p=ICE_COMEBACK)
         s.advance(T(2027, 2, 1, 12))
         self.assertEqual(s.s.ice, 40)
         s.scan_receipt(T(2027, 2, 1, 13), g.Receipt("a", 0))
@@ -99,10 +114,26 @@ class Ice(unittest.TestCase):
         self.assertEqual(s.s.shards, 13)
 
     def test_clock_rollback_ignored(self):
-        s = self.sess()
+        # v3 behaviour, kept reachable through Params.rollback_clamp=False (V3 / DECIDED)
+        s = self.sess(p=g.V3)
         s.advance(T(2026, 10, 29, 12))
         self.assertFalse(s.scan_receipt(T(2026, 10, 28, 12), g.Receipt("a", 0)))
         self.assertEqual(s.s.ice, 100)
+
+    def test_clock_rollback_clamps_to_last_seen_day(self):
+        # v4 (17a §1): a rollback acts on the last seen app day instead of being ignored
+        s = self.sess()
+        d29 = s.advance(T(2026, 10, 29, 12))
+        self.assertTrue(s.scan_receipt(T(2026, 10, 28, 12), g.Receipt("a", 0)))
+        self.assertEqual(s.clock_status, g.CLOCK_BEHIND)
+        self.assertEqual(s.s.clock_rollbacks, 1)
+        self.assertIn(d29, s.recorded_days)
+        self.assertNotIn(d29 - 1, s.recorded_days)        # old days are never refilled
+        self.assertEqual(s.s.ice, 102)
+        self.assertTrue(s.scan_receipt(T(2026, 10, 27, 12), g.Receipt("b", 0)))
+        self.assertEqual(s.s.ice, 102)                     # still once per (last seen) day
+        s.advance(T(2026, 10, 30, 12))
+        self.assertEqual(s.clock_status, g.CLOCK_OK)
 
     def test_dedup(self):
         s = self.sess()
@@ -184,7 +215,253 @@ class Targets(unittest.TestCase):
         self.assertEqual(len(failed), 2)
 
     def test_lapsed_recovery(self):
-        self.assertLessEqual(g.recovery_days(g.run_persona("lapsed")), 7)
+        self.assertLessEqual(g.recovery_days(g.run_persona("lapsed")), 8)
+        self.assertLessEqual(g.recovery_days(g.run_persona("lapsed", ICE_COMEBACK)), 5)   # with the ice comeback (v3/v4)
+
+
+def honest_checkin(s, when, mid):
+    s.select_mission(when, mid, g.VERIF_SELF)
+    return s.check_in(when, mid, g.ANS_DONE)
+
+
+class ClockV4(unittest.TestCase):
+    """16d §5.1 A/B/C reproduced with an untrusted (device) clock, and the v4 fixes."""
+    START = T(2026, 10, 27, 12)
+
+    def test_A_forward_30_days_and_back_no_lockout(self):
+        s = g.Session(self.START, bonus0, clock_trusted=False)
+        s.scan_receipt(self.START, g.Receipt("r0", 0))
+        self.assertIsNone(s.advance(self.START + timedelta(days=30)))
+        self.assertEqual(s.clock_status, g.CLOCK_AHEAD_PENDING)
+        self.assertEqual(s.s.ice, 102)                     # nothing melted for the fake 30 days
+        rejected = 0
+        for d in range(1, 32):
+            if not s.scan_receipt(self.START + timedelta(days=d), g.Receipt(f"a{d}", 0)):
+                rejected += 1
+        self.assertEqual(rejected, 0)
+        self.assertEqual(s.s.total_record_days, 32)
+
+    def test_A_v3_lockout_reproduced(self):
+        s = g.Session(self.START, bonus0, g.V3)
+        s.scan_receipt(self.START, g.Receipt("r0", 0))
+        s.advance(self.START + timedelta(days=30))
+        rejected = sum(not s.scan_receipt(self.START + timedelta(days=d), g.Receipt(f"a{d}", 0)) for d in range(1, 32))
+        self.assertEqual(rejected, 29)                     # the 16d probe result
+
+    def test_C_jump_to_2099_is_held_then_released(self):
+        s = g.Session(self.START, bonus0, clock_trusted=False)
+        self.assertIsNone(s.advance(datetime(2099, 1, 1, tzinfo=g.JST)))
+        self.assertEqual(s.s.ice, 100)
+        self.assertTrue(s.scan_receipt(self.START + timedelta(days=1), g.Receipt("x", 0)))
+        self.assertEqual(s.clock_status, g.CLOCK_OK)
+
+    def test_jump_within_limit_is_processed(self):
+        s = g.Session(self.START, bonus0, clock_trusted=False)
+        self.assertIsNotNone(s.advance(self.START + timedelta(days=14)))
+        self.assertIsNone(s.advance(self.START + timedelta(days=29)))   # 15 > 14 days ahead of last seen
+
+    def test_confirm_clock_settles_a_real_long_absence(self):
+        s = g.Session(self.START, bonus0, clock_trusted=False)
+        later = self.START + timedelta(days=30)
+        self.assertFalse(s.scan_receipt(later, g.Receipt("a", 0)))
+        self.assertIsNotNone(s.confirm_clock(later))
+        self.assertLess(s.s.ice, 100)
+        before = s.s.ice
+        self.assertTrue(s.scan_receipt(later, g.Receipt("a", 0)))
+        self.assertEqual(s.s.ice, before + 2)               # no ice comeback by default (it was +10 with 0.5)
+
+    def test_B_banking_days_ahead_gives_no_lasting_gain(self):
+        cheat = g.Session(self.START, bonus0, clock_trusted=False)
+        for d in range(7):                                  # step the clock 1 day at a time
+            honest_checkin(cheat, self.START + timedelta(days=d), f"M{d}")
+        self.assertEqual(cheat.s.ice, 114)
+        honest = g.Session(self.START, bonus0)
+        for d in range(14):                                 # real time; the cheater keeps playing honestly
+            honest_checkin(cheat, self.START + timedelta(days=d, hours=1), f"N{d}")
+            honest_checkin(honest, self.START + timedelta(days=d, hours=1), f"N{d}")
+        end = self.START + timedelta(days=14)
+        cheat.advance(end)
+        honest.advance(end)
+        self.assertEqual(cheat.s.ice, honest.s.ice)
+        self.assertEqual(cheat.s.total_record_days, honest.s.total_record_days)
+
+
+class ComebackV4(unittest.TestCase):
+    def test_shield_only_gap_gives_no_comeback(self):
+        # Tue start, record Tue..Fri, skip Sat Sun Mon: Sat/Sun shields, Monday refill shields Monday -> nothing melts
+        for p, expect in ((g.V3, [0]), (g.DEFAULT, [])):
+            s = g.Session(T(2026, 10, 27, 9), bonus0, p)
+            for i in range(4):
+                honest_checkin(s, T(2026, 10, 27, 20) + timedelta(days=i), f"E{i}")
+            honest_checkin(s, T(2026, 11, 3, 20), "E9")
+            self.assertEqual([x for _, x in s.comeback_log], expect, p)
+            self.assertEqual(s.s.ice, 110)
+
+    def test_one_melted_day_gives_plus_one(self):
+        s = g.Session(T(2026, 10, 27, 9), bonus0, ICE_COMEBACK)
+        s.advance(T(2026, 10, 29, 12))          # Tue, Wed shielded (2 days)
+        honest_checkin(s, T(2026, 10, 29, 20), "a")
+        s.advance(T(2026, 10, 31, 12))          # Thu shield 0 -> Fri melts 2
+        self.assertEqual(s.s.gap_melted, 2)
+        honest_checkin(s, T(2026, 10, 31, 20), "b")
+        self.assertEqual(s.comeback_log[-1][1], 1)
+        self.assertEqual(s.s.ice, 100 + 2 - 2 + 2 + 1)
+        r = g.run_persona("casual")
+        self.assertEqual(r.session.comeback_log[0][0] - g.day_of_date(g.START) + 1, 12)   # 16a §4.1
+
+
+class IslandLink(unittest.TestCase):
+    """2026-10-17: the ice house (melt reduction) and weekly arrivals switched off for the app."""
+
+    def test_melt_reduction_applies_from_the_day_it_is_set(self):
+        s = g.Session(T(2026, 10, 27, 9), bonus0)   # Tue; Tue/Wed use the 2 shields
+        self.assertTrue(s.set_melt_reduction(T(2026, 10, 27, 10), 0.5))
+        s.advance(T(2026, 10, 31, 12))              # Thu, Fri melt 2 * 0.5 each
+        self.assertAlmostEqual(s.s.gap_melted, 2.0)
+        self.assertFalse(s.set_melt_reduction(T(2026, 10, 31, 13), 0.5), "same value is not a change")
+        s.set_melt_reduction(T(2026, 10, 31, 14), 0.0)
+        s.advance(T(2026, 11, 1, 12))               # Sat melts in full
+        self.assertAlmostEqual(s.s.gap_melted, 4.0)
+
+    def test_days_before_the_change_keep_the_old_share(self):
+        s = g.Session(T(2026, 10, 27, 9), bonus0)
+        s.set_melt_reduction(T(2026, 11, 1, 12), 0.8)   # Sun: settles Tue..Sat first, Thu..Sat melt in full
+        self.assertAlmostEqual(s.s.gap_melted, 6.0)
+        self.assertAlmostEqual(s.s.melt_reduction, 0.8)
+
+    def test_melt_reduction_is_capped_and_round_trips(self):
+        s = g.Session(T(2026, 10, 27, 9), bonus0)
+        s.set_melt_reduction(T(2026, 10, 27, 10), 5.0)
+        self.assertAlmostEqual(s.s.melt_reduction, g.DEFAULT.max_melt_reduction)
+        x = g.Session.restore(s.export_json(), bonus0)
+        self.assertAlmostEqual(x.s.melt_reduction, s.s.melt_reduction)
+        st = s.export_state()
+        del st["meltReduction"]
+        self.assertEqual(g.Session.restore(st, bonus0).s.melt_reduction, 0.0)
+
+    def test_app_has_no_weekly_arrivals_but_keeps_milestones(self):
+        daily = g.run_persona("daily")
+        app = g.run_persona("daily", g.APP)
+        self.assertTrue(any(a.reason == "weekly" for a in daily.session.s.arrivals))
+        self.assertFalse(any(a.reason == "weekly" for a in app.session.s.arrivals))
+        self.assertIn(g.M_TOTAL_30, [a.species for a in app.session.s.arrivals])
+        self.assertEqual(app.session.s.ice, daily.session.s.ice, "arrivals never touch the ice")
+
+
+class SaveRestore(unittest.TestCase):
+    def test_round_trip_json(self):
+        r = g.run_persona("cheater")
+        js = r.session.export_json()
+        x = g.Session.restore(js, g.standin_bonus)
+        self.assertEqual(x.export_json(), js)
+        self.assertEqual(json.loads(js)["version"], g.STATE_VERSION)
+
+    def test_restore_does_not_add_a_second_adelie(self):
+        s = g.Session(T(2026, 10, 27, 9), bonus0)
+        x = g.Session.restore(s.export_json(), bonus0)
+        x.advance(T(2026, 10, 28, 9))
+        self.assertEqual([a.species for a in x.s.arrivals].count(g.M_ONBOARDING), 1)
+        self.assertEqual(len(x.s.arrivals), 1)
+
+    def test_unknown_version_rejected(self):
+        st = g.Session(T(2026, 10, 27, 9), bonus0).export_state()
+        st["version"] = 99
+        with self.assertRaises(ValueError):
+            g.Session.restore(st, bonus0)
+
+    def test_save_restore_before_every_event_changes_nothing(self):
+        for p in (g.DEFAULT, g.DEFERRED_B):
+            for n in g.PERSONAS:
+                base = g.run_events(g.persona_events(n), p)
+                snaps = []
+                first, last = g.day_of_date(g.START), g.day_of_date(g.START) + g.DAYS - 1
+
+                def cb(sess, d):
+                    if first <= d <= last:
+                        snaps.append(sess.snapshot(d))
+
+                sess = g.Session(g.at(0, 7), g.standin_bonus, p, cb)
+                for t, op, a in g.persona_events(n):
+                    sess = g.Session.restore(json.loads(json.dumps(sess.export_state())), g.standin_bonus, p, cb)
+                    if op == "receipt":
+                        sess.scan_receipt(t, g.Receipt(a[0], a[1], tuple(a[2])))
+                    elif op == "select":
+                        sess.select_mission(t, a[0], a[1])
+                    else:
+                        sess.check_in(t, a[0], a[1], a[2])
+                sess = g.Session.restore(sess.export_json(), g.standin_bonus, p, cb)
+                sess.advance(g.at(g.DAYS, 4))
+                self.assertEqual(snaps, base.snaps, n)
+                self.assertEqual(sess.export_json(), base.session.export_json(), n)
+
+
+class LateReceiptBonus(unittest.TestCase):
+    """16d §5.1 D: a Sunday receipt scanned on Tuesday."""
+
+    def run_case(self, p, scan_at):
+        calls = []
+        s = g.Session(T(2026, 10, 27, 12), lambda w, rs: calls.append((w, len(rs))) or 2.5, p)
+        sunday = g.day_of_date(g.START) + 5
+        s.scan_receipt(scan_at, g.Receipt("late", sunday))
+        s.advance(T(2026, 11, 10, 12))
+        return s, calls
+
+    def test_option_b_monday_counts_record_only(self):
+        s, calls = self.run_case(g.DEFAULT, T(2026, 11, 3, 12))
+        self.assertEqual(calls, [])
+        self.assertEqual(s.s.late_bonus_receipts, 1)
+        self.assertEqual(s.s.total_record_days, 1)
+
+    def test_option_a_grace_counts_until_wednesday(self):
+        s, calls = self.run_case(g.DEFERRED_B, T(2026, 11, 3, 12))   # Tuesday
+        self.assertEqual(calls, [(g.week_of(g.day_of_date(g.START) + 5), 1)])
+        self.assertEqual(s.s.late_bonus_receipts, 0)
+        s, calls = self.run_case(g.DEFERRED_B, T(2026, 11, 4, 12))   # Wednesday: too late
+        self.assertEqual(calls, [])
+        self.assertEqual(s.s.late_bonus_receipts, 1)
+
+    def test_deferred_b_passes_all_targets(self):
+        res = g.run_all(g.DEFERRED_B)
+        for name, ok, info in g.check_targets(res, g.DEFERRED_B):
+            self.assertTrue(ok, f"{name}: {info}")
+
+
+class SpeciesIds(unittest.TestCase):
+    """19 §5 / 18a D18: species are keyed by the 17b-zukan.csv `id`, never by a Japanese name."""
+    CSV = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "17b-zukan.csv")
+
+    def test_ids_and_display_names_match_17b_zukan(self):
+        if not os.path.exists(self.CSV):
+            self.skipTest("17b-zukan.csv not found next to v4/")
+        with open(self.CSV, encoding="utf-8") as f:
+            rows = list(csv.DictReader(f))
+        self.assertEqual([r["id"] for r in rows], g.SPECIES)
+        self.assertEqual({r["id"]: r["name_ja"] for r in rows}, g.NAME_JA)
+
+    def test_ids_are_ascii_snake_case(self):
+        for sp in g.SPECIES:
+            self.assertRegex(sp, r"^[a-z][a-z_]*$")
+
+    def test_saved_state_holds_ids_only(self):
+        for n in g.PERSONAS:
+            st = g.run_persona(n).session.export_state()
+            for sp in [a["species"] for a in st["arrivals"]] + list(st["milestoneQueue"]):
+                self.assertIn(sp, g.SPECIES, n)
+
+    def test_daily_arrival_order_in_ids(self):
+        sp = [a.species for a in g.run_persona("daily").session.s.arrivals]
+        self.assertEqual(sp, ["adelie", "little", "chinstrap", "magellanic", "king", "yellow_eyed", "emperor",
+                              "gentoo", "humboldt", "macaroni"])
+
+    def test_restore_rejects_japanese_species_name(self):
+        st = g.Session(T(2026, 10, 27, 9), bonus0).export_state()
+        st["arrivals"][0]["species"] = "アデリーペンギン"
+        with self.assertRaises(ValueError):
+            g.Session.restore(st, bonus0)
+        st = g.Session(T(2026, 10, 27, 9), bonus0).export_state()
+        st["milestoneQueue"] = ["コガタペンギン"]
+        with self.assertRaises(ValueError):
+            g.Session.restore(st, bonus0)
 
 
 if __name__ == "__main__":

@@ -2,7 +2,11 @@
 
 Moving assemblies retain pivots; fixed meshes and each item are merged with atlas UVs.
 Existing Penguin_v002 is composed in Unity, never regenerated here.
+
+PP_KINDS=IceHouse (comma separated) builds only those facilities and skips the harbors,
+so adding one facility does not re-export the others.
 """
+import os
 from pathlib import Path
 import bpy
 import math
@@ -220,10 +224,10 @@ def deliver(kind, request, small=False, stage=-1):
 
 
 def build(kind):
-    small=kind in ('Warehouse','Dormitory','Sorter')
+    small=kind in ('Warehouse','Dormitory','Sorter','IceHouse')
     accents={'Fishery':2,'Preparation':11,'Chikuwa':8,'Saltworks':1,'Drying':8,'KelpFarm':10,
              'Oden':9,'Research':3,'Warehouse':12,'Dormitory':14,'Sorter':7,
-             'ElectricAmplifier':7,'WaterAmplifier':2,'GasAmplifier':8}
+             'ElectricAmplifier':7,'WaterAmplifier':2,'GasAmplifier':8,'IceHouse':2}
     color=accents[kind]
     base(small,color)
     if not small: frontage(color)
@@ -320,6 +324,22 @@ def build(kind):
         assembly('WorkingPart',(0,-.1,.42),lambda:box('Diverter',(0,0,0),(.33,.025,.065),5,.003))
         for i,x in enumerate((-.25,0,.25)): empty('Route'+str(i),(x,.10 if i!=1 else .21,.44))
         recipe(lambda:fish((0,0,0),.7),lambda:fish((0,0,0),.7),lambda:fish((0,0,0),.7),lambda:fish((0,0,0),.7),small=True,center_z=.47,y=-.13)
+    elif kind=='IceHouse':
+        # Ice house: a snow dome that stores the cold, with ice blocks going in and a chill coming out.
+        ball('SnowDome',(0,.13,.20),(.37,.30,.36),0)
+        # Ice-block courses on the dome (thin flattened shells, slightly larger than the dome).
+        for z,k in ((.30,.97),(.42,.83)):
+            ball('IceCourse',(0,.13,z),(.37*k+.006,.30*k+.006,.012),1)
+        cyl('Entrance',(0,-.10,.22),.13,.20,0,10,(math.pi/2,0,0))
+        box('Door',(0,-.205,.20),(.15,.012,.17),4,.01)
+        box('DoorFrost',(0,-.213,.30),(.11,.008,.03),1,.004)
+        for x,z,s in ((-.13,.60,.11),(.0,.65,.14),(.13,.60,.11)): crystal('IceRoof',(x,.13,z),s)
+        ball('RoofSnow',(0,.13,.55),(.15,.11,.04),6)
+        assembly('WorkingPart',(.22,-.12,.42),lambda:(box('Fan',(0,0,0),(.12,.018,.12),1,.01),
+                                                       rod('FanAxle',(0,.01,0),(0,.06,0),.012,5)))
+        assembly('EffectPart',(0,-.24,.30),lambda:[ball('Chill',(x,0,z),(.045,.035,.03),6) for x,z in ((-.08,0),(0,.05),(.08,.01))])
+        recipe(lambda:crystal('IceBlock',(0,0,0),.09),lambda:crystal('IceBlock',(0,0,0),.09),
+               lambda:crystal('StoredIce',(0,0,0),.11),lambda:ball('Coolness',(0,0,0),(.06,.05,.05),1),small=True,center_z=.36,y=-.13)
     elif kind=='Dormitory':
         box('CabinBack',(0,.29,.38),(.73,.07,.48),13,.01)
         for x in (-.34,.34): box('CabinSide',(x,.1,.38),(.055,.4,.48),14,.008)
@@ -361,7 +381,7 @@ def build(kind):
         recipe(lambda:token(),lambda:token(),lambda:token(True),lambda:token(True))
     req={'Fishery':'B-01','Warehouse':'B-02','Preparation':'B-04','Chikuwa':'B-05','Saltworks':'B-07',
          'Drying':'B-08','KelpFarm':'B-09','Oden':'B-10','Research':'B-12','Dormitory':'B-14','Sorter':'B-15',
-         'ElectricAmplifier':'A-01','WaterAmplifier':'A-02','GasAmplifier':'A-03'}[kind]
+         'ElectricAmplifier':'A-01','WaterAmplifier':'A-02','GasAmplifier':'A-03','IceHouse':'B-16'}[kind]
     deliver(kind,req,small)
 
 
@@ -432,9 +452,12 @@ def harbor(stage):
     deliver('Harbor','B-03 / H-0'+str(stage),stage=stage)
 
 
-for kind in ('Fishery','Preparation','Chikuwa','Saltworks','Drying','KelpFarm','Oden',
-             'Warehouse','Sorter','Research','Dormitory','ElectricAmplifier','WaterAmplifier','GasAmplifier'):
+ALL_KINDS=('Fishery','Preparation','Chikuwa','Saltworks','Drying','KelpFarm','Oden',
+           'Warehouse','Sorter','Research','Dormitory','ElectricAmplifier','WaterAmplifier','GasAmplifier','IceHouse')
+ONLY=[k for k in os.environ.get('PP_KINDS','').split(',') if k]
+for kind in (ONLY or ALL_KINDS):
     build(kind)
-for stage in range(6): harbor(stage)
-(REVIEW/'manifest.json').write_text(json.dumps(records,ensure_ascii=False,indent=2),encoding='utf-8')
+if not ONLY:
+    for stage in range(6): harbor(stage)
+    (REVIEW/'manifest.json').write_text(json.dumps(records,ensure_ascii=False,indent=2),encoding='utf-8')
 print('FACILITIES_GENERATED',len(records))

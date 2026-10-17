@@ -84,6 +84,9 @@ namespace ProjectPenguin.Presentation.UI
             public const string ArrowRight = "pp-icon--arrow-right";
             public const string Upgrade = "pp-icon--upgrade";
 
+            /// <summary>氷・氷室 (雪の結晶)。</summary>
+            public const string Snowflake = "pp-icon--snowflake";
+
             public const string Large = "pp-icon--lg";
             public const string ExtraLarge = "pp-icon--xl";
         }
@@ -420,6 +423,7 @@ namespace ProjectPenguin.Presentation.UI
             public const string ElectricAmplifier = "pp-thumb--electric-amplifier";
             public const string WaterAmplifier = "pp-thumb--water-amplifier";
             public const string GasAmplifier = "pp-thumb--gas-amplifier";
+            public const string IceHouse = "pp-thumb--ice-house";
 
             public const string Harbor0 = "pp-thumb--harbor-0";
             public const string Harbor1 = "pp-thumb--harbor-1";
@@ -448,6 +452,7 @@ namespace ProjectPenguin.Presentation.UI
                 FacilityKind.ElectricAmplifier => ElectricAmplifier,
                 FacilityKind.WaterAmplifier => WaterAmplifier,
                 FacilityKind.GasAmplifier => GasAmplifier,
+                FacilityKind.IceHouse => IceHouse,
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null),
             };
 

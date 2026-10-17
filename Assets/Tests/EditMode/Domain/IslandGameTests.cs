@@ -148,7 +148,7 @@ namespace ProjectPenguin.Tests.EditMode.Domain
             p.StartFish = 0;
             p.StartElectricity = 1000;
             var poor = new IslandGame(p, Start);
-            poor.DevSetLevel(2);
+            poor.DevSetMaxFish(100);
             Assert.That(poor.Build(FacilityKind.Preparation, Inland), Is.EqualTo(IslandActionResult.NotEnoughFish));
         }
 
@@ -347,10 +347,11 @@ namespace ProjectPenguin.Tests.EditMode.Domain
             var g = Rich();
             g.DevSetLevel(3);
             Assert.That(g.Build(FacilityKind.ElectricAmplifier, Inland), Is.EqualTo(IslandActionResult.Ok));
-            g.SyncWorld(100, 0, new[] { "オウサマペンギン" });
+            g.SyncWorld(100, 0, new[] { PenguinCatalog.Total14 });
 
             Assert.That(g.GainMultiplier(Resource.Electricity), Is.EqualTo(1.25 * 1.1).Within(1e-9));
-            Assert.That(g.GainMultiplier(Resource.Water), Is.EqualTo(1.0));
+            Assert.That(g.GainMultiplier(Resource.Water), Is.EqualTo(PenguinDex.ResourceMultiplier(g.Species, Resource.Water)).Within(1e-9),
+                "水は増幅所なし (お魚 1,000 匹の実績で来たケープペンギンのぶんだけ)");
         }
 
         [Test]
@@ -413,10 +414,11 @@ namespace ProjectPenguin.Tests.EditMode.Domain
         public void 働き手は記録日で増え_宿舎の定員まで()
         {
             var g = Rich();
-            Assert.That(g.Population, Is.EqualTo(3));
-            g.SyncWorld(100, 5, null);
+            Assert.That(g.Population, Is.EqualTo(1), "看板の 1 羽から始まる");
+            g.SyncWorld(100, 1, null);
+            Assert.That(g.Population, Is.EqualTo(2), "最初の記録で 2 羽 (氷室と漁場を動かせる)");
+            g.SyncWorld(100, 10, null);
             Assert.That(g.Population, Is.EqualTo(4), "宿舎が無いと 4 羽まで");
-            g.DevSetLevel(2);
             g.Build(FacilityKind.Dormitory, Inland);
             Assert.That(g.Population, Is.EqualTo(8));
         }
@@ -425,6 +427,7 @@ namespace ProjectPenguin.Tests.EditMode.Domain
         public void 働き手がいなければ止まり_配属すると動く()
         {
             var g = Rich();
+            g.SyncWorld(100, 2, null); // 1 + 記録 2 日 = 3 羽
             g.Build(FacilityKind.Fishery, CoastCorner);
             g.Build(FacilityKind.Fishery, new Cell(5, 2));
             g.Build(FacilityKind.Fishery, new Cell(3, 4));
@@ -471,12 +474,32 @@ namespace ProjectPenguin.Tests.EditMode.Domain
         }
 
         [Test]
-        public void 経験値でレベルが上がり施設が解放される()
+        public void 施設はお魚の桁で開き_お魚を使っても閉じない()
         {
-            var g = Rich();
-            Assert.That(g.CanBuild(FacilityKind.Kamaboko), Is.EqualTo(IslandActionResult.Locked));
-            g.DevSetLevel(5);
-            Assert.That(g.CanBuild(FacilityKind.Kamaboko), Is.EqualTo(IslandActionResult.Ok));
+            var g = New(); // お魚 30
+            Assert.That(g.CanBuild(FacilityKind.IceHouse), Is.EqualTo(IslandActionResult.Ok), "氷室は最初から");
+            Assert.That(g.CanBuild(FacilityKind.Fishery), Is.EqualTo(IslandActionResult.Ok));
+            Assert.That(g.CanBuild(FacilityKind.Dormitory), Is.EqualTo(IslandActionResult.Locked));
+            Assert.That(g.NextUnlockFish, Is.EqualTo(100));
+
+            g.DevAddStock(Item.Fish, 70); // 100 匹
+            var events = g.DrainEvents();
+            Assert.That(events.Where(e => e.Kind == IslandEventKind.Unlocked).Select(e => (FacilityKind)e.Value),
+                Is.EquivalentTo(new[] { FacilityKind.Dormitory, FacilityKind.Preparation }));
+            Assert.That(g.IsUnlocked(FacilityKind.Dormitory), Is.True);
+
+            g.DevAddStock(Item.Fish, -100);
+            Assert.That(g.Fish, Is.EqualTo(0));
+            Assert.That(g.IsUnlocked(FacilityKind.Dormitory), Is.True, "これまでの最大で数える");
+            Assert.That(g.IsUnlocked(FacilityKind.Saltworks), Is.False);
+            Assert.That(g.DrainEvents().Any(e => e.Kind == IslandEventKind.Unlocked), Is.False, "一度開いた施設は二度知らせない");
+        }
+
+        [Test]
+        public void 港の注文は開いた施設が作れる品目だけ()
+        {
+            var g = New();
+            Assert.That(g.Orders.All(o => o.Item == Item.Fish), Is.True, "最初はお魚だけ");
         }
 
         [Test]
@@ -525,7 +548,8 @@ namespace ProjectPenguin.Tests.EditMode.Domain
 
             var fish = g.Rates().First(r => r.Item == Item.Fish);
             Assert.That(fish.ProducedPerHour, Is.EqualTo(900).Within(1e-6));
-            Assert.That(fish.ConsumedPerHour, Is.EqualTo(1800).Within(1e-6));
+            Assert.That(fish.ConsumedPerHour, Is.EqualTo(1800 + IslandCatalog.Get(FacilityKind.Preparation).FishPerHour).Within(1e-6),
+                "材料と、働くペンギンのごはん");
             Assert.That(fish.NetPerHour, Is.LessThan(0));
         }
 
@@ -609,7 +633,7 @@ namespace ProjectPenguin.Tests.EditMode.Domain
 
             foreach (var item in IslandCatalog.Items)
             {
-                Assert.That(IslandGame.UnlockLevelOf(item), Is.LessThan(int.MaxValue), item.ToString());
+                Assert.That(IslandGame.UnlockFishOf(item), Is.LessThan(long.MaxValue), item.ToString());
             }
         }
 
@@ -661,7 +685,7 @@ namespace ProjectPenguin.Tests.EditMode.Domain
             Assert.That(g.Board.Expansions.Count, Is.EqualTo(g.Board.Capacity(102)));
             Assert.That(maxSunk, Is.GreaterThan(0), "30 日休むと沈む");
             Assert.That(sunkLastRestDay, Is.GreaterThan(0), "休みの最後の日も沈んだまま");
-            Assert.That(sunkOnReturn, Is.LessThan(sunkLastRestDay), "戻った日の記録とおかえりで、すぐに少し浮かぶ");
+            Assert.That(sunkOnReturn, Is.LessThanOrEqualTo(sunkLastRestDay), "戻った日の記録で氷が戻りはじめる (沈みは増えない)");
             Assert.That(g.Board.SunkCount(g.Ice), Is.EqualTo(0), "戻って 12 日記録すれば浮かぶ");
         }
 
@@ -776,6 +800,160 @@ namespace ProjectPenguin.Tests.EditMode.Domain
 
             var loaded = IslandGame.FromSave(save, g.Parameters, Start);
             Assert.That(loaded.Facilities.Single().Level, Is.EqualTo(1));
+        }
+
+        // ------------------------------------------------------------------
+        // 2026-10-17 のコア: お魚のごはん・氷室・やる気・実績・日付の逆行
+        // ------------------------------------------------------------------
+
+        [Test]
+        public void 働くペンギンはお魚を食べ_尽きると止まり_漁場は食べない()
+        {
+            var p = IslandParameters.Default;
+            p.StartFish = 3;
+            var g = New(p);
+            g.SyncWorld(100, 10, null);
+            g.DevSetMaxFish(100);
+            g.DevAddStock(Item.Fish, 100);
+            Assert.That(g.Build(FacilityKind.Dormitory, new Cell(6, 5)), Is.EqualTo(IslandActionResult.Ok));
+            Assert.That(g.Build(FacilityKind.IceHouse, new Cell(5, 5)), Is.EqualTo(IslandActionResult.Ok));
+            var ice = g.Facilities.Single(f => f.Kind == FacilityKind.IceHouse);
+            Assert.That(ice.Status, Is.EqualTo(FacilityStatus.Running));
+            var perHour = ice.Def.FishPerHour;
+            var fish = g.Fish;
+
+            g.Simulate(3600);
+
+            Assert.That(fish - g.Fish, Is.EqualTo((long)perHour), "1 時間でごはん 1 時間ぶん");
+            Assert.That(g.PendingOfflineReport.FishEaten, Is.EqualTo((long)perHour));
+
+            g.DevAddStock(Item.Fish, -g.Fish);
+            g.Simulate(10);
+            Assert.That(ice.Status, Is.EqualTo(FacilityStatus.NoFish));
+            Assert.That(g.MeltReduction, Is.EqualTo(0), "ごはんが無い氷室は効かない");
+
+            // 漁場はとった魚を食べるので、お魚 0 からでも動いて立ち直れる。
+            Assert.That(g.Build(FacilityKind.Fishery, CoastCorner), Is.EqualTo(IslandActionResult.Ok));
+            g.Simulate(60);
+            Assert.That(g.Facilities.Single(f => f.Kind == FacilityKind.Fishery).Status, Is.EqualTo(FacilityStatus.Running));
+            Assert.That(ice.Status, Is.EqualTo(FacilityStatus.Running), "お魚がとれたら氷室も動き出す");
+        }
+
+        [Test]
+        public void 氷室は水と電気で建ち_溶ける氷を減らし_強化で増える()
+        {
+            var g = New();
+            var water = g.Get(Resource.Water);
+            Assert.That(g.MeltReduction, Is.EqualTo(0));
+            Assert.That(g.Build(FacilityKind.IceHouse, Inland), Is.EqualTo(IslandActionResult.Ok));
+            Assert.That(water - g.Get(Resource.Water), Is.EqualTo(IslandCatalog.Get(FacilityKind.IceHouse).WaterCost));
+            Assert.That(g.MeltReduction, Is.EqualTo(0.3).Within(1e-9));
+            Assert.That(g.CanBuild(FacilityKind.IceHouse), Is.EqualTo(IslandActionResult.LimitReached), "1 棟まで");
+
+            var rich = Rich();
+            rich.SyncWorld(100, 10, null);
+            rich.DevSetLevel(10);
+            rich.Build(FacilityKind.IceHouse, Inland);
+            var id = rich.Facilities.Single().Id;
+            while (rich.CanUpgrade(id) == IslandActionResult.Ok)
+            {
+                rich.Upgrade(id);
+            }
+
+            Assert.That(rich.MeltReduction, Is.EqualTo(0.7).Within(1e-9));
+            rich.SyncWorld(150, 10, null, 4);
+            Assert.That(rich.MeltReduction, Is.EqualTo(0.8).Within(1e-9), "やる気を掛けても上限まで");
+        }
+
+        [Test]
+        public void 氷が大きいとやる気が上がり_施設がよく働き_小さくても下がらない()
+        {
+            var g = Rich();
+            g.Build(FacilityKind.Fishery, CoastCorner);
+            var f = g.Facilities.Single();
+            var baseSpeed = g.SpeedOf(f);
+
+            g.SyncWorld(40, 0, null, 0);
+            Assert.That(g.Motivation, Is.EqualTo(1.0));
+            Assert.That(g.SpeedOf(f), Is.EqualTo(baseSpeed).Within(1e-9));
+
+            g.SyncWorld(110, 0, null, 3);
+            Assert.That(g.SpeedOf(f), Is.EqualTo(baseSpeed * 1.15).Within(1e-9));
+
+            g.SyncWorld(140, 0, null, 4);
+            Assert.That(g.Motivation, Is.EqualTo(1.3));
+        }
+
+        [Test]
+        public void 島の実績を満たすと新しい種が来て_ボーナスが効き_保存で残る()
+        {
+            var g = Rich();
+            g.SyncWorld(100, 10, new[] { PenguinCatalog.Onboarding });
+            g.DrainEvents();
+            Assert.That(g.Species, Does.Not.Contain("gentoo"));
+
+            for (var i = 0; i < 10; i++)
+            {
+                var slot = Enumerable.Range(0, g.Orders.Count).First(g.IsOrderReady);
+                g.DevAddStock(g.Orders[slot].Item, g.Orders[slot].Count);
+                Assert.That(g.Deliver(slot), Is.EqualTo(IslandActionResult.Ok));
+                g.Simulate(45);
+            }
+
+            Assert.That(g.AchievedSpecies, Does.Contain("gentoo"));
+            Assert.That(g.Species, Does.Contain("gentoo").And.Contain(PenguinCatalog.Onboarding));
+            var arrived = g.DrainEvents().Where(e => e.Kind == IslandEventKind.PenguinArrived).Select(e => PenguinCatalog.AllIds[e.Value]);
+            Assert.That(arrived, Does.Contain("gentoo"));
+            Assert.That(PenguinDex.FacilityMultiplier(g.Species, FacilityKind.Fishery), Is.GreaterThan(1.0), "ジェンツーは漁場を速くする");
+
+            var loaded = IslandGame.FromSave(g.ToSave(), g.Parameters, Start);
+            Assert.That(loaded.AchievedSpecies, Does.Contain("gentoo"));
+            loaded.SyncWorld(100, 10, null);
+            Assert.That(loaded.Species, Does.Contain("gentoo"), "記録の節目の種と合わせても消えない");
+        }
+
+        [Test]
+        public void 図鑑の19種すべてに解放の条件がある()
+        {
+            Assert.That(PenguinUnlocks.All.Select(u => u.Species), Is.EquivalentTo(PenguinCatalog.AllIds));
+            foreach (var u in PenguinUnlocks.All)
+            {
+                Assert.That(u.Condition, Is.Not.Empty, u.Species);
+                Assert.That(u.Goal, Is.GreaterThan(0), u.Species);
+            }
+
+            Assert.That(PenguinUnlocks.All.Count(u => u.Source == UnlockSource.Island), Is.EqualTo(12));
+        }
+
+        [Test]
+        public void 写真と歩数は時計を戻した日には受け取れない()
+        {
+            var g = New();
+            var verdict = new EcoPhotoVerdict(EcoSubject.EcoBag, "", 0.9);
+            Assert.That(g.ReceivePhoto(verdict, 10), Is.Not.Null);
+            Assert.That(g.ReceivePhoto(verdict, 11), Is.Not.Null);
+            Assert.That(g.CanReceivePhoto(10), Is.False);
+            Assert.That(g.ReceivePhoto(verdict, 10), Is.Null, "11 日に受け取った後で 10 日に戻しても受け取れない");
+
+            Assert.That(g.ReceiveSteps(5000, 10), Is.EqualTo(10));
+            Assert.That(g.ReceiveSteps(5000, 11), Is.EqualTo(10));
+            Assert.That(g.ReceiveSteps(10000, 10), Is.EqualTo(0), "前の日の歩数は資源にしない");
+            Assert.That(g.ReceiveSteps(6000, 11), Is.EqualTo(2), "今日の分は続けて受け取れる");
+        }
+
+        [Test]
+        public void お魚の桁を入れる前の保存は_持っているお魚と建てた施設まで開いている()
+        {
+            var g = Rich();
+            g.Build(FacilityKind.Kamaboko, Inland);
+            var save = g.ToSave();
+            save.version = 1;
+            save.maxFishHeld = 0;
+            save.stock[(int)Item.Fish] = 50;
+
+            var loaded = IslandGame.FromSave(save, g.Parameters, Start);
+            Assert.That(loaded.IsUnlocked(FacilityKind.Kamaboko), Is.True);
+            Assert.That(loaded.IsUnlocked(FacilityKind.Oden), Is.False);
         }
     }
 }

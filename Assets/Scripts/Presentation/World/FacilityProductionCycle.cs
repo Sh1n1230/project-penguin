@@ -8,7 +8,7 @@ namespace ProjectPenguin.Presentation.World
     public sealed class FacilityProductionCycle : MonoBehaviour
     {
         public enum FacilityKind { Fishery, Preparation, Chikuwa, Saltworks, Drying, KelpFarm, Oden,
-            Warehouse, Sorter, Research, Dormitory, ElectricAmplifier, WaterAmplifier, GasAmplifier, Harbor }
+            Warehouse, Sorter, Research, Dormitory, ElectricAmplifier, WaterAmplifier, GasAmplifier, Harbor, IceHouse }
         public enum ProcessStage { Loading, Working, Output, Returning }
         [SerializeField] private FacilityKind _kind;
         [SerializeField] private Transform _frame, _input, _raw, _finished, _output, _center, _stand, _tool, _effect;
@@ -49,6 +49,7 @@ namespace ProjectPenguin.Presentation.World
             FacilityKind.ElectricAmplifier => new Timing(.6f, 2.1f, 2.5f, 3.2f, 4.4f),
             FacilityKind.WaterAmplifier => new Timing(1, 3.8f, 4.7f, 5.5f, 6.8f),
             FacilityKind.GasAmplifier => new Timing(.8f, 3, 3.8f, 4.7f, 6),
+            FacilityKind.IceHouse => new Timing(1, 4, 5, 6.2f, 7.6f),
             _ => new Timing(1, 2.5f, 3.2f, 4.6f, 6.5f)
         };
         public FacilityKind Kind => _kind;
@@ -81,6 +82,7 @@ namespace ProjectPenguin.Presentation.World
                     FacilityKind.Dormitory => "目を開けて体を伸ばす",
                     FacilityKind.Warehouse => "棚から搬出する",
                     FacilityKind.ElectricAmplifier or FacilityKind.WaterAmplifier or FacilityKind.GasAmplifier => "増幅結果を表示する",
+                    FacilityKind.IceHouse => "冷たい風を島へ送る",
                     _ => "完成品を取り出す"
                 };
                 if (Stage == ProcessStage.Returning) return _kind == FacilityKind.Dormitory ? "起きて伸びをする" : "次の仕事へ";
@@ -101,6 +103,7 @@ namespace ProjectPenguin.Presentation.World
                     FacilityKind.ElectricAmplifier => "スイッチを入れ、残量灯を順に点ける",
                     FacilityKind.WaterAmplifier => "水位と浮きを確かめる",
                     FacilityKind.GasAmplifier => "弁を回し、圧力針の落ち着きを待つ",
+                    FacilityKind.IceHouse => raw ? "氷のかたまりを雪のドームへ運ぶ" : "冷たさをたくわえる",
                     _ => "荷を吊り上げて桟橋へ渡す"
                 };
             }

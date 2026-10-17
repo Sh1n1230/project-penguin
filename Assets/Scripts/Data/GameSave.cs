@@ -31,8 +31,14 @@ namespace ProjectPenguin.Data
 
         public IslandSave island;
 
-        /// <summary>資源を受け取った記録 (記録画面)。新しいものが後ろ。</summary>
+        /// <summary>メモリに持つ受け取りの記録の数。端末の DB には全件が残り、読み込みでは新しいほうからこの数だけ返す。</summary>
+        public const int ActivityWindow = 200;
+
+        /// <summary>資源を受け取った記録 (記録画面)。新しいものが後ろ。直近の <see cref="ActivityWindow"/> 件だけ。</summary>
         public ActivityEntry[] activity = Array.Empty<ActivityEntry>();
+
+        /// <summary>これまでに <see cref="activity"/> の窓から落とした件数。窓の i 番目は、全履歴の <c>activityTrimmed + i</c> 番目 (0 始まり)。</summary>
+        public int activityTrimmed;
     }
 
     /// <summary>氷の状態機械への操作 1 つ。</summary>
@@ -43,6 +49,9 @@ namespace ProjectPenguin.Data
         public const string Select = "select";
         public const string CheckIn = "checkin";
 
+        /// <summary>島の氷室の効き目が変わった (<see cref="value"/> = 溶ける量を減らす割合)。</summary>
+        public const string MeltGuard = "meltguard";
+
         public string kind;
         public long atMs;
         public string id;
@@ -50,6 +59,9 @@ namespace ProjectPenguin.Data
         public int verification;
         public int answer;
         public bool noShopping;
+
+        /// <summary>数値の引数 (<see cref="MeltGuard"/> の割合)。</summary>
+        public double value;
     }
 
     /// <summary>現実の行動で資源を受け取った記録 1 件。</summary>

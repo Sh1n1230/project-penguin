@@ -18,7 +18,11 @@ namespace ProjectPenguin.Domain.Game
         public int ShieldsStart { get; set; } = 2;
         public int ShieldsMax { get; set; } = 2;
         public int ComebackMinGap { get; set; } = 3;
-        public double ComebackRatio { get; set; } = 0.5;
+        /// <summary>
+        /// おかえりで足す氷の割合 (休んで溶けた量 × この値)。2026-10-16 に 0 にした: おかえりのごほうびは氷ではなく、
+        /// 留守の間に島が作ったお魚 (<c>IslandGame.OfflineReport</c>)。来訪の合図 (ガラパゴス) の条件は残る。0.5 にすると v3/v4 の挙動に戻る。
+        /// </summary>
+        public double ComebackRatio { get; set; }
         public int ComebackMax { get; set; } = 10;
         public double WeeklyBonusMax { get; set; } = 4.0;
 
@@ -39,11 +43,46 @@ namespace ProjectPenguin.Domain.Game
         public int WhitePerDay { get; set; } = 1;
         public int WhitePerWeek { get; set; } = 5;
 
-        /// <summary>15d の推奨値。</summary>
+        // ---- v4 (調査 17a。docs/game-logic.md) ----
+
+        /// <summary>おかえりは「盾で守れず氷が溶けた日が 1 日以上あった後の最初の記録」で出す。false なら v3 の「記録のない日が <see cref="ComebackMinGap"/> 日以上」。</summary>
+        public bool ComebackRequiresMelt { get; set; } = true;
+
+        /// <summary>時計が最後に見た日より前に戻ったとき、操作を最後に見た日のものとして扱う。false なら v3 の「何もしない」。</summary>
+        public bool RollbackClamp { get; set; } = true;
+
+        /// <summary>
+        /// 信頼できない時計 (<see cref="Clock.ITrustedClock"/> でない、または IsTrusted が false) で、最後に見た日よりこの日数を超えて進んだら
+        /// 確定させずに保留する。null なら制限なし。調査は 14 を勧めるが、サーバーの時計 (backend の Date ヘッダー) が無いうちに 14 にすると、
+        /// 2 週間以上あけて戻った人が「保留」で止まるので、サーバーができるまでは null にしておく。
+        /// </summary>
+        public int? MaxCatchUpDays { get; set; }
+
+        // ---- 生産の島とのつなぎ (2026-10-17。docs/game-logic.md §2・§5) ----
+
+        /// <summary>
+        /// 前の週に 3 日以上記録したら、週の順番表の次の種が来る。false にすると週の来訪を止め、節目 (はじめて・累計 14 日など) だけで来る。
+        /// アプリでは週の順の 11 種を島の実績 (<c>PenguinUnlocks</c>) で解放するので false にする (<see cref="App"/>)。
+        /// </summary>
+        public bool WeeklyArrivals { get; set; } = true;
+
+        /// <summary>溶ける量を減らす割合の上限 (氷室の効き目。<see cref="GameSession.SetMeltReduction"/>)。</summary>
+        public double MaxMeltReduction { get; set; } = 0.8;
+
+        /// <summary>v4 の推奨値 (15d の値 + 17a の修正)。氷のおかえりは 0 (留守の間のお魚に一本化)。</summary>
         public static GameParameters Default => new GameParameters();
 
-        /// <summary>2026-10-15 に決めたままの値 (段の幅 4、初回のアデリーも週の枠に数える)。</summary>
-        public static GameParameters Decided => new GameParameters { TierHysteresis = 4.0, OnboardingExemptFromCap = false };
+        /// <summary>アプリで使う値。<see cref="Default"/> から週の来訪だけを止める (種は島の実績で解放する)。</summary>
+        public static GameParameters App => new GameParameters { WeeklyArrivals = false };
+
+        /// <summary>15d (v3) のままの値。おかえりは空白 3 日以上、巻き戻しは無視、先送りの制限なし。</summary>
+        public static GameParameters V3 => new GameParameters { ComebackRatio = 0.5, ComebackRequiresMelt = false, RollbackClamp = false, MaxCatchUpDays = null };
+
+        /// <summary>2026-10-15 に決めたままの値 (段の幅 4、初回のアデリーも週の枠に数える。v4 の修正も入れない)。</summary>
+        public static GameParameters Decided => new GameParameters
+        {
+            TierHysteresis = 4.0, OnboardingExemptFromCap = false, ComebackRatio = 0.5, ComebackRequiresMelt = false, RollbackClamp = false, MaxCatchUpDays = null,
+        };
     }
 
     /// <summary>氷の見た目の段 (15c §1.2)。</summary>

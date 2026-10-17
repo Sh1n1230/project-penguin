@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using ProjectPenguin.Data.Persistence;
 using UnityEngine;
 
 namespace ProjectPenguin.Data
@@ -14,43 +15,67 @@ namespace ProjectPenguin.Data
 
         /// <summary>設定の「データを消す」。</summary>
         void Delete();
+
+        /// <summary>直近の <see cref="Load"/> の結果。読めなかった理由を画面に出すために使う。</summary>
+        SaveLoadStatus LastLoadStatus { get; }
     }
 
     /// <summary>
-    /// <c>Application.persistentDataPath</c> に JSON で保存する。書き込みは一時ファイルを経由し、
-    /// 途中でアプリが落ちても前の保存が壊れないようにする。
+    /// <c>Application.persistentDataPath</c> に JSON で保存する。<see cref="SaveStore"/> が書き込みを担い、
+    /// チェックサムで壊れを見つけ、1 世代のバックアップと一時ファイルから戻す。途中でアプリが落ちても前の保存が壊れない。
+    /// 封筒に包む前の素の JSON (初期の保存) も読める。次の保存で封筒に包まれる。
     /// </summary>
     public sealed class JsonGameStore : IGameStore
     {
         private const string FileName = "penguin-save.json";
 
-        private readonly string _path;
+        private readonly SaveStore _store;
 
         public JsonGameStore(string directory = null)
         {
-            _path = Path.Combine(directory ?? Application.persistentDataPath, FileName);
+            _store = new SaveStore(directory ?? Application.persistentDataPath, FileName, GameSave.CurrentVersion);
         }
 
-        public string FilePath => _path;
+        public string FilePath => _store.MainPath;
+
+        public SaveLoadStatus LastLoadStatus { get; private set; } = SaveLoadStatus.NotFound;
 
         public GameSave Load()
         {
-            if (!File.Exists(_path))
+            var result = _store.Load(IsUsable);
+            switch (result.Status)
             {
-                return null;
-            }
+                case SaveLoadStatus.NotFound:
+                case SaveLoadStatus.TooNew:
+                    LastLoadStatus = result.Status;
+                    return null;
 
-            try
-            {
-                var save = JsonUtility.FromJson<GameSave>(File.ReadAllText(_path));
-                return save != null && save.createdUnixMs > 0 ? save : null;
-            }
-            catch (Exception e)
-            {
-                // 読めない保存は消さずに退避し、最初から始める (原因を後で調べられるように)。
-                Debug.LogWarning($"{nameof(JsonGameStore)}: 保存を読めませんでした ({e.GetType().Name})。最初から始めます。");
-                TryBackup();
-                return null;
+                case SaveLoadStatus.Corrupt:
+                case SaveLoadStatus.MigrationFailed:
+                    // 封筒に包む前の素の JSON かもしれない。読めればそのまま使う (次の保存で封筒になる)。
+                    var legacy = TryReadLegacy();
+                    if (legacy != null)
+                    {
+                        LastLoadStatus = SaveLoadStatus.Loaded;
+                        return legacy;
+                    }
+
+                    // 読めない保存は消さずに退避し、最初から始める (原因を後で調べられるように)。
+                    Debug.LogWarning($"{nameof(JsonGameStore)}: 保存を読めませんでした ({result.Status})。最初から始めます。");
+                    TryQuarantine();
+                    LastLoadStatus = result.Status;
+                    return null;
+
+                default:
+                    LastLoadStatus = result.Status;
+                    var save = JsonUtility.FromJson<GameSave>(result.Payload);
+                    if (result.Status != SaveLoadStatus.Loaded || result.Migrated)
+                    {
+                        // バックアップから戻した・版を上げたときは、すぐ保存し直して本体を作り直す。
+                        Save(save);
+                    }
+
+                    return save;
             }
         }
 
@@ -61,31 +86,53 @@ namespace ProjectPenguin.Data
                 return;
             }
 
-            var tmp = _path + ".tmp";
-            File.WriteAllText(tmp, JsonUtility.ToJson(save));
-            if (File.Exists(_path))
-            {
-                File.Replace(tmp, _path, null);
-            }
-            else
-            {
-                File.Move(tmp, _path);
-            }
+            _store.Save(JsonUtility.ToJson(save));
         }
 
-        public void Delete()
-        {
-            if (File.Exists(_path))
-            {
-                File.Delete(_path);
-            }
-        }
+        public void Delete() => _store.DeleteAll();
 
-        private void TryBackup()
+        private static bool IsUsable(string payload)
         {
             try
             {
-                File.Copy(_path, _path + ".broken", true);
+                var save = JsonUtility.FromJson<GameSave>(payload);
+                return save != null && save.createdUnixMs > 0 && save.version <= GameSave.CurrentVersion;
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+        }
+
+        private GameSave TryReadLegacy()
+        {
+            try
+            {
+                if (!File.Exists(_store.MainPath))
+                {
+                    return null;
+                }
+
+                var text = File.ReadAllText(_store.MainPath);
+                if (text.Contains(SaveStore.FormatName))
+                {
+                    return null;
+                }
+
+                var save = JsonUtility.FromJson<GameSave>(text);
+                return save != null && save.createdUnixMs > 0 ? save : null;
+            }
+            catch (Exception e) when (e is ArgumentException || e is IOException)
+            {
+                return null;
+            }
+        }
+
+        private void TryQuarantine()
+        {
+            try
+            {
+                _store.QuarantineAll();
             }
             catch (IOException)
             {
@@ -98,6 +145,8 @@ namespace ProjectPenguin.Data
     public sealed class MemoryGameStore : IGameStore
     {
         private string _json;
+
+        public SaveLoadStatus LastLoadStatus => string.IsNullOrEmpty(_json) ? SaveLoadStatus.NotFound : SaveLoadStatus.Loaded;
 
         public GameSave Load() => string.IsNullOrEmpty(_json) ? null : JsonUtility.FromJson<GameSave>(_json);
 

@@ -5,7 +5,7 @@
 | ファイル | 中身 |
 |---|---|
 | `game_sim.py` | 参照実装 (`Session`)、8 人の利用者の操作、目標の確認。標準ライブラリだけで動く |
-| `game_sim_test.py` | 単体テスト 22 件 |
+| `game_sim_test.py` | 単体テスト 42 件 |
 | `gen_game_golden.py` | `game_sim.py` の出力から C# の期待値 `Assets/Tests/EditMode/Domain/GameSimGolden.cs` を作る |
 
 ## 使い方 (リポジトリのルートで)
