@@ -111,10 +111,15 @@ class Params:
     rollback_clamp: bool = True               # clock behind the last seen day -> act on the last seen day
     max_catch_up_days: Optional[int] = 14     # bigger untrusted forward jumps are held (None = no limit)
     bonus_grace_days: int = 0                 # B for week W settles on Monday(W+1) + this many days
+    # ---- production island link (2026-10-17, docs/game-logic.md §2 / §5) ----
+    weekly_arrivals: bool = True              # False: no weekly-order arrivals (the app unlocks those 11 species by island achievements)
+    max_melt_reduction: float = 0.8          # upper bound of set_melt_reduction (the ice house)
 
 
 DEFAULT = Params()
 # the 15d rules (v3) exactly as shipped on 2026-10-15: old comeback trigger, rollback ignored, no jump limit
+# what the app uses: the default rules without weekly arrivals
+APP = Params(weekly_arrivals=False)
 V3 = Params(comeback_ratio=0.5, comeback_requires_melt=False, rollback_clamp=False, max_catch_up_days=None)
 # the rules exactly as decided on 2026-10-15, before the two 15d changes (and before v4)
 DECIDED = dataclasses.replace(V3, tier_hysteresis=4.0, onboarding_exempt_from_cap=False)
@@ -232,6 +237,7 @@ class GameState:
     last_arrival_week: int = -2 ** 31
     clock_rollbacks: int = 0
     late_bonus_receipts: int = 0
+    melt_reduction: float = 0.0             # share of the daily melt the island's ice house prevents
 
     @property
     def shards(self) -> int:
@@ -357,7 +363,8 @@ class Session:
         prev = week_of(d) - 1
         if prev >= week_of(self.first_day):
             if s.week_record_days.get(prev, 0) >= p.weekly_arrival_min_days:
-                s.weekly_pending += 1
+                if p.weekly_arrivals:
+                    s.weekly_pending += 1
                 s.consecutive_weeks += 1
                 if s.consecutive_weeks >= 4:
                     self._enqueue(M_FOUR_WEEKS)
@@ -387,7 +394,7 @@ class Session:
             s.shields -= 1
             s.shields_used += 1
             return
-        m = max(0.0, min(p.melt, s.ice - p.floor))
+        m = max(0.0, min(p.melt * (1.0 - s.melt_reduction), s.ice - p.floor))
         s.ice -= m
         s.gap_melted += m
         self._set_tier(d)
@@ -472,6 +479,15 @@ class Session:
                 self._enqueue(M_FIVE_MISSIONS)
 
     # ----- user actions -----
+    def set_melt_reduction(self, now: datetime, reduction: float) -> bool:
+        """Change the share of the melt the ice house prevents. Days up to today settle with the old share first."""
+        self.advance(now)
+        r = max(0.0, min(self.p.max_melt_reduction, reduction))
+        if abs(r - self.s.melt_reduction) < 1e-9:
+            return False
+        self.s.melt_reduction = r
+        return True
+
     def scan_receipt(self, now: datetime, r: Receipt) -> bool:
         d = self.advance(now)
         if d is None or r.receipt_id in self.receipts:
@@ -565,6 +581,7 @@ class Session:
             "lastArrivalWeek": s.last_arrival_week,
             "clockRollbacks": s.clock_rollbacks,
             "lateBonusReceipts": s.late_bonus_receipts,
+            "meltReduction": s.melt_reduction,
             "kindsUsed": sorted(s.kinds_used),
             "doneMissions": sorted(s.done_missions),
             "recordedDays": sorted(self.recorded_days),
@@ -610,6 +627,7 @@ class Session:
                   "clockRollbacks", "lateBonusReceipts"):
             setattr(s, _snake(k), int(state[k]))
         s.gap_melted = float(state["gapMelted"])
+        s.melt_reduction = float(state.get("meltReduction", 0.0))   # absent in states saved before 2026-10-17
         s.kinds_used = set(state["kindsUsed"])
         s.done_missions = set(state["doneMissions"])
         x.recorded_days = set(int(d) for d in state["recordedDays"])

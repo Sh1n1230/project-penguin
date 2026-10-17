@@ -91,6 +91,20 @@ namespace ProjectPenguin.Domain.Game
             { "erect_crested", "マユダチペンギン" },
         };
 
+        /// <summary><see cref="AllIds"/> の中の番号。知らない id なら -1。</summary>
+        public static int IndexOf(string id)
+        {
+            for (var i = 0; i < AllIds.Count; i++)
+            {
+                if (AllIds[i] == id)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
         /// <summary>19 種の id のどれかか。</summary>
         public static bool IsKnown(string id)
         {

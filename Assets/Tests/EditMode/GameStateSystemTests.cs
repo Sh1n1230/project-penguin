@@ -88,6 +88,60 @@ namespace ProjectPenguin.Tests.EditMode
         }
 
         [Test]
+        public void 時計を前後させても写真の資源は1日1回()
+        {
+            var clock = new ManualClock(Start);
+            var a = New(new MemoryGameStore(), clock);
+            Assert.That(a.RecordEcoPhoto(new EcoPhotoVerdict(EcoSubject.EcoBag, "", 1)).Granted, Is.Not.Null);
+
+            clock.Advance(TimeSpan.FromDays(1));
+            a.Refresh();
+            Assert.That(a.RecordEcoPhoto(new EcoPhotoVerdict(EcoSubject.EcoBag, "", 1)).Granted, Is.Not.Null);
+
+            // 端末の時計を 1 日戻すと、操作は「最後に見た日」のものになり、その日の資源はもう受け取っている。
+            clock.Set(Start);
+            Assert.That(a.CanReceivePhotoToday, Is.False);
+            Assert.That(a.RecordEcoPhoto(new EcoPhotoVerdict(EcoSubject.EcoBag, "", 1)).Granted, Is.Null);
+            Assert.That(a.Activity.Count(x => x.kind == ActivityEntry.Photo), Is.EqualTo(2));
+        }
+
+        [Test]
+        public void 氷室があると休んだ日に溶ける氷が減り_再生しても同じ氷になる()
+        {
+            // 氷室なしで休んだ氷 (盾 2 枚を使い切って溶ける)。
+            var plainClock = new ManualClock(Start);
+            var plainIce = Rest(New(new MemoryGameStore(), plainClock), plainClock);
+
+            var store = new MemoryGameStore();
+            var clock = new ManualClock(Start);
+            var a = New(store, clock);
+            Assert.That(a.Build(FacilityKind.IceHouse, new Cell(4, 3)), Is.EqualTo(IslandActionResult.Ok));
+            Assert.That(a.Session.MeltReduction, Is.EqualTo(a.Island.MeltReduction).Within(1e-9));
+            Assert.That(a.Session.MeltReduction, Is.GreaterThan(0));
+
+            // 同じだけ休む。お魚を足して、氷室のごはんを切らさない。
+            a.Island.DevAddStock(Item.Fish, 10000);
+            var ice = Rest(a, clock);
+            Assert.That(ice, Is.GreaterThan(plainIce), "氷室があると溶けにくい");
+
+            var b = New(store, clock);
+            Assert.That(b.Session.Ice, Is.EqualTo(ice).Within(1e-9), "操作の記録の再生で同じ氷");
+            Assert.That(b.Session.MeltReduction, Is.EqualTo(a.Session.MeltReduction).Within(1e-9));
+        }
+
+        /// <summary>1 日ずつ 6 日進め、記録せずに氷を返す。</summary>
+        private static double Rest(GameStateSystem system, ManualClock clock)
+        {
+            for (var i = 0; i < 6; i++)
+            {
+                clock.Advance(TimeSpan.FromDays(1));
+                system.Refresh();
+            }
+
+            return system.Session.Ice;
+        }
+
+        [Test]
         public void 閉じていた間も島は進み_報告が残る()
         {
             var store = new MemoryGameStore();

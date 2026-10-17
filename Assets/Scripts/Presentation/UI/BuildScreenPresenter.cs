@@ -64,7 +64,8 @@ namespace ProjectPenguin.Presentation.UI
             }
 
             _defs.Clear();
-            _defs.AddRange(IslandCatalog.Facilities.OrderBy(f => f.UnlockLevel));
+            // 開く順 (お魚の桁) に並べる。同じ段の中は表の順 (最初は氷室)。
+            _defs.AddRange(IslandCatalog.Facilities.OrderBy(f => f.UnlockFish));
 
             var root = GetComponent<UIDocument>().rootVisualElement;
             var list = root.Q(ScreenNavigator.ElementNameOf(AppScreen.Build));
@@ -181,14 +182,15 @@ namespace ProjectPenguin.Presentation.UI
                 var thumb = card.Q(className: UiClasses.ShelfCard.Thumb);
                 if (!unlocked)
                 {
-                    thumb.Add(LockMark($"Lv {def.UnlockLevel}"));
+                    thumb.Add(LockMark(IslandUi.UnlockShort(def.UnlockFish), true));
                 }
                 else if (count > 0)
                 {
                     card.Add(IslandUi.Text(count.ToString(), UiClasses.ShelfCard.Badge));
                 }
-                else if (def.UnlockLevel == island.Level)
+                else if (def.UnlockFish > 0 && def.UnlockFish == IslandCatalog.UnlockSteps.Where(n => n <= island.MaxFishHeld).Max())
                 {
+                    // いちばん新しく開いた段の、まだ建てていない施設。
                     card.Add(IslandUi.Text("NEW", UiClasses.ShelfCard.New));
                 }
 
@@ -217,12 +219,13 @@ namespace ProjectPenguin.Presentation.UI
             return card;
         }
 
-        private static VisualElement LockMark(string label)
+        /// <param name="fish">数の前にお魚のアイコンを付ける (お魚の桁で開く鍵)。</param>
+        private static VisualElement LockMark(string label, bool fish = false)
         {
             var mark = new VisualElement { pickingMode = PickingMode.Ignore };
             mark.AddToClassList(UiClasses.Lock.Root);
             mark.Add(IslandUi.Icon(UiClasses.Icon.Lock, null, UiClasses.Icon.ExtraLarge));
-            mark.Add(IslandUi.Text(label, UiClasses.Lock.Label));
+            mark.Add(fish ? IslandUi.Count(UiClasses.Icon.Fish, UiClasses.Tint.Fish, label) : IslandUi.Text(label, UiClasses.Lock.Label));
             return mark;
         }
 
@@ -323,7 +326,7 @@ namespace ProjectPenguin.Presentation.UI
             var unlocked = island.IsUnlocked(def.Kind);
             _mainCard.EnableInClassList(UiClasses.PhotoCard.Locked, !unlocked);
             IslandUi.SetVisible(_mainLock, !unlocked);
-            _mainLockLabel.text = $"Lv {def.UnlockLevel} で建てられる";
+            _mainLockLabel.text = IslandUi.UnlockText(def.UnlockFish);
             _name.text = def.Name;
             _lead.text = def.Description;
 
@@ -345,9 +348,21 @@ namespace ProjectPenguin.Presentation.UI
 
             var hasElectricity = island.Get(Resource.Electricity) + island.Get(Resource.AllMighty);
             _costs.Add(IslandUi.Count(UiClasses.Icon.Electricity, UiClasses.Tint.Electricity, def.ElectricityCost, hasElectricity < def.ElectricityCost));
+            if (def.WaterCost > 0)
+            {
+                var hasWater = island.Get(Resource.Water) + island.Get(Resource.AllMighty);
+                _costs.Add(IslandUi.Count(UiClasses.Icon.Water, UiClasses.Tint.Water, def.WaterCost, hasWater < def.WaterCost));
+            }
+
             if (def.FishCost > 0)
             {
                 _costs.Add(IslandUi.Count(UiClasses.Icon.Fish, UiClasses.Tint.Fish, def.FishCost, island.Fish < def.FishCost));
+            }
+
+            if (def.FishPerHour > 0)
+            {
+                // 動かしている間ずっと、働くペンギンがお魚を食べる。
+                _costs.Add(IslandUi.Count(UiClasses.Icon.Fish, UiClasses.Tint.Fish, $"{IslandUi.Rate(def.FishPerHour)}/時"));
             }
 
             if (def.Workers > 0)
@@ -361,7 +376,7 @@ namespace ProjectPenguin.Presentation.UI
             _buildButton.SetEnabled(can == IslandActionResult.Ok);
             _buildLabel.text = can switch
             {
-                IslandActionResult.Locked => $"Lv {def.UnlockLevel}",
+                IslandActionResult.Locked => "まだ",
                 IslandActionResult.LimitReached => "上限",
                 _ => "建てる",
             };

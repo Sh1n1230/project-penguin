@@ -56,6 +56,9 @@ namespace ProjectPenguin.Domain.Island
         ElectricAmplifier,
         WaterAmplifier,
         GasAmplifier,
+
+        /// <summary>氷室。記録しなかった日に溶ける氷を減らす。保存は enum の数値なので末尾に足す。</summary>
+        IceHouse,
     }
 
     /// <summary>施設の役割。</summary>
@@ -75,6 +78,9 @@ namespace ProjectPenguin.Domain.Island
 
         /// <summary>現実から得る資源の量を増やす。</summary>
         Amplifier,
+
+        /// <summary>記録しなかった日に溶ける氷を減らす (氷室)。</summary>
+        IceGuard,
     }
 
     /// <summary>品目の個数の組。</summary>
@@ -118,19 +124,21 @@ namespace ProjectPenguin.Domain.Island
     /// <summary>施設の定義 (マスターデータ)。</summary>
     public sealed class FacilityDef
     {
-        public FacilityDef(FacilityKind kind, string name, string description, int size, FacilityRole role, int unlockLevel,
-            double electricityCost, double fishCost, int workers, bool needsCoast, IReadOnlyList<Recipe> recipes,
-            Item? qualityItem = null, Resource? amplifies = null, int maxCount = int.MaxValue)
+        public FacilityDef(FacilityKind kind, string name, string description, int size, FacilityRole role, long unlockFish,
+            double electricityCost, double fishCost, int workers, double fishPerHour, bool needsCoast, IReadOnlyList<Recipe> recipes,
+            Item? qualityItem = null, Resource? amplifies = null, int maxCount = int.MaxValue, double waterCost = 0)
         {
             Kind = kind;
             Name = name;
             Description = description;
             Size = size;
             Role = role;
-            UnlockLevel = unlockLevel;
+            UnlockFish = unlockFish;
             ElectricityCost = electricityCost;
+            WaterCost = waterCost;
             FishCost = fishCost;
             Workers = workers;
+            FishPerHour = fishPerHour;
             NeedsCoast = needsCoast;
             Recipes = recipes ?? Array.Empty<Recipe>();
             QualityItem = qualityItem;
@@ -146,12 +154,28 @@ namespace ProjectPenguin.Domain.Island
         public int Size { get; }
 
         public FacilityRole Role { get; }
-        public int UnlockLevel { get; }
+
+        /// <summary>
+        /// これまでに持ったお魚の最大がこの数に届くと建てられる (お魚の桁で解放する。0 なら最初から)。
+        /// 持っているお魚は建てる・動かすで減るので、一度開いた鍵は閉じない。
+        /// </summary>
+        public long UnlockFish { get; }
+
+        /// <summary>解放の段 (お魚の桁。最初から = 1、100 匹 = 3、1,000 匹 = 4 …)。建てたときの経験値に使う。</summary>
+        public int UnlockTier => UnlockFish <= 0 ? 1 : (int)Math.Floor(Math.Log10(UnlockFish) + 1e-9) + 1;
+
         public double ElectricityCost { get; }
+
+        /// <summary>建てるのに使う水 (氷室など。多くは 0)。</summary>
+        public double WaterCost { get; }
+
         public double FishCost { get; }
 
         /// <summary>動かすのに要るペンギンの数。0 なら要らない。</summary>
         public int Workers { get; }
+
+        /// <summary>動いている間に使うお魚 (毎時)。働くペンギンのごはん。足りなければ止まる。漁場は自分でとった魚を食べるので 0。</summary>
+        public double FishPerHour { get; }
 
         /// <summary>海に面していないと動かない。</summary>
         public bool NeedsCoast { get; }
@@ -185,55 +209,60 @@ namespace ProjectPenguin.Domain.Island
 
         public static readonly IReadOnlyList<Item> Items = (Item[])Enum.GetValues(typeof(Item));
 
+        /// <summary>解放の段 (これまでに持ったお魚の最大)。お魚の桁が 1 つ上がるごとに開く。</summary>
+        public static readonly IReadOnlyList<long> UnlockSteps = new long[] { 0, 100, 1000, 10000, 100000 };
+
         public static readonly IReadOnlyList<FacilityDef> Facilities = new[]
         {
-            new FacilityDef(FacilityKind.Fishery, "漁場", "海から魚を引き上げる。海に面して建てる", 2, FacilityRole.Producer, 1,
-                10, 0, 1, true,
+            new FacilityDef(FacilityKind.IceHouse, "氷室", "冷たさをためて、休んだ日に氷が溶けるのを減らす", 1, FacilityRole.IceGuard, 0,
+                10, 0, 1, 2, false, null, maxCount: 1, waterCost: 5),
+            new FacilityDef(FacilityKind.Fishery, "漁場", "海から魚を引き上げる。海に面して建てる", 2, FacilityRole.Producer, 0,
+                10, 0, 1, 0, true,
                 new[] { new Recipe("", 4, null, new ItemAmount(Item.Fish, 1), 0.25) }, qualityItem: Item.Fish),
-            new FacilityDef(FacilityKind.Warehouse, "倉庫", "品目の置き場を増やす", 1, FacilityRole.Storage, 1,
-                5, 20, 0, false, null),
-            new FacilityDef(FacilityKind.Dormitory, "宿舎", "住めるペンギンを増やす", 1, FacilityRole.Housing, 2,
-                10, 50, 0, false, null),
-            new FacilityDef(FacilityKind.Preparation, "さばき場", "魚をすり身にする", 2, FacilityRole.Producer, 2,
-                20, 30, 1, false,
+            new FacilityDef(FacilityKind.Warehouse, "倉庫", "品目の置き場を増やす", 1, FacilityRole.Storage, 0,
+                5, 20, 0, 0, false, null),
+            new FacilityDef(FacilityKind.Dormitory, "宿舎", "住めるペンギンを増やす", 1, FacilityRole.Housing, 100,
+                10, 50, 0, 0, false, null),
+            new FacilityDef(FacilityKind.Preparation, "さばき場", "魚をすり身にする", 2, FacilityRole.Producer, 100,
+                20, 30, 1, 20, false,
                 new[] { new Recipe("", 6, new[] { new ItemAmount(Item.Fish, 3) }, new ItemAmount(Item.Surimi, 1), 0.25) }),
-            new FacilityDef(FacilityKind.Saltworks, "製塩所", "海水から塩をとる。海に面して建てる", 2, FacilityRole.Producer, 3,
-                25, 60, 1, true,
+            new FacilityDef(FacilityKind.Saltworks, "製塩所", "海水から塩をとる。海に面して建てる", 2, FacilityRole.Producer, 1000,
+                25, 60, 1, 30, true,
                 new[] { new Recipe("", 8, null, new ItemAmount(Item.Salt, 1), 0.25) }, qualityItem: Item.Salt),
-            new FacilityDef(FacilityKind.ElectricAmplifier, "電気の増幅所", "写真で受け取る電気を増やす", 2, FacilityRole.Amplifier, 3,
-                30, 80, 0, false, null, amplifies: Resource.Electricity, maxCount: 2),
-            new FacilityDef(FacilityKind.KelpFarm, "海藻場", "海藻を育てて巻き上げる。海に面して建てる", 2, FacilityRole.Producer, 4,
-                30, 100, 1, true,
+            new FacilityDef(FacilityKind.ElectricAmplifier, "電気の増幅所", "写真で受け取る電気を増やす", 2, FacilityRole.Amplifier, 1000,
+                30, 80, 0, 20, false, null, amplifies: Resource.Electricity, maxCount: 2),
+            new FacilityDef(FacilityKind.KelpFarm, "海藻場", "海藻を育てて巻き上げる。海に面して建てる", 2, FacilityRole.Producer, 1000,
+                30, 100, 1, 30, true,
                 new[] { new Recipe("", 8, null, new ItemAmount(Item.Kelp, 1), 0.25) }, qualityItem: Item.Kelp),
-            new FacilityDef(FacilityKind.WaterAmplifier, "水の増幅所", "写真で受け取る水を増やす", 2, FacilityRole.Amplifier, 4,
-                30, 120, 0, false, null, amplifies: Resource.Water, maxCount: 2),
-            new FacilityDef(FacilityKind.Kamaboko, "かまぼこ工場", "すり身を蒸してかまぼこにする", 2, FacilityRole.Producer, 5,
-                40, 200, 1, false,
+            new FacilityDef(FacilityKind.WaterAmplifier, "水の増幅所", "写真で受け取る水を増やす", 2, FacilityRole.Amplifier, 1000,
+                30, 120, 0, 20, false, null, amplifies: Resource.Water, maxCount: 2),
+            new FacilityDef(FacilityKind.Kamaboko, "かまぼこ工場", "すり身を蒸してかまぼこにする", 2, FacilityRole.Producer, 10000,
+                40, 200, 1, 60, false,
                 new[] { new Recipe("", 10, new[] { new ItemAmount(Item.Surimi, 2) }, new ItemAmount(Item.Kamaboko, 1), 0.5) }),
             new FacilityDef(FacilityKind.Chikuwa, "ちくわ工場", "すり身を棒に巻いて焼く。強火なら速いがガスを多く使う", 2,
-                FacilityRole.Producer, 5, 40, 200, 1, false,
+                FacilityRole.Producer, 10000, 40, 200, 1, 60, false,
                 new[]
                 {
                     new Recipe("とろ火", 10, new[] { new ItemAmount(Item.Surimi, 2) }, new ItemAmount(Item.Chikuwa, 1), 0.5),
                     new Recipe("強火", 6, new[] { new ItemAmount(Item.Surimi, 2) }, new ItemAmount(Item.Chikuwa, 1), 1.5),
                 }),
-            new FacilityDef(FacilityKind.GasAmplifier, "ガスの増幅所", "歩いて受け取るガスを増やす", 2, FacilityRole.Amplifier, 5,
-                30, 150, 0, false, null, amplifies: Resource.Gas, maxCount: 2),
-            new FacilityDef(FacilityKind.Drying, "干物場", "魚に塩をして干す", 2, FacilityRole.Producer, 6,
-                50, 300, 1, false,
+            new FacilityDef(FacilityKind.GasAmplifier, "ガスの増幅所", "歩いて受け取るガスを増やす", 2, FacilityRole.Amplifier, 10000,
+                30, 150, 0, 40, false, null, amplifies: Resource.Gas, maxCount: 2),
+            new FacilityDef(FacilityKind.Drying, "干物場", "魚に塩をして干す", 2, FacilityRole.Producer, 10000,
+                50, 300, 1, 80, false,
                 new[]
                 {
                     new Recipe("", 12, new[] { new ItemAmount(Item.Fish, 2), new ItemAmount(Item.Salt, 1) },
                         new ItemAmount(Item.DriedFish, 1), 0.5),
                 }),
             new FacilityDef(FacilityKind.Research, "研究所", "お魚と海藻を調べて真珠を作る。真珠は施設を速くする", 2,
-                FacilityRole.Producer, 6, 60, 400, 1, false,
+                FacilityRole.Producer, 10000, 60, 400, 1, 100, false,
                 new[] { new Recipe("", 60, new[] { new ItemAmount(Item.Fish, 20), new ItemAmount(Item.Kelp, 2) }, default, 0.5) },
                 maxCount: 1),
-            new FacilityDef(FacilityKind.Sorter, "仕分け所", "そろった注文を港へ自動で届ける", 1, FacilityRole.AutoDeliver, 7,
-                40, 500, 1, false, null, maxCount: 1),
-            new FacilityDef(FacilityKind.Oden, "おでん屋台", "かまぼこ・ちくわ・海藻を煮込む", 2, FacilityRole.Producer, 8,
-                120, 2000, 2, false,
+            new FacilityDef(FacilityKind.Sorter, "仕分け所", "そろった注文を港へ自動で届ける", 1, FacilityRole.AutoDeliver, 100000,
+                40, 500, 1, 150, false, null, maxCount: 1),
+            new FacilityDef(FacilityKind.Oden, "おでん屋台", "かまぼこ・ちくわ・海藻を煮込む", 2, FacilityRole.Producer, 100000,
+                120, 2000, 2, 400, false,
                 new[]
                 {
                     new Recipe("", 20,

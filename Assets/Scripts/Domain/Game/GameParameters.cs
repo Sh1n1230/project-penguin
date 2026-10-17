@@ -58,8 +58,22 @@ namespace ProjectPenguin.Domain.Game
         /// </summary>
         public int? MaxCatchUpDays { get; set; }
 
+        // ---- 生産の島とのつなぎ (2026-10-17。docs/game-logic.md §2・§5) ----
+
+        /// <summary>
+        /// 前の週に 3 日以上記録したら、週の順番表の次の種が来る。false にすると週の来訪を止め、節目 (はじめて・累計 14 日など) だけで来る。
+        /// アプリでは週の順の 11 種を島の実績 (<c>PenguinUnlocks</c>) で解放するので false にする (<see cref="App"/>)。
+        /// </summary>
+        public bool WeeklyArrivals { get; set; } = true;
+
+        /// <summary>溶ける量を減らす割合の上限 (氷室の効き目。<see cref="GameSession.SetMeltReduction"/>)。</summary>
+        public double MaxMeltReduction { get; set; } = 0.8;
+
         /// <summary>v4 の推奨値 (15d の値 + 17a の修正)。氷のおかえりは 0 (留守の間のお魚に一本化)。</summary>
         public static GameParameters Default => new GameParameters();
+
+        /// <summary>アプリで使う値。<see cref="Default"/> から週の来訪だけを止める (種は島の実績で解放する)。</summary>
+        public static GameParameters App => new GameParameters { WeeklyArrivals = false };
 
         /// <summary>15d (v3) のままの値。おかえりは空白 3 日以上、巻き戻しは無視、先送りの制限なし。</summary>
         public static GameParameters V3 => new GameParameters { ComebackRatio = 0.5, ComebackRequiresMelt = false, RollbackClamp = false, MaxCatchUpDays = null };

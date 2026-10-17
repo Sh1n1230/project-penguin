@@ -81,8 +81,11 @@ namespace ProjectPenguin.Domain.Island
 
         // ---- ペンギン (働き手) ----
 
-        /// <summary>最初からいる働き手。</summary>
-        public int StartWorkers { get; set; } = 3;
+        /// <summary>
+        /// 最初からいる働き手。看板のペンギン 1 羽から始め、記録した日ごとに増える (最初の写真で 2 羽になり、氷室と漁場を動かせる)。
+        /// 2026-10-17 に 3 から 1 にした (オーナー)。
+        /// </summary>
+        public int StartWorkers { get; set; } = 1;
 
         /// <summary>記録日 1 日につき増える働き手。</summary>
         public int WorkersPerRecordDay { get; set; } = 1;
@@ -91,6 +94,23 @@ namespace ProjectPenguin.Domain.Island
         public int BaseHousing { get; set; } = 4;
 
         public int HousingPerDormitory { get; set; } = 4;
+
+        // ---- 氷とペンギンのやる気 (2026-10-17 のコア) ----
+
+        /// <summary>
+        /// 氷の段 (T0〜T4) ごとのペンギンのやる気。作る速さ・増幅所の上乗せ・氷室の効き目に掛かる。
+        /// 氷が大きいほど上がり、小さくても 1.0 より下げない (罰にしない。docs/game-logic.md §0)。
+        /// </summary>
+        public double[] MotivationByTier { get; set; } = { 1.0, 1.0, 1.0, 1.15, 1.3 };
+
+        /// <summary>氷室 Lv1 が減らす、記録しなかった日に溶ける氷の割合。</summary>
+        public double IceHouseReduction { get; set; } = 0.3;
+
+        /// <summary>氷室 1 レベルごとに増える割合 (Lv5 で 0.7)。</summary>
+        public double IceHouseReductionPerLevel { get; set; } = 0.1;
+
+        /// <summary>氷室の効き目の上限 (やる気を掛けた後)。<c>GameParameters.MaxMeltReduction</c> と同じ値にする。</summary>
+        public double MaxMeltReduction { get; set; } = 0.8;
 
         // ---- 在庫 ----
 

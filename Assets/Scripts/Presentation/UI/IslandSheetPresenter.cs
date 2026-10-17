@@ -302,7 +302,7 @@ namespace ProjectPenguin.Presentation.UI
             OpenSheet("資源の集め方", (body, footer) =>
             {
                 var p = _game.Island.Parameters;
-                body.Add(IslandUi.Text("電気・水・ガス・オールマイティは、現実のエコな行動からだけ増える。島の中では作れない。",
+                body.Add(IslandUi.Text("インフラ (電気・水・ガス) とオールマイティは、現実のエコな行動からだけ増える。島の中では作れない。電気のエコなら電気、水のエコなら水、ガスのエコならガスが多くもらえる。",
                     UiClasses.Text.Caption, UiClasses.Text.Sub, UiClasses.IslandGuide.Lead));
 
                 void Add(Resource r, string how, string use)
@@ -322,7 +322,7 @@ namespace ProjectPenguin.Presentation.UI
                 }
 
                 Add(Resource.Electricity, $"写真：{PhotoSources(Resource.Electricity)}", "施設を建てる・強化する");
-                Add(Resource.Water, $"写真：{PhotoSources(Resource.Water)}", "海を凍らせて島を広げる");
+                Add(Resource.Water, $"写真：{PhotoSources(Resource.Water)}", "海を凍らせて島を広げる・氷室を建てる");
                 Add(Resource.Gas,
                     $"{p.StepsPerGas:N0} 歩ごとに +1（1 日 {p.StepGasPerDayMax:0} まで）。写真：{PhotoSources(Resource.Gas)}",
                     "施設を動かす（動いている間ずっと減る）");
@@ -352,7 +352,14 @@ namespace ProjectPenguin.Presentation.UI
 
                 body.Add(IslandUi.Text("島の中で増えるもの", UiClasses.SectionTitle));
                 body.Add(IslandUi.Row(IslandUi.IconBadge(UiClasses.Icon.Fish, UiClasses.Tint.Fish), "お魚",
-                    $"港の注文に品物を届ける（品物の値 × 個数 × {p.OrderRewardMultiplier:0.#}）。漁場でもとれる。使い道：建てる・広げる"));
+                    $"港の注文に品物を届ける（品物の値 × 個数 × {p.OrderRewardMultiplier:0.#}）。漁場でもとれる。使い道：建てる・広げる・働くペンギンのごはん（尽きると施設が止まる。漁場は自分でとった魚を食べる）。持ったお魚の桁が上がると、新しい施設が開く（{string.Join("・", IslandCatalog.UnlockSteps.Where(n => n > 0).Select(n => IslandUi.Number(n)))} 匹）"));
+
+                // 氷とペンギンのやる気。氷が大きいほど施設がよく働く。
+                body.Add(IslandUi.Text("氷とペンギンのやる気", UiClasses.SectionTitle));
+                body.Add(IslandUi.Row(IslandUi.IconBadge(UiClasses.Icon.Snowflake, UiClasses.Tint.Water), "氷",
+                    "毎日の記録で増え、休むと溶ける。氷が支えられるだけ島を広げられる。氷室を建てると、休んだ日に溶ける量が減る"));
+                body.Add(IslandUi.Row(IslandUi.IconBadge(UiClasses.Icon.Penguin, UiClasses.Tint.Original), "やる気",
+                    $"氷が「ゆたか」で {IslandUi.Motivation(p.MotivationByTier[3])}、「ひろがる」で {IslandUi.Motivation(p.MotivationByTier[4])}。作る速さ・増幅所・氷室の効き目に掛かる。氷が小さくても下がらない"));
                 var pearl = IslandUi.Row(IslandUi.IconBadge(UiClasses.Icon.Pearl, UiClasses.Tint.Pearl), "真珠",
                     $"研究所で作る。使い道：施設 1 つに {p.PearlsPerFacility} 個まで入れて、1 個ごとに速さ +{p.PearlSpeed * 100:0}%");
                 pearl.EnableInClassList(UiClasses.Row.Last, true);
@@ -421,6 +428,11 @@ namespace ProjectPenguin.Presentation.UI
             if (parts.Count == 0)
             {
                 return amp != null ? $"倍率 ×1（{amp.Name}を建てると増える）" : "倍率 ×1";
+            }
+
+            if (amps > 0 && island.Motivation > 1.0 + 1e-9)
+            {
+                parts.Add($"やる気 {IslandUi.Motivation(island.Motivation)}");
             }
 
             return $"倍率 ×{island.GainMultiplier(r):0.##}（{string.Join("、", parts)}）";

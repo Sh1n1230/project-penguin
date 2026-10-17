@@ -63,6 +63,10 @@
     background-image: url("project://database/Assets/UI/Thumbnails/Thumb_GasAmplifier.png");
 }
 
+.pp-thumb--ice-house {
+    background-image: url("project://database/Assets/UI/Thumbnails/Thumb_IceHouse.png");
+}
+
 .pp-thumb--harbor-0 {
     background-image: url("project://database/Assets/UI/Thumbnails/Thumb_Harbor0.png");
 }

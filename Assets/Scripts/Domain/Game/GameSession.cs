@@ -216,6 +216,9 @@ namespace ProjectPenguin.Domain.Game
 
         public bool IsRecorded(int day) => _recordedDays.Contains(day);
 
+        /// <summary>やりとげたミッションの種類の数 (図鑑の解放条件の進み具合に使う)。</summary>
+        public int DoneMissionCount => _doneMissions.Count;
+
         /// <summary>その日に選んだミッション (選んだ順)。画面に出すための読み取り専用。</summary>
         public IReadOnlyList<string> SelectedOn(int day) =>
             _selected.TryGetValue(day, out var sel) ? sel.Select(x => x.Key).ToList() : (IReadOnlyList<string>)Array.Empty<string>();
@@ -347,6 +350,26 @@ namespace ProjectPenguin.Domain.Game
             return true;
         }
 
+        /// <summary>記録しなかった日に溶ける量を減らす割合 (0〜<see cref="GameParameters.MaxMeltReduction"/>)。島の氷室の効き目。</summary>
+        public double MeltReduction { get; private set; }
+
+        /// <summary>
+        /// 溶ける量を減らす割合を変える。先に今日まで確定させるので、それまでに過ぎた日は前の割合で溶ける。
+        /// 島の状態から決まる値なので、Systems はこれを操作として記録し、再生で同じ氷に戻す。
+        /// </summary>
+        public bool SetMeltReduction(double reduction)
+        {
+            Advance();
+            var r = Math.Max(0.0, Math.Min(_p.MaxMeltReduction, reduction));
+            if (Math.Abs(r - MeltReduction) < 1e-9)
+            {
+                return false;
+            }
+
+            MeltReduction = r;
+            return true;
+        }
+
         /// <summary>今日のミッションを選ぶ (1 日 2 件まで)。</summary>
         public bool SelectMission(string missionId, MissionVerification verification)
         {
@@ -473,7 +496,11 @@ namespace ProjectPenguin.Domain.Game
 
                 if (Get(_weekRecordDays, prev) >= _p.WeeklyArrivalMinDays)
                 {
-                    WeeklyPending++;
+                    if (_p.WeeklyArrivals)
+                    {
+                        WeeklyPending++;
+                    }
+
                     ConsecutiveWeeks++;
                     if (ConsecutiveWeeks >= 4)
                     {
@@ -500,7 +527,7 @@ namespace ProjectPenguin.Domain.Game
                 return;
             }
 
-            var m = Math.Max(0.0, Math.Min(_p.Melt, Ice - _p.Floor));
+            var m = Math.Max(0.0, Math.Min(_p.Melt * (1.0 - MeltReduction), Ice - _p.Floor));
             Ice -= m;
             GapMelted += m;
             SetTier(d);

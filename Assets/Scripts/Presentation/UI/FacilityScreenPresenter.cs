@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ProjectPenguin.Domain.Island;
 using ProjectPenguin.Presentation.World;
@@ -182,7 +183,7 @@ namespace ProjectPenguin.Presentation.UI
 
             if (def.Role == FacilityRole.Producer)
             {
-                _speed.text = $"× {island.SpeedOf(f):0.0#}";
+                _speed.text = $"× {island.SpeedOf(f):0.0#}" + (f.Def.FishPerHour > 0 ? $"　ごはん {IslandUi.Rate(f.Def.FishPerHour)}/時" : "");
                 _progress.value = (float)f.ProgressRatio;
                 for (var i = 0; i < _modeButtons.Count; i++)
                 {
@@ -296,10 +297,19 @@ namespace ProjectPenguin.Presentation.UI
         {
             FacilityRole.Storage => $"置き場 +{island.Parameters.StoragePerWarehouse * f.Level}",
             FacilityRole.Housing => $"住める数 +{island.HousingOf(f)}",
-            FacilityRole.Amplifier => $"{IslandCatalog.NameOf(f.Def.Amplifies.GetValueOrDefault())} +{island.AmplifierBonusOf(f) * 100:0}%",
+            FacilityRole.Amplifier => $"{IslandCatalog.NameOf(f.Def.Amplifies.GetValueOrDefault())} +{island.AmplifierBonusOf(f) * island.Motivation * 100:0}%" + MotivationNote(island),
             FacilityRole.AutoDeliver => $"自動でとどける（舟 {island.OrderCooldown:0} 秒）",
+            FacilityRole.IceGuard => $"休んだ日に溶ける氷 −{Math.Min(island.Parameters.MaxMeltReduction, island.IceHouseReductionOf(f) * island.Motivation) * 100:0}%" + MotivationNote(island),
             _ => "",
-        };
+        } + UpkeepNote(f);
+
+        /// <summary>氷が大きくてペンギンのやる気が上がっているときだけ、倍率を添える。</summary>
+        private static string MotivationNote(IslandGame island) =>
+            island.Motivation > 1.0 + 1e-9 ? $"（やる気 {IslandUi.Motivation(island.Motivation)}）" : "";
+
+        /// <summary>働くペンギンのごはん (お魚/時)。</summary>
+        private static string UpkeepNote(Facility f) =>
+            f.Def.FishPerHour > 0 ? $"\nごはん お魚 {IslandUi.Rate(f.Def.FishPerHour)}/時" : "";
 
         // ------------------------------------------------------------------
         // 操作

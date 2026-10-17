@@ -49,6 +49,9 @@ namespace ProjectPenguin.Data
         public const string Select = "select";
         public const string CheckIn = "checkin";
 
+        /// <summary>島の氷室の効き目が変わった (<see cref="value"/> = 溶ける量を減らす割合)。</summary>
+        public const string MeltGuard = "meltguard";
+
         public string kind;
         public long atMs;
         public string id;
@@ -56,6 +59,9 @@ namespace ProjectPenguin.Data
         public int verification;
         public int answer;
         public bool noShopping;
+
+        /// <summary>数値の引数 (<see cref="MeltGuard"/> の割合)。</summary>
+        public double value;
     }
 
     /// <summary>現実の行動で資源を受け取った記録 1 件。</summary>

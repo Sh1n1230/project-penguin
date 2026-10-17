@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 namespace ProjectPenguin.Presentation.UI
 {
     /// <summary>
-    /// はじめての起動の案内 (docs/game-logic.md §7)。名前 → 3 つの決まり → 資源の集め方 → 最初の写真。
+    /// はじめての起動の案内 (docs/game-logic.md §7)。島の名前 (ペンギンがいるが氷が溶けている) → 氷を守る決まり → 写真でインフラ・氷室・やる気 → 最初の写真。
     /// 終わったら保存し、次からは出さない。データを消したときはまた出す。
     /// </summary>
     [RequireComponent(typeof(UIDocument))]

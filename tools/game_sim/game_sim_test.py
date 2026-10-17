@@ -310,6 +310,44 @@ class ComebackV4(unittest.TestCase):
         self.assertEqual(r.session.comeback_log[0][0] - g.day_of_date(g.START) + 1, 12)   # 16a §4.1
 
 
+class IslandLink(unittest.TestCase):
+    """2026-10-17: the ice house (melt reduction) and weekly arrivals switched off for the app."""
+
+    def test_melt_reduction_applies_from_the_day_it_is_set(self):
+        s = g.Session(T(2026, 10, 27, 9), bonus0)   # Tue; Tue/Wed use the 2 shields
+        self.assertTrue(s.set_melt_reduction(T(2026, 10, 27, 10), 0.5))
+        s.advance(T(2026, 10, 31, 12))              # Thu, Fri melt 2 * 0.5 each
+        self.assertAlmostEqual(s.s.gap_melted, 2.0)
+        self.assertFalse(s.set_melt_reduction(T(2026, 10, 31, 13), 0.5), "same value is not a change")
+        s.set_melt_reduction(T(2026, 10, 31, 14), 0.0)
+        s.advance(T(2026, 11, 1, 12))               # Sat melts in full
+        self.assertAlmostEqual(s.s.gap_melted, 4.0)
+
+    def test_days_before_the_change_keep_the_old_share(self):
+        s = g.Session(T(2026, 10, 27, 9), bonus0)
+        s.set_melt_reduction(T(2026, 11, 1, 12), 0.8)   # Sun: settles Tue..Sat first, Thu..Sat melt in full
+        self.assertAlmostEqual(s.s.gap_melted, 6.0)
+        self.assertAlmostEqual(s.s.melt_reduction, 0.8)
+
+    def test_melt_reduction_is_capped_and_round_trips(self):
+        s = g.Session(T(2026, 10, 27, 9), bonus0)
+        s.set_melt_reduction(T(2026, 10, 27, 10), 5.0)
+        self.assertAlmostEqual(s.s.melt_reduction, g.DEFAULT.max_melt_reduction)
+        x = g.Session.restore(s.export_json(), bonus0)
+        self.assertAlmostEqual(x.s.melt_reduction, s.s.melt_reduction)
+        st = s.export_state()
+        del st["meltReduction"]
+        self.assertEqual(g.Session.restore(st, bonus0).s.melt_reduction, 0.0)
+
+    def test_app_has_no_weekly_arrivals_but_keeps_milestones(self):
+        daily = g.run_persona("daily")
+        app = g.run_persona("daily", g.APP)
+        self.assertTrue(any(a.reason == "weekly" for a in daily.session.s.arrivals))
+        self.assertFalse(any(a.reason == "weekly" for a in app.session.s.arrivals))
+        self.assertIn(g.M_TOTAL_30, [a.species for a in app.session.s.arrivals])
+        self.assertEqual(app.session.s.ice, daily.session.s.ice, "arrivals never touch the ice")
+
+
 class SaveRestore(unittest.TestCase):
     def test_round_trip_json(self):
         r = g.run_persona("cheater")

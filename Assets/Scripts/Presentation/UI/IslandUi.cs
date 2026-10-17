@@ -79,6 +79,7 @@ namespace ProjectPenguin.Presentation.UI
                 FacilityKind.Dormitory => UiClasses.Icon.Penguin,
                 FacilityKind.Research => UiClasses.Icon.Research,
                 FacilityKind.Sorter => UiClasses.Icon.Deliver,
+                FacilityKind.IceHouse => UiClasses.Icon.Snowflake,
                 _ => def.Recipes.Count > 0 ? IconClass(def.Recipes[0].Output.Item) : UiClasses.Icon.Build,
             };
         }
@@ -87,6 +88,7 @@ namespace ProjectPenguin.Presentation.UI
             def.Amplifies.HasValue ? TintClass(def.Amplifies.Value)
             : def.Kind == FacilityKind.Research ? UiClasses.Tint.Pearl
             : def.Kind == FacilityKind.Dormitory ? UiClasses.Tint.Original
+            : def.Kind == FacilityKind.IceHouse ? UiClasses.Tint.Water
             : UiClasses.Tint.Primary;
 
         /// <summary>状態の文言・アイコン・色のクラス (問題なしは null、<see cref="UiClasses.Status.Warn"/>、<see cref="UiClasses.Status.Bad"/>)。</summary>
@@ -106,6 +108,7 @@ namespace ProjectPenguin.Presentation.UI
                 FacilityStatus.NoGas => ("ガスが切れている", UiClasses.Icon.GasEmpty, UiClasses.Status.Bad),
                 FacilityStatus.WaitingInput => ("材料を待っている", UiClasses.Icon.MaterialWait, UiClasses.Status.Warn),
                 FacilityStatus.StorageFull => ("置き場がいっぱい", UiClasses.Icon.StorageFull, UiClasses.Status.Warn),
+                FacilityStatus.NoFish => ("ごはんのお魚が足りない", UiClasses.Icon.Fish, UiClasses.Status.Bad),
                 _ => ("", UiClasses.Icon.Check, null),
             };
         }
@@ -114,7 +117,7 @@ namespace ProjectPenguin.Presentation.UI
         public static string Message(IslandActionResult r) => r switch
         {
             IslandActionResult.Ok => "",
-            IslandActionResult.Locked => "まだレベルが足りないよ",
+            IslandActionResult.Locked => "まだ建てられないよ。お魚を増やすと新しい施設が開くよ",
             IslandActionResult.LimitReached => "これ以上は増やせないよ",
             IslandActionResult.CannotPlace => "そこには置けないよ",
             IslandActionResult.NotEnoughElectricity => "電気が足りないよ。エコ写真で集めよう",
@@ -335,6 +338,7 @@ namespace ProjectPenguin.Presentation.UI
             FacilityRole.Housing => UiClasses.Icon.Penguin,
             FacilityRole.Amplifier => IconClass(def.Amplifies.GetValueOrDefault()),
             FacilityRole.AutoDeliver => UiClasses.Icon.Deliver,
+            FacilityRole.IceGuard => UiClasses.Icon.Snowflake,
             _ => IconClass(def),
         };
 
@@ -345,7 +349,17 @@ namespace ProjectPenguin.Presentation.UI
             FacilityRole.Housing => $"住める数 +{p.HousingPerDormitory}",
             FacilityRole.Amplifier => $"{IslandCatalog.NameOf(def.Amplifies.GetValueOrDefault())} +{p.AmplifierBonus * 100:0}%",
             FacilityRole.AutoDeliver => "自動でとどける",
+            FacilityRole.IceGuard => $"溶ける氷 −{p.IceHouseReduction * 100:0}%",
             _ => "",
         };
+
+        /// <summary>解放の条件 (「お魚 1,000 匹で開く」など)。</summary>
+        public static string UnlockText(long fish) => $"お魚 {Number(fish)} 匹で開く";
+
+        /// <summary>鍵の上に出す短い数 (「🐟 1,000」の数字だけ)。</summary>
+        public static string UnlockShort(long fish) => Number(fish);
+
+        /// <summary>ペンギンのやる気 (×1.15 など)。</summary>
+        public static string Motivation(double m) => "×" + m.ToString("0.##", CultureInfo.InvariantCulture);
     }
 }

@@ -173,7 +173,7 @@ namespace ProjectPenguin.Data
 
             save.ops = db.Table<OpRow>().OrderBy(r => r.Seq).ToList().Select(r => new GameOp
             {
-                kind = r.Kind, atMs = r.AtMs, id = r.Id, printDay = r.PrintDay, verification = r.Verification, answer = r.Answer, noShopping = r.NoShopping,
+                kind = r.Kind, atMs = r.AtMs, id = r.Id, printDay = r.PrintDay, verification = r.Verification, answer = r.Answer, noShopping = r.NoShopping, value = r.Value,
             }).ToArray();
 
             var island = db.Find<IslandRow>(1);
@@ -214,7 +214,7 @@ namespace ProjectPenguin.Data
             for (var i = storedOps; i < ops.Length; i++)
             {
                 var o = ops[i];
-                db.Insert(new OpRow { Kind = o.kind, AtMs = o.atMs, Id = o.id, PrintDay = o.printDay, Verification = o.verification, Answer = o.answer, NoShopping = o.noShopping });
+                db.Insert(new OpRow { Kind = o.kind, AtMs = o.atMs, Id = o.id, PrintDay = o.printDay, Verification = o.verification, Answer = o.answer, NoShopping = o.noShopping, Value = o.value });
             }
 
             // 受け取りの記録も追記だけ。窓の i 番目は、全履歴の activityTrimmed + i 番目。
@@ -326,6 +326,9 @@ namespace ProjectPenguin.Data
             [Column("verification")] public int Verification { get; set; }
             [Column("answer")] public int Answer { get; set; }
             [Column("no_shopping")] public bool NoShopping { get; set; }
+
+            /// <summary>数値の引数 (氷室の効き目など)。2026-10-17 に足した列。古い DB には CreateTable が列を足す。</summary>
+            [Column("value")] public double Value { get; set; }
         }
 
         [Preserve(AllMembers = true)]

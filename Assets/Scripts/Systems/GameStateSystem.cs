@@ -82,6 +82,9 @@ namespace ProjectPenguin.Systems
         /// <summary>記録画面に残す受け取りの記録の数。</summary>
         private const int ActivityLimit = GameSave.ActivityWindow;
 
+        /// <summary>開いている間に歩数を問い合わせ直す間隔 (秒)。歩いた分のガスが、開いたままでも増えるように。</summary>
+        private const float StepPollInterval = 30f;
+
         /// <summary>時刻合わせの通信の待ち時間 (秒)。UnityWebRequest の既定 0 は無制限なので必ず付ける。</summary>
         private const int TimeSyncTimeoutSeconds = 25;
 
@@ -105,6 +108,7 @@ namespace ProjectPenguin.Systems
         private int _lastOpenDay;
         private float _islandNotifyTimer;
         private float _autosaveTimer;
+        private float _stepPollTimer;
 
         /// <summary>氷の状態が変わりうる操作のたびに呼ばれる (変化が無くても呼ぶ)。</summary>
         public event Action<GameStateChange> Changed;
@@ -149,6 +153,12 @@ namespace ProjectPenguin.Systems
         }
 
         public int Today => Session.Today;
+
+        /// <summary>
+        /// 操作が数えられる日。時計が最後に見た日より前に戻っていれば最後に見た日 (<see cref="GameSession"/> の巻き戻しの扱いと同じ)。
+        /// 写真・歩数の資源の「1 日 1 回」はこの日で数えるので、時計を前後させても何度も受け取れない。
+        /// </summary>
+        public int EffectiveToday => Math.Max(Session.Today, Session.LastStartedDay);
 
         /// <summary>「時間を進める」で進めた日数。0 でなければ画面に「デモ用」と出す。</summary>
         public int DemoDaysAdvanced => _clock == null ? 0 : (int)_clock.Offset.TotalDays;
@@ -206,7 +216,7 @@ namespace ProjectPenguin.Systems
             {
                 var now = _clock.UtcNow;
                 _save = new GameSave { createdUnixMs = now.ToUnixTimeMilliseconds() };
-                _session = new GameSession(_clock, NoWeeklyBonus);
+                _session = new GameSession(_clock, NoWeeklyBonus, GameParameters.App);
                 _island = new IslandGame(IslandParameters.Default, now);
 
                 // 起動した日を「その日に初めて開いた」として挨拶させるため、前日に開いたことにしておく。
@@ -235,7 +245,7 @@ namespace ProjectPenguin.Systems
         private GameSession Replay(GameSave save)
         {
             _clock.Pin(DateTimeOffset.FromUnixTimeMilliseconds(save.createdUnixMs));
-            var session = new GameSession(_clock, NoWeeklyBonus);
+            var session = new GameSession(_clock, NoWeeklyBonus, GameParameters.App);
             foreach (var op in save.ops ?? Array.Empty<GameOp>())
             {
                 _clock.Pin(DateTimeOffset.FromUnixTimeMilliseconds(op.atMs));
@@ -258,6 +268,8 @@ namespace ProjectPenguin.Systems
                     return session.SelectMission(op.id, (MissionVerification)op.verification);
                 case GameOp.CheckIn:
                     return session.CheckIn(op.id, (CheckInAnswer)op.answer, op.noShopping);
+                case GameOp.MeltGuard:
+                    return session.SetMeltReduction(op.value);
                 default:
                     return false;
             }
@@ -308,7 +320,17 @@ namespace ProjectPenguin.Systems
             if (_islandNotifyTimer >= IslandNotifyInterval)
             {
                 _islandNotifyTimer = 0f;
+
+                // お魚切れなどで氷室の効き目が変わったら、氷の状態機械にも伝える。
+                SyncMeltGuard();
                 PublishIsland();
+            }
+
+            _stepPollTimer += Time.unscaledDeltaTime;
+            if (_stepPollTimer >= StepPollInterval)
+            {
+                _stepPollTimer = 0f;
+                RequestSteps();
             }
 
             _autosaveTimer += Time.unscaledDeltaTime;
@@ -348,7 +370,7 @@ namespace ProjectPenguin.Systems
         // ------------------------------------------------------------------
 
         /// <summary>今日まだ写真の資源を受け取れるか。</summary>
-        public bool CanReceivePhotoToday => Island.CanReceivePhoto(Today);
+        public bool CanReceivePhotoToday => Island.CanReceivePhoto(EffectiveToday);
 
         /// <summary>エコ活動の写真 1 枚を記録する。写真そのものは保存しない。</summary>
         public EcoPhotoResult RecordEcoPhoto(EcoPhotoVerdict verdict)
@@ -359,20 +381,27 @@ namespace ProjectPenguin.Systems
             ResourceBundle granted = null;
             Apply(() =>
             {
-                var day = _session.Today;
+                // 時計が戻っていれば最後に見た日、大きく進んで保留中なら null (記録も資源も受け付けない)。
+                var day = _session.Advance();
+                if (day == null)
+                {
+                    return;
+                }
+
                 var op = new GameOp
                 {
                     kind = GameOp.Photo,
                     atMs = _clock.UtcNow.ToUnixTimeMilliseconds(),
-                    id = $"photo-{day}-{_ops.Count}",
-                    printDay = day,
+                    id = $"photo-{day.Value}-{_ops.Count}",
+                    printDay = day.Value,
                 };
+
+                // 資源は記録が通ったときだけ渡す (CheckIn と同じ形)。
                 if (Apply(_session, op))
                 {
                     _ops.Add(op);
+                    granted = _island.ReceivePhoto(verdict, day.Value);
                 }
-
-                granted = _island.ReceivePhoto(verdict, day);
             });
 
             if (granted != null)
@@ -454,18 +483,25 @@ namespace ProjectPenguin.Systems
                 return;
             }
 
-            _steps.Request(AppDayStartUtc(Today));
+            _steps.Request(AppDayStartUtc(EffectiveToday));
         }
 
         private void PollSteps()
         {
-            if (_steps == null || !_steps.TryTake(out var steps))
+            if (_steps == null || !_steps.TryTake(out var steps, out var fromUtc))
+            {
+                return;
+            }
+
+            // 日付が変わる直前に出した問い合わせの応答 (前日の歩数) が後から届いたら捨てる。
+            var day = EffectiveToday;
+            if (fromUtc != AppDayStartUtc(day))
             {
                 return;
             }
 
             StepsToday = steps;
-            var gas = _island.ReceiveSteps(steps, Today);
+            var gas = _island.ReceiveSteps(steps, day);
             if (gas > 0)
             {
                 var bundle = ResourceBundle.Of(Resource.Gas, gas);
@@ -503,6 +539,7 @@ namespace ProjectPenguin.Systems
             var r = action(_island);
             if (r == IslandActionResult.Ok)
             {
+                SyncMeltGuard();
                 MarkIslandDirty();
                 Save();
             }
@@ -585,6 +622,7 @@ namespace ProjectPenguin.Systems
             _lastOpenDay = Math.Max(_lastOpenDay, today);
             SyncIsland();
             _island.Tick(_clock.UtcNow);
+            SyncMeltGuard();
             Changed?.Invoke(new GameStateChange(before, HomeState.Of(_session), isComeback, isFirstOpenToday));
             MarkIslandDirty();
             Save();
@@ -592,7 +630,33 @@ namespace ProjectPenguin.Systems
 
         private void SyncIsland()
         {
-            _island.SyncWorld(_session.Ice, _session.TotalRecordDays, _session.Arrivals.Select(a => a.Species));
+            _island.SyncWorld(_session.Ice, _session.TotalRecordDays, _session.Arrivals.Select(a => a.Species), _session.Tier);
+        }
+
+        /// <summary>
+        /// 島の氷室の効き目 (<see cref="IslandGame.MeltReduction"/>) が氷の状態機械と違えば、操作として記録して渡す。
+        /// 操作の記録を再生すれば同じ時刻に同じ値が入るので、起動し直しても氷は同じになる。
+        /// </summary>
+        private void SyncMeltGuard()
+        {
+            var reduction = _island.MeltReduction;
+            if (Math.Abs(reduction - _session.MeltReduction) < 1e-6)
+            {
+                return;
+            }
+
+            var op = new GameOp
+            {
+                kind = GameOp.MeltGuard,
+                atMs = _clock.UtcNow.ToUnixTimeMilliseconds(),
+                id = "meltguard",
+                value = reduction,
+            };
+            if (Apply(_session, op))
+            {
+                _ops.Add(op);
+                SyncIsland();
+            }
         }
 
         private void MarkIslandDirty() => PublishIsland();

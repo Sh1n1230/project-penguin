@@ -8,7 +8,8 @@ namespace ProjectPenguin.Backend
     /// <summary>
     /// エコ活動の写真を判定する口。本物は Hack Day に作る backend (FastAPI + Gemini) を呼ぶ
     /// (API の形は docs/production-island/game-design.md の「写真判定の API」)。
-    /// 画像はメモリ上の JPEG のまま渡し、端末にもサーバーにも保存しない。
+    /// 画像はメモリ上の JPEG のまま渡し、アプリと backend は保存しない。判定に使う Gemini API 側の入力の保持は、
+    /// Google の利用規約に従う (docs/privacy-policy.md)。
     /// </summary>
     public interface IEcoPhotoJudge
     {
@@ -34,7 +35,9 @@ namespace ProjectPenguin.Backend
         {
             (EcoSubject.LightsOff, "電気を大事にしてくれたんだね。工場がよろこんでるよ"),
             (EcoSubject.AirConditioner, "ちょうどいい温度だね。ぼくらは寒いほうが好きだけど"),
-            (EcoSubject.ShortShower, "その水で、氷がひとつ増やせそう"),
+            (EcoSubject.ShortShower, "お湯を沸かすガスも、お水も節約できたね"),
+            (EcoSubject.LidCooking, "ふたをすると早く煮えるんだって。ガスがたまったよ"),
+            (EcoSubject.WarmClothes, "もこもこだね。ぼくらの羽毛みたい"),
             (EcoSubject.SaveWater, "お水を大事にしてくれてありがとう。島が広げられるね"),
             (EcoSubject.Walk, "いっぱい歩いたね。ガスがたまったよ"),
             (EcoSubject.Bicycle, "風を切って走るの、気持ちよさそう"),
