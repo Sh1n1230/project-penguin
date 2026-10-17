@@ -38,7 +38,8 @@ namespace ProjectPenguin.Editor.ProductionIsland
             new Definition("Dormitory", "宿舎", "戻る → 目を閉じて休む → 作業へ戻る", true, true),
             new Definition("ElectricAmplifier", "電気の増幅施設", "現実で得た電気 → 蓄電・調整 → 獲得量の増幅を表示"),
             new Definition("WaterAmplifier", "水の増幅施設", "現実で得た水 → 貯水・調整 → 獲得量の増幅を表示"),
-            new Definition("GasAmplifier", "ガスの増幅施設", "現実で得たガス → 圧力調整 → 獲得量の増幅を表示")
+            new Definition("GasAmplifier", "ガスの増幅施設", "現実で得たガス → 圧力調整 → 獲得量の増幅を表示"),
+            new Definition("IceHouse", "氷室", "氷のかたまり → 雪のドームにたくわえる → 冷たい風で氷を守る", false, true)
         };
 
         [MenuItem("Production Island/Build Facility Design Revisions")]
