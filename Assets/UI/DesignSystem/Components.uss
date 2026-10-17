@@ -120,7 +120,8 @@
 .pp-icon--menu { background-image: url("project://database/Assets/UI/DesignSystem/Icons/menu.svg"); }
 .pp-icon--chevron-right { background-image: url("project://database/Assets/UI/DesignSystem/Icons/chevron-right.svg"); }
 .pp-icon--close { background-image: url("project://database/Assets/UI/DesignSystem/Icons/close.svg"); }
-.pp-icon--penguin { background-image: url("project://database/Assets/UI/DesignSystem/Icons/penguin.svg"); }
+/* ゲームの看板のペンギン (Penguin_v002) の頭。Production Island > Render Mascot Icon が 3D モデルから描き出す */
+.pp-icon--penguin { background-image: url("project://database/Assets/UI/DesignSystem/Icons/penguin-mascot.png"); }
 .pp-icon--chevron-left { background-image: url("project://database/Assets/UI/DesignSystem/Icons/chevron-left.svg"); }
 .pp-icon--check { background-image: url("project://database/Assets/UI/DesignSystem/Icons/check.svg"); }
 .pp-icon--book { background-image: url("project://database/Assets/UI/DesignSystem/Icons/book.svg"); }
@@ -314,11 +315,14 @@
     border-color: var(--color-ice-100);
     border-radius: var(--radius-full);
     background-color: #FFFFFF;
+    /* 看板のペンギンの胸から上を丸く切り抜く */
+    overflow: hidden;
 }
 
 .pp-avatar__image {
-    width: 120px;
-    height: 120px;
+    width: 100%;
+    height: 100%;
+    -unity-background-scale-mode: scale-and-crop;
 }
 
 /* DOM は [bubble, avatar] の順にし、row-reverse で avatar を左かつ前面に描く */
